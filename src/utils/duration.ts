@@ -1,7 +1,7 @@
 import format from "date-fns/format";
 import isSameDay from "date-fns/isSameDay";
 
-import { Event } from "@prisma/client";
+import type { Event } from "@prisma/client";
 
 export function formatEventDuration(event: Event): string {
   const { fromDate, untilDate, fromTime, untilTime, wholeDay } = event;

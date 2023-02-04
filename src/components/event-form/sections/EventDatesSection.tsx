@@ -1,6 +1,6 @@
 import { Grid, Text } from "@mantine/core";
 
-import { UseEventForm } from "../../../hooks/event-pagination/useEventForm";
+import { UseEventForm } from "../../../hooks";
 import { EventFormValues } from "../../../types";
 import { DatePickerInputWrapper, TimeInputWrapper } from "../../fields";
 
