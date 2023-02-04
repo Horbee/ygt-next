@@ -1,7 +1,8 @@
-import { attachmentRouter } from './routers/attachment'
-import { eventRouter } from './routers/event'
-import { userRouter } from './routers/user'
-import { createTRPCRouter } from './trpc'
+import { attachmentRouter } from "./routers/attachment";
+import { availabilityRouter } from "./routers/availability";
+import { eventRouter } from "./routers/event";
+import { userRouter } from "./routers/user";
+import { createTRPCRouter } from "./trpc";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { createTRPCRouter } from './trpc'
  */
 export const appRouter = createTRPCRouter({
   event: eventRouter,
+  availability: availabilityRouter,
   attachment: attachmentRouter,
   user: userRouter,
 });

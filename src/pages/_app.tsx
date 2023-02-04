@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { AppType } from "next/app";
 import { ToastContainer } from "react-toastify";
 
-import { AppMantineProvider } from "../context/AppMantineProvider";
+import { AppMantineProvider } from "../context";
 import { api } from "../utils/api";
 
 const MyApp: AppType<{ session: Session | null }> = ({

@@ -1,5 +1,5 @@
 {
-  "name": "t3-test-app",
+  "name": "ygt-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -37,7 +37,8 @@
     "cloudinary": "^1.33.0",
     "react-select": "^5.7.0",
     "react-hook-form": "^7.42.1",
-    "slugify": "^1.6.5"
+    "slugify": "^1.6.5",
+    "framer-motion": "^8.5.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

@@ -48,7 +48,7 @@ export const EventCard = ({ event }: Props) => {
               </Group>
               <Text
                 component={Link}
-                href={event.slug}
+                href={"/events/" + event.slug}
                 size="lg"
                 weight={500}
                 sx={{
