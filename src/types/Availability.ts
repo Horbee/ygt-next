@@ -1,4 +1,4 @@
-import { Availability, User } from "@prisma/client";
+import type { Availability, User } from "@prisma/client";
 
 export type AvailableTypes = "good" | "maybe" | "notgood";
 

@@ -1,4 +1,4 @@
-import { AvailableTypes } from "./Availability"
+import type { AvailableTypes } from "./Availability";
 
 export type AvailabilityFormValues = {
   available: AvailableTypes | null;

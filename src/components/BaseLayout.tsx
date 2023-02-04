@@ -24,9 +24,9 @@ export const BaseLayout = ({
 }: Props) => {
   const router = useRouter();
   const handleLogout = async () => {
-    signOut();
+    await signOut();
     toast.success("Logout successfull");
-    // router.push(AppRoutes.Login);
+    router.push("/login");
   };
 
   return (
@@ -44,7 +44,7 @@ export const BaseLayout = ({
         <link rel="apple-touch-icon" href="/logo512.png" />
         <meta name="theme-color" content="#ffffff" />
 
-        <title>You've got time?</title>
+        <title>You&apos;ve got time?</title>
       </Head>
       <Container size="xs" px="xs" mb="lg" {...restProps}>
         <Group position="apart">

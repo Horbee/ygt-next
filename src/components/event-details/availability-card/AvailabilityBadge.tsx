@@ -1,6 +1,6 @@
 import { Badge } from "@mantine/core";
 
-import { AvailableTypes } from "../../../types";
+import type { AvailableTypes } from "../../../types";
 
 export const AvailabilityBadge = ({ type }: { type: AvailableTypes }) => {
   const data = getAvailabilityBadge(type);

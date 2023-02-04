@@ -1,5 +1,5 @@
 import type { GetServerSidePropsContext } from "next";
-import { DefaultSession, getServerSession, NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -7,6 +7,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
 
+import type { DefaultSession, NextAuthOptions } from "next-auth";
 /**
  * Module augmentation for `next-auth` types.
  * Allows us to add custom properties to the `session` object and keep type

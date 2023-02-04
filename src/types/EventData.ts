@@ -1,6 +1,6 @@
-import { Attachment, Event, User } from '@prisma/client'
+import type { Attachment, Event, User } from "@prisma/client";
 
-import { AvailabilityDataWithOwner } from './Availability'
+import type { AvailabilityDataWithOwner } from "./Availability";
 
 export interface EventDataFull extends Event {
   owner: User;
