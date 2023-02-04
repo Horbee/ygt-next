@@ -1,11 +1,12 @@
-import { Stack } from '@mantine/core'
+import { Stack } from "@mantine/core";
 
-import { BaseLayout } from '../../components/BaseLayout'
-import { EventCard } from '../../components/EventCard'
-import { EventPaginator } from '../../components/EventPaginator'
-import { ListControls } from '../../components/ListControls'
-import { useEventPagination } from '../../hooks/event-pagination'
-import { api } from '../../utils/api'
+import { BaseLayout } from "../../components/BaseLayout";
+import { EventCard } from "../../components/EventCard";
+import { EventPaginator } from "../../components/EventPaginator";
+import { ListControls } from "../../components/ListControls";
+import { useEventPagination } from "../../hooks/event-pagination";
+import { api } from "../../utils/api";
+import { protectedRoute } from "../../utils/protect";
 
 import type { NextPage } from "next";
 const EventListPage: NextPage = () => {
@@ -39,3 +40,5 @@ const EventListPage: NextPage = () => {
 };
 
 export default EventListPage;
+
+export const getServerSideProps = protectedRoute;

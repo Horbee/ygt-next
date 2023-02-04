@@ -1,15 +1,16 @@
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
-import { Attachment } from '@prisma/client'
+import { Attachment } from "@prisma/client";
 
-import { BaseLayout } from '../../components/BaseLayout'
-import { EventForm } from '../../components/event-form/EventForm'
-import { mapToCreateEventDto } from '../../mappers'
-import { EventFormValues } from '../../types'
-import { api } from '../../utils/api'
-import { toBase64 } from '../../utils/base64'
+import { BaseLayout } from "../../components/BaseLayout";
+import { EventForm } from "../../components/event-form/EventForm";
+import { mapToCreateEventDto } from "../../mappers";
+import { EventFormValues } from "../../types";
+import { api } from "../../utils/api";
+import { toBase64 } from "../../utils/base64";
+import { protectedRoute } from "../../utils/protect";
 
 const CreateEventPage: NextPage = () => {
   const router = useRouter();
@@ -52,3 +53,5 @@ const CreateEventPage: NextPage = () => {
 };
 
 export default CreateEventPage;
+
+export const getServerSideProps = protectedRoute;

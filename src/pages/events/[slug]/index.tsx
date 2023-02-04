@@ -14,6 +14,7 @@ import {
 import { AvailabilityModalProvider } from "../../../context";
 import { AvailabilityDataWithOwner } from "../../../types";
 import { api } from "../../../utils/api";
+import { protectedRoute } from "../../../utils/protect";
 
 const EventDetailsPage: NextPage = () => {
   const router = useRouter();
@@ -83,3 +84,5 @@ const EventDetailsPage: NextPage = () => {
 };
 
 export default EventDetailsPage;
+
+export const getServerSideProps = protectedRoute;
