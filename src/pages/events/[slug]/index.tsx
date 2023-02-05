@@ -1,20 +1,16 @@
-import { motion } from "framer-motion";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { motion } from 'framer-motion'
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-import { BaseLayout } from "../../../components/BaseLayout";
+import { BaseLayout } from '../../../components/BaseLayout'
 import {
-  AvailabilityCalendar,
-  AvailabilityList,
-  AvailabilityModal,
-  EventDescription,
-  OwnAvailability,
-} from "../../../components/event-details";
-import { AvailabilityModalProvider } from "../../../context";
-import { AvailabilityDataWithOwner } from "../../../types";
-import { api } from "../../../utils/api";
-import { protectedRoute } from "../../../utils/protect";
+    AvailabilityCalendar, AvailabilityList, AvailabilityModal, EventDescription, OwnAvailability
+} from '../../../components/event-details'
+import { AvailabilityModalProvider } from '../../../context'
+import { AvailabilityDataWithOwner } from '../../../types'
+import { api } from '../../../utils/api'
+import { protectedRoute } from '../../../utils/protect'
 
 const EventDetailsPage: NextPage = () => {
   const router = useRouter();
@@ -33,7 +29,7 @@ const EventDetailsPage: NextPage = () => {
   const availabilities = event?.availabilities as AvailabilityDataWithOwner[];
 
   return (
-    <BaseLayout title="Event List">
+    <BaseLayout title="Event Details">
       <AvailabilityModalProvider>
         <AvailabilityModal selectedDate={selectedDate} />
         {!!event && (
