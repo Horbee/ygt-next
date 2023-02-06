@@ -1,6 +1,7 @@
 import { Stack } from "@mantine/core";
 
 import { BaseLayout } from "../../components/BaseLayout";
+import { EventCardList } from "../../components/event-list/EventCardList";
 import { EventCard } from "../../components/EventCard";
 import { EventPaginator } from "../../components/EventPaginator";
 import { ListControls } from "../../components/ListControls";
@@ -24,9 +25,7 @@ const EventListPage: NextPage = () => {
       <Stack>
         <ListControls eventType={eventType} setEventType={setEventType} />
 
-        {data?.content.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+        {!!data?.content && <EventCardList events={data.content} />}
 
         <EventPaginator
           page={page}
