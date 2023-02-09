@@ -31,7 +31,7 @@ export const eventRouter = createTRPCRouter({
         include: { coverImage: true },
         skip: start,
         take: size,
-        orderBy: { fromDate: "desc" },
+        orderBy: { fromDate: "asc" },
       });
 
       const [total, events] = await Promise.all([totalPromise, eventsPromise]);
