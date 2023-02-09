@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-import { Prisma } from '@prisma/client'
-import { TRPCError } from '@trpc/server'
+import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
-import { createTRPCRouter, protectedProcedure } from '../trpc'
-import { deleteImage } from './attachment'
+import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { deleteImage } from "./attachment";
 
 export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
@@ -31,6 +31,7 @@ export const eventRouter = createTRPCRouter({
         include: { coverImage: true },
         skip: start,
         take: size,
+        orderBy: { fromDate: "desc" },
       });
 
       const [total, events] = await Promise.all([totalPromise, eventsPromise]);
