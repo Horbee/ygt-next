@@ -1,12 +1,13 @@
-import { signOut } from 'next-auth/react'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { MdChevronLeft, MdLogout } from 'react-icons/md'
-import { toast } from 'react-toastify'
+import { signOut } from "next-auth/react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { MdChevronLeft, MdLogout } from "react-icons/md";
+import { toast } from "react-toastify";
 
-import { ActionIcon, Button, Container, Group, Text } from '@mantine/core'
+import { ActionIcon, Button, Container, Group, Text } from "@mantine/core";
 
-import { ThemeToggler } from './ThemeToggler'
+import { HeadContent } from "./HeadContent";
+import { ThemeToggler } from "./ThemeToggler";
 
 import type { ContainerProps } from "@mantine/core";
 import type { ReactNode } from "react";
@@ -33,20 +34,7 @@ export const BaseLayout = ({
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" href="/logo512.png" />
-
-        <meta
-          name="description"
-          content="Web site created to manage availabilities"
-        />
-        <link rel="apple-touch-icon" href="/logo512.png" />
-        <meta name="theme-color" content="#ffffff" />
-
-        <title>You&apos;ve got time?</title>
-      </Head>
+      <HeadContent title={title} />
       <Container size="sm" px="xs" mb="lg" {...restProps}>
         <Group position="apart">
           <Group>
