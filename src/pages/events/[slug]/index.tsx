@@ -8,11 +8,12 @@ import {
     AvailabilityCalendar, AvailabilityList, AvailabilityModal, EventDescription, OwnAvailability
 } from '../../../components/event-details'
 import { AvailabilityModalProvider } from '../../../context'
+import { useAuthenticatedRedirect } from '../../../hooks'
 import { AvailabilityDataWithOwner } from '../../../types'
 import { api } from '../../../utils/api'
-import { protectedRoute } from '../../../utils/protect'
 
 const EventDetailsPage: NextPage = () => {
+  useAuthenticatedRedirect("/login");
   const router = useRouter();
   const slug = router.query.slug as string;
 
@@ -29,7 +30,7 @@ const EventDetailsPage: NextPage = () => {
   const availabilities = event?.availabilities as AvailabilityDataWithOwner[];
 
   return (
-    <BaseLayout title="Event Details">
+    <BaseLayout title="Event Details" backUrl="/events">
       <AvailabilityModalProvider>
         <AvailabilityModal selectedDate={selectedDate} />
         {!!event && (
@@ -80,5 +81,3 @@ const EventDetailsPage: NextPage = () => {
 };
 
 export default EventDetailsPage;
-
-export const getServerSideProps = protectedRoute;

@@ -1,18 +1,19 @@
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
 
-import { Attachment } from "@prisma/client";
+import { Attachment } from '@prisma/client'
 
-import { BaseLayout } from "../../../components/BaseLayout";
-import { EventForm } from "../../../components/event-form/EventForm";
-import { mapToCreateEventDto } from "../../../mappers";
-import { EventFormValues } from "../../../types";
-import { api } from "../../../utils/api";
-import { toBase64 } from "../../../utils/base64";
-import { protectedRoute } from "../../../utils/protect";
+import { BaseLayout } from '../../../components/BaseLayout'
+import { EventForm } from '../../../components/event-form/EventForm'
+import { useAuthenticatedRedirect } from '../../../hooks'
+import { mapToCreateEventDto } from '../../../mappers'
+import { EventFormValues } from '../../../types'
+import { api } from '../../../utils/api'
+import { toBase64 } from '../../../utils/base64'
 
 const EditEventPage: NextPage = () => {
+  useAuthenticatedRedirect("/login");
   const router = useRouter();
 
   const slug = router.query.slug as string;
@@ -83,5 +84,3 @@ const EditEventPage: NextPage = () => {
 };
 
 export default EditEventPage;
-
-export const getServerSideProps = protectedRoute;

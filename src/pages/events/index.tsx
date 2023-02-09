@@ -1,16 +1,17 @@
-import { Stack } from "@mantine/core";
+import { Stack } from '@mantine/core'
 
-import { BaseLayout } from "../../components/BaseLayout";
-import { EventCardList } from "../../components/event-list/EventCardList";
-import { EventCard } from "../../components/EventCard";
-import { EventPaginator } from "../../components/EventPaginator";
-import { ListControls } from "../../components/ListControls";
-import { useEventPagination } from "../../hooks/event-pagination";
-import { api } from "../../utils/api";
-import { protectedRoute } from "../../utils/protect";
+import { BaseLayout } from '../../components/BaseLayout'
+import { EventCardList } from '../../components/event-list/EventCardList'
+import { EventPaginator } from '../../components/EventPaginator'
+import { ListControls } from '../../components/ListControls'
+import { useAuthenticatedRedirect } from '../../hooks'
+import { useEventPagination } from '../../hooks/event-pagination'
+import { api } from '../../utils/api'
 
 import type { NextPage } from "next";
 const EventListPage: NextPage = () => {
+  useAuthenticatedRedirect("/login");
+
   const { eventType, page, pageSize, setEventType, setPage } =
     useEventPagination();
 
@@ -39,5 +40,3 @@ const EventListPage: NextPage = () => {
 };
 
 export default EventListPage;
-
-export const getServerSideProps = protectedRoute;

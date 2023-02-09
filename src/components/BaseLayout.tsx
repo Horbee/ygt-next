@@ -14,12 +14,14 @@ type Props = ContainerProps & {
   title: string;
   children: ReactNode;
   showBackButton?: boolean;
+  backUrl?: string;
 };
 
 export const BaseLayout = ({
   title,
   children,
   showBackButton = true,
+  backUrl,
   ...restProps
 }: Props) => {
   const router = useRouter();
@@ -49,7 +51,10 @@ export const BaseLayout = ({
         <Group position="apart">
           <Group>
             {showBackButton && (
-              <ActionIcon size="xl" onClick={() => router.back()}>
+              <ActionIcon
+                size="xl"
+                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+              >
                 <MdChevronLeft size={34} />
               </ActionIcon>
             )}
