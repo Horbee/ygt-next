@@ -47,7 +47,10 @@ export const useEventPagination = () => {
   useEffect(() => {
     router.push({
       pathname: "/events",
-      query: { type: state.eventType, page: state.page },
+      query: {
+        type: state.eventType,
+        page: state.page,
+      },
     });
   }, [state]);
 

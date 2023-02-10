@@ -3,16 +3,25 @@ import { MdAdd } from "react-icons/md";
 
 import { ActionIcon, Center, SegmentedControl } from "@mantine/core";
 
-import { EventType } from "../types";
+import { EventType } from "../../../types";
+import { PastEventsIcon } from "./PastEventsIcon";
 
 type Props = {
   eventType: EventType;
   setEventType: (value: EventType) => void;
+  showPast: boolean;
+  setShowPast: (value: boolean) => void;
 };
 
-export const ListControls = ({ eventType, setEventType }: Props) => {
+export const ListControls = ({
+  eventType,
+  setEventType,
+  showPast,
+  setShowPast,
+}: Props) => {
   return (
     <Center style={{ position: "relative" }}>
+      <PastEventsIcon showPast={showPast} setShowPast={setShowPast} />
       <SegmentedControl
         value={eventType}
         onChange={(value: EventType) => setEventType(value)}

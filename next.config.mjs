@@ -36,4 +36,7 @@ const config = {
   },
 };
 
-export default withPwa({ dest: "public" })(config);
+export default withPwa({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+})(config);
