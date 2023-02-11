@@ -1,7 +1,7 @@
-import { Text } from "@mantine/core";
-import { Attachment, Event } from "@prisma/client";
+import { Text } from "@mantine/core"
+import { Attachment, Event } from "@prisma/client"
 
-import { EventCard } from "../EventCard";
+import { EventCard } from "./event-card/EventCard"
 
 interface Props {
   events: (Event & {

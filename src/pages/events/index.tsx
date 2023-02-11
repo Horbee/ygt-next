@@ -23,7 +23,7 @@ const EventListPage: NextPage = () => {
     type: eventType,
     start: (page - 1) * pageSize,
     size: pageSize,
-    past: showPast,
+    showPast,
   });
 
   return (

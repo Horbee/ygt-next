@@ -11,21 +11,19 @@ export const eventRouter = createTRPCRouter({
     .input(
       z.object({
         type: z.enum(["invited", "own", "public"]),
-        past: z.boolean().optional(),
+        showPast: z.boolean().optional(),
         start: z.number(),
         size: z.number(),
       })
     )
-    .query(async ({ input: { type, past = false, start, size }, ctx }) => {
+    .query(async ({ input: { type, showPast = false, start, size }, ctx }) => {
       const userId = ctx.session.user.id;
-
-      console.log("past", past);
 
       const where: Prisma.EventWhereInput = {
         ownerId: type === "own" ? userId : undefined,
         invitedUserIds: type === "invited" ? { has: userId } : undefined,
         public: type === "public" ? true : undefined,
-        untilDate: !past ? { gte: new Date() } : undefined,
+        untilDate: !showPast ? { gte: new Date() } : undefined,
       };
 
       const totalPromise = ctx.prisma.event.count({ where });
