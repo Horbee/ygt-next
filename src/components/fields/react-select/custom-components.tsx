@@ -1,15 +1,15 @@
-import { FaTimes } from "react-icons/fa"
-import { MultiValueProps } from "react-select"
+import { FaTimes } from "react-icons/fa";
+import { MultiValueProps } from "react-select";
 
-import { ActionIcon, Badge } from "@mantine/core"
+import { ActionIcon, Badge } from "@mantine/core";
 
-export const MultiValue = ({ children, removeProps }: MultiValueProps) => {
+export const MultiValue = ({ children, ...props }: MultiValueProps) => {
   const removeButton = (
     <ActionIcon
       size="xs"
       color="orange"
       variant="transparent"
-      onClick={removeProps.onClick as any}
+      onClick={props.removeProps.onClick as any}
     >
       <FaTimes size={10} />
     </ActionIcon>

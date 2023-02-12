@@ -11,7 +11,6 @@ export const useCombinedStyles = (): StylesConfig => {
     control: (baseStyles) => ({
       ...baseStyles,
       borderColor: isDark ? "#373A40" : "#ced4da",
-      height: "36px",
       minHeight: "36px",
       boxShadow: "none",
       backgroundColor: isDark ? "#25262b" : "#fff",
@@ -36,9 +35,7 @@ export const useCombinedStyles = (): StylesConfig => {
       color: isDark ? "#C1C2C5" : "black",
       backgroundColor: isDark ? "#25262b" : "#fff",
       [":hover"]: {
-        backgroundColor: isDark
-          ? mantineTheme.colors.dark[4]
-          : mantineTheme.colors.gray[1],
+        backgroundColor: isDark ? mantineTheme.colors.dark[4] : mantineTheme.colors.gray[1],
       },
       [":active"]: {
         backgroundColor: isDark ? "#25262b" : "#fff",

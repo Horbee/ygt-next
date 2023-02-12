@@ -1,8 +1,8 @@
-import { Path, useController } from "react-hook-form"
-import ReactSelect from "react-select"
+import { Path, useController } from "react-hook-form";
+import ReactSelect from "react-select";
 
-import { MultiValue } from "./custom-components"
-import { useCombinedStyles } from "./style"
+import { MultiValue } from "./custom-components";
+import { useCombinedStyles } from "./style";
 
 import type { ComponentProps, ElementType } from "react";
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
@@ -16,10 +16,13 @@ type Props<T extends FieldValues, C extends ElementType> = {
  * Wrapper component around React Select's AsyncSelect to work with the
  * react-hook-form
  */
-export function ReactSelectWrapper<
-  T extends FieldValues,
-  C extends ElementType
->({ control, fieldName, as, rules, ...restProps }: Props<T, C>) {
+export function ReactSelectWrapper<T extends FieldValues, C extends ElementType>({
+  control,
+  fieldName,
+  as,
+  rules,
+  ...restProps
+}: Props<T, C>) {
   const styles = useCombinedStyles();
 
   const {
