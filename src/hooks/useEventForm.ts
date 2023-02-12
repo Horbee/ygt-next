@@ -1,8 +1,10 @@
-import { useForm } from 'react-hook-form'
+import { useForm } from "react-hook-form";
 
-import { EventDataForm, EventFormValues } from '../types'
+import type { UseFormReturn } from "react-hook-form";
 
-export const useEventForm = (event?: EventDataForm) => {
+import type { EventDataForm, EventFormValues } from "../types";
+
+export const useEventForm = (event?: EventDataForm): UseFormReturn<EventFormValues, any> => {
   const defaultValues: EventFormValues = {
     name: event?.name ?? "",
     slug: event?.slug ?? "",
