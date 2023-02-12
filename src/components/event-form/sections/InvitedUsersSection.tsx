@@ -1,11 +1,11 @@
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from "react-select/async";
 
-import { Input } from '@mantine/core'
-import { User } from '@prisma/client'
+import { Input } from "@mantine/core";
+import { User } from "@prisma/client";
 
-import { useDebounce, UseEventForm } from '../../../hooks'
-import { api } from '../../../utils/api'
-import { ReactSelectWrapper } from '../../fields'
+import { useDebounce, UseEventForm } from "../../../hooks";
+import { api } from "../../../utils/api";
+import { ReactSelectWrapper } from "../../fields";
 
 interface Props {
   eventForm: UseEventForm;
@@ -13,7 +13,7 @@ interface Props {
 
 export const InvitedUsersSection = ({ eventForm }: Props) => {
   const { watch, control } = eventForm;
-  const findUser = api.user.findAllByIdentifier.useMutation();
+  const findUser = api.user.findAllByName.useMutation();
 
   const debouncedFindUser = useDebounce(findUser.mutateAsync);
 
@@ -28,8 +28,8 @@ export const InvitedUsersSection = ({ eventForm }: Props) => {
         defaultOptions
         isMulti
         placeholder="Add some users..."
-        loadOptions={(email) => debouncedFindUser(email)}
-        getOptionLabel={(opt) => opt.email ?? ""}
+        loadOptions={(name) => debouncedFindUser(name)}
+        getOptionLabel={(opt) => opt.name ?? ""}
         getOptionValue={(opt) => opt.id}
       />
     </Input.Wrapper>
