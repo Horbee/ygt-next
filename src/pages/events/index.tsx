@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
-import { Stack } from "@mantine/core";
+import { LoadingOverlay, Stack } from "@mantine/core";
 
 import { BaseLayout } from "../../components/BaseLayout";
-import { EventCardList } from "../../components/event-list/EventCardList";
+import { EventCardSkeleton } from "../../components/event-list/content/event-card/EventCardSkeleton";
+import { EventCardList } from "../../components/event-list/content/EventCardList";
+import { EventPaginator } from "../../components/event-list/content/EventPaginator";
 import { ListControls } from "../../components/event-list/list-controls/ListControls";
-import { EventPaginator } from "../../components/EventPaginator";
+import { LoadingWrapper } from "../../components/LoadingWrapper";
 import { useAuthenticatedRedirect } from "../../hooks";
 import { useEventPagination } from "../../hooks/event-pagination";
 import { api } from "../../utils/api";
@@ -16,10 +18,9 @@ const EventListPage: NextPage = () => {
 
   const [showPast, setShowPast] = useState(false);
 
-  const { eventType, page, pageSize, setEventType, setPage } =
-    useEventPagination();
+  const { eventType, page, pageSize, setEventType, setPage } = useEventPagination();
 
-  const { data } = api.event.getEvents.useQuery({
+  const { data, isLoading } = api.event.getEvents.useQuery({
     type: eventType,
     start: (page - 1) * pageSize,
     size: pageSize,
@@ -36,14 +37,16 @@ const EventListPage: NextPage = () => {
           setShowPast={setShowPast}
         />
 
-        {!!data?.content && <EventCardList events={data.content} />}
+        <LoadingWrapper loading={isLoading} loader={<EventCardSkeleton count={3} />}>
+          <EventCardList events={data?.content ?? []} />
 
-        <EventPaginator
-          page={page}
-          setPage={setPage}
-          pageSize={pageSize}
-          totalCount={data ? data.total : 0}
-        />
+          <EventPaginator
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            totalCount={data?.total ?? 0}
+          />
+        </LoadingWrapper>
       </Stack>
     </BaseLayout>
   );

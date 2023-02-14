@@ -6,8 +6,8 @@ import { Card, Grid, Group, Image, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Attachment, Event } from "@prisma/client";
 
-import { formatEventDuration } from "../../../utils/duration";
-import { EventCardMenu } from "../../EventCardMenu";
+import { formatEventDuration } from "../../../../utils/duration";
+import { EventCardMenu } from "../../../EventCardMenu";
 import { ScrollableTagList } from "./ScrollableTagList";
 
 interface Props {
@@ -45,7 +45,9 @@ export const EventCard = ({ event }: Props) => {
                 </Text>
 
                 {/* <Group style={{}}> */}
-                {!xsScreen && <ScrollableTagList padLeft tags={event.tags} style={{ flex: 1 }} />}
+                {!xsScreen && (
+                  <ScrollableTagList padLeft tags={event.tags} style={{ flex: 1 }} />
+                )}
 
                 {isOwned && <EventCardMenu eventId={event.id} slug={event.slug} />}
                 {/* </Group> */}
