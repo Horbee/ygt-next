@@ -18,11 +18,12 @@ export const AvailabilityList = ({ selectedDate, availabilities }: Props) => {
   const session = useSession();
 
   const filteredAvailabilities = useMemo(() => {
-    return availabilities.filter(
-      (a) =>
-        isSameDay(new Date(a.date), selectedDate) &&
-        a.ownerId !== session.data?.user.id
-    );
+    return availabilities
+      .filter(
+        (a) =>
+          isSameDay(new Date(a.date), selectedDate) && a.ownerId !== session.data?.user.id
+      )
+      .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
   }, [availabilities, selectedDate, session]);
 
   return (
