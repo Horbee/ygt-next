@@ -18,7 +18,10 @@ const EditEventPage: NextPage = () => {
 
   const slug = router.query.slug as string;
 
-  const eventQuery = api.event.getEventBySlug.useQuery({ slug }, { enabled: !!slug, cacheTime: 0 });
+  const eventQuery = api.event.getEventBySlug.useQuery(
+    { slug },
+    { enabled: !!slug, cacheTime: 0 }
+  );
   const update = api.event.updateEvent.useMutation();
   const upload = api.attachment.uploadImage.useMutation();
   const uploadDelete = api.attachment.deleteImageByPublicId.useMutation();
@@ -68,7 +71,12 @@ const EditEventPage: NextPage = () => {
   return (
     <BaseLayout title="Edit Event">
       {event && (
-        <EventForm submitButtonText="Edit" submitCallback={editEvent} selectedEvent={event} />
+        <EventForm
+          submitButtonText="Edit"
+          submitCallback={editEvent}
+          selectedEvent={event}
+          keepSlugValue
+        />
       )}
     </BaseLayout>
   );

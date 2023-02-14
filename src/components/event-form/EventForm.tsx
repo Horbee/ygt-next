@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import CreatableSelect from 'react-select/creatable'
+import { useState } from "react";
+import CreatableSelect from "react-select/creatable";
 
-import { Box, Button, Input, Stack, Text, Textarea } from '@mantine/core'
+import { Box, Button, Input, Stack, Text, Textarea } from "@mantine/core";
 
-import { useEventForm } from '../../hooks'
-import { EventNameWithSlug, ReactSelectWrapper, SwitchInputWrapper } from '../fields'
-import { EventDatesSection, ImageDropzone, InvitedUsersSection } from './sections'
+import { useEventForm } from "../../hooks";
+import { EventNameWithSlug, ReactSelectWrapper, SwitchInputWrapper } from "../fields";
+import { EventDatesSection, ImageDropzone, InvitedUsersSection } from "./sections";
 
 import type { SubmitHandler } from "react-hook-form";
 import type { EventDataForm, EventFormValues } from "../../types";
@@ -14,12 +14,14 @@ interface Props {
   submitButtonText: string;
   submitCallback?: (values: EventFormValues, image: File | null) => void;
   selectedEvent?: EventDataForm;
+  keepSlugValue?: boolean;
 }
 
 export const EventForm = ({
   submitButtonText,
   submitCallback,
   selectedEvent,
+  keepSlugValue = false,
 }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const eventForm = useEventForm(selectedEvent);
@@ -51,7 +53,9 @@ export const EventForm = ({
             control={control}
             fieldName="name"
             rules={{ required: "Event Name is required" }}
-            setSlugValue={(slug) => setValue("slug", slug)}
+            setSlugValue={(slug) => {
+              if (!keepSlugValue) setValue("slug", slug);
+            }}
             error={errors.name?.message}
           />
 
