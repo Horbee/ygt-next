@@ -42,9 +42,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   getEventBySlug: protectedProcedure
-    .input(
-      z.object({ slug: z.string(), withAvailabilities: z.boolean().optional() })
-    )
+    .input(z.object({ slug: z.string(), withAvailabilities: z.boolean().optional() }))
     .query(async ({ input, ctx }) => {
       const { slug, withAvailabilities = false } = input;
 
@@ -62,8 +60,7 @@ export const eventRouter = createTRPCRouter({
         },
       });
 
-      if (!event)
-        throw new TRPCError({ code: "NOT_FOUND", message: "Event not found." });
+      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found." });
 
       return event;
     }),
@@ -77,9 +74,7 @@ export const eventRouter = createTRPCRouter({
         public: z.boolean().optional(),
         wholeDay: z.boolean(),
         fromDate: z.date(),
-        fromTime: z.date().nullable(),
         untilDate: z.date(),
-        untilTime: z.date().nullable(),
         invitedUserIds: z.array(z.string()),
         tags: z.array(z.string()),
         coverImageId: z.string().nullable(),
@@ -120,9 +115,7 @@ export const eventRouter = createTRPCRouter({
           public: z.boolean().optional(),
           wholeDay: z.boolean(),
           fromDate: z.date(),
-          fromTime: z.date().nullable(),
           untilDate: z.date(),
-          untilTime: z.date().nullable(),
           invitedUserIds: z.array(z.string()),
           tags: z.array(z.string()),
           coverImageId: z.string().nullable(),
@@ -137,8 +130,7 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
       });
 
-      if (!event)
-        throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
+      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
       if (event.ownerId !== userId)
         throw new TRPCError({
@@ -163,8 +155,7 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
       });
 
-      if (!event)
-        throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
+      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
       if (event.ownerId !== userId)
         throw new TRPCError({

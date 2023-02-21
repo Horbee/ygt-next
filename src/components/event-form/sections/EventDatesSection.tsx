@@ -39,6 +39,14 @@ export const EventDatesSection = ({ eventForm }: Props) => {
               fieldName="fromTime"
               control={control}
               clearable
+              rules={{
+                required: {
+                  message: 'Start Time is required if "Whole Day" is not checked',
+                  value: true,
+                },
+              }}
+              error={errors.fromTime?.message}
+              withAsterisk
             />
           </Grid.Col>
         )}
@@ -63,6 +71,14 @@ export const EventDatesSection = ({ eventForm }: Props) => {
               label="End Time"
               fieldName="untilTime"
               control={control}
+              rules={{
+                required: {
+                  message: 'End Time is required if "Whole Day" is not checked',
+                  value: true,
+                },
+              }}
+              error={errors.untilTime?.message}
+              withAsterisk
               clearable
             />
           </Grid.Col>

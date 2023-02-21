@@ -1,4 +1,5 @@
 import type { EventFormValues } from "../types";
+import { formatDateTime } from "../utils/format-date-time";
 
 export function mapToCreateEventDto(
   data: EventFormValues,
@@ -19,10 +20,11 @@ export function mapToCreateEventDto(
     ...rest,
     wholeDay,
     description,
-    fromDate: fromDate!,
-    untilDate: untilDate!,
-    fromTime: !wholeDay ? fromTime : null,
-    untilTime: !wholeDay ? untilTime : null,
+    fromDate: formatDateTime(fromDate!, wholeDay ? { hours: 12, minutes: 0 } : fromTime!),
+    untilDate: formatDateTime(
+      untilDate!,
+      wholeDay ? { hours: 12, minutes: 0 } : untilTime!
+    ),
     invitedUserIds: data.public ? [] : data.invitedUsers.map((u) => u.id),
     tags: data.tags.map((t) => t.label),
     coverImageId,

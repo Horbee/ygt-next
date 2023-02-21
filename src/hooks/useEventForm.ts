@@ -4,7 +4,9 @@ import type { UseFormReturn } from "react-hook-form";
 
 import type { EventDataForm, EventFormValues } from "../types";
 
-export const useEventForm = (event?: EventDataForm): UseFormReturn<EventFormValues, any> => {
+export const useEventForm = (
+  event?: EventDataForm
+): UseFormReturn<EventFormValues, any> => {
   const defaultValues: EventFormValues = {
     name: event?.name ?? "",
     slug: event?.slug ?? "",
@@ -12,9 +14,9 @@ export const useEventForm = (event?: EventDataForm): UseFormReturn<EventFormValu
     public: event?.public ?? false,
     wholeDay: event?.wholeDay ?? false,
     fromDate: event?.fromDate ? new Date(event.fromDate) : null,
-    fromTime: event?.fromTime ? new Date(event.fromTime) : null,
+    fromTime: event?.fromDate && !event.wholeDay ? new Date(event.fromDate) : null,
     untilDate: event?.untilDate ? new Date(event.untilDate) : null,
-    untilTime: event?.untilTime ? new Date(event.untilTime) : null,
+    untilTime: event?.untilDate && !event.wholeDay ? new Date(event.untilDate) : null,
     invitedUsers: event?.invitedUsers ?? [],
     tags: event?.tags.map((t) => ({ label: t, value: t })) ?? [],
     coverImageUrl: event?.coverImage?.url ?? null,

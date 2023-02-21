@@ -4,15 +4,14 @@ import isSameDay from "date-fns/isSameDay";
 import type { Event } from "@prisma/client";
 
 export function formatEventDuration(event: Event): string {
-  const { fromDate, untilDate, fromTime, untilTime, wholeDay } = event;
+  const { fromDate, untilDate, wholeDay } = event;
 
   const from = new Date(fromDate);
   const until = new Date(untilDate);
-  const fromTimeDate = fromTime ? format(new Date(fromTime), "HH:mm") : "";
-  const untilTimeDate = untilTime ? format(new Date(untilTime), "HH:mm") : "";
+  const fromTimeDate = format(from, "HH:mm");
+  const untilTimeDate = format(until, "HH:mm");
   const sameDay = isSameDay(from, until);
-  const sameTime =
-    fromTimeDate && untilTimeDate ? fromTimeDate === untilTimeDate : false;
+  const sameTime = fromTimeDate && untilTimeDate ? fromTimeDate === untilTimeDate : false;
 
   if (sameDay && wholeDay) {
     return format(from, "EEE d. LLL");
