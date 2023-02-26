@@ -19,7 +19,6 @@ import superjson from "superjson";
 import { initTRPC, TRPCError } from "@trpc/server";
 
 import { getServerAuthSession } from "../auth";
-import { cloudinary } from "../cloudinary";
 import { prisma } from "../db";
 import { s3 } from "../s3";
 
@@ -50,7 +49,6 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
-    cloudinary,
     s3,
   };
 };

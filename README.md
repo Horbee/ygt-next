@@ -22,7 +22,7 @@ Before you begin, make sure you have the following software installed on your co
 - pnpm: An alternative package manager for Node.js that is faster and more efficient than npm.
 - Docker: An open-source platform that automates the deployment, scaling, and management of containerized applications.
 
-The application uses Google Auth Provider to sign in users and Cloudinary to save the media files. You will need to setup a project with OAuth 2.0 Client IDs using the [Google Cloud Console](https://console.cloud.google.com/) and create a free [Cloudinary](https://cloudinary.com/) storage.
+The application uses Google Auth Provider to sign in users and AWS S3 to save the media files. You will need to setup a project with OAuth 2.0 Client IDs using the [Google Cloud Console](https://console.cloud.google.com/) and create an S3 Bucket.
 
 ## Installation
 
