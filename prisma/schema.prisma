@@ -52,6 +52,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
+    attachments     Attachment[]
     availabilities  Availability[]
     ownEvents       Event[]        @relation("ownedEvents")
     invitedEventIds String[]       @db.ObjectId
@@ -124,12 +125,11 @@ model Attachment {
     id String @id @default(auto()) @map("_id") @db.ObjectId
     v  Int    @default(0) @map("__v") @ignore
 
-    public_id     String @unique()
-    width         Int?
-    height        Int?
-    format        String
-    resource_type String
-    url           String
+    type    String
+    name    String
+    url     String
+    owner   User   @relation(fields: [ownerId], references: [id])
+    ownerId String @map("owner") @db.ObjectId
 
     createdAt DateTime @default(now()) @db.Date
     updatedAt DateTime @updatedAt() @db.Date

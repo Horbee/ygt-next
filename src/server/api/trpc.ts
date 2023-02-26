@@ -8,7 +8,7 @@
  */
 
 import type { Session } from "next-auth";
-import superjson from 'superjson'
+import superjson from "superjson";
 
 /**
  * 2. INITIALIZATION
@@ -16,11 +16,12 @@ import superjson from 'superjson'
  * This is where the tRPC API is initialized, connecting the context and
  * transformer.
  */
-import { initTRPC, TRPCError } from '@trpc/server'
+import { initTRPC, TRPCError } from "@trpc/server";
 
-import { getServerAuthSession } from '../auth'
-import { cloudinary } from '../cloudinary'
-import { prisma } from '../db'
+import { getServerAuthSession } from "../auth";
+import { cloudinary } from "../cloudinary";
+import { prisma } from "../db";
+import { s3 } from "../s3";
 
 /**
  * 1. CONTEXT
@@ -31,7 +32,6 @@ import { prisma } from '../db'
  * database, the session, etc.
  */
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -51,6 +51,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     session: opts.session,
     prisma,
     cloudinary,
+    s3,
   };
 };
 

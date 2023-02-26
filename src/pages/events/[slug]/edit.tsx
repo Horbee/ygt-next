@@ -1,8 +1,7 @@
+import axios from "axios";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-
-import { Attachment } from "@prisma/client";
 
 import { BaseLayout } from "../../../components/BaseLayout";
 import { EventForm } from "../../../components/event-form/EventForm";
@@ -10,7 +9,6 @@ import { useAuthenticatedRedirect } from "../../../hooks";
 import { mapToCreateEventDto } from "../../../mappers";
 import { EventFormValues } from "../../../types";
 import { api } from "../../../utils/api";
-import { toBase64 } from "../../../utils/base64";
 
 const EditEventPage: NextPage = () => {
   useAuthenticatedRedirect("/login");
@@ -23,8 +21,8 @@ const EditEventPage: NextPage = () => {
     { enabled: !!slug, cacheTime: 0 }
   );
   const update = api.event.updateEvent.useMutation();
-  const upload = api.attachment.uploadImage.useMutation();
-  const uploadDelete = api.attachment.deleteImageByPublicId.useMutation();
+  const imageDelete = api.attachment.deleteAttachment.useMutation();
+  const imageCreate = api.attachment.createAttachment.useMutation();
 
   const event = eventQuery.data;
 
@@ -32,7 +30,7 @@ const EditEventPage: NextPage = () => {
     try {
       if (event?.coverImage && (!values.coverImageUrl || image)) {
         // Delete old image
-        await toast.promise(uploadDelete.mutateAsync(event.coverImage.public_id), {
+        await toast.promise(imageDelete.mutateAsync(event.coverImage.id), {
           pending: "Deleting old Image...",
           success: "Image deleted 👌",
           error: "Image can not be deleted 🤯",
@@ -41,8 +39,16 @@ const EditEventPage: NextPage = () => {
 
       let coverImageId = event?.coverImageId;
       if (image) {
-        const base64 = await toBase64(image);
-        const attachment = await toast.promise(upload.mutateAsync(base64), {
+        const { preSignedUrl, attachment } = await imageCreate.mutateAsync({
+          fileName: image.name,
+          fileType: image.type,
+        });
+
+        const uploadPromise = axios.put(preSignedUrl, image, {
+          headers: { "Content-Type": image.type },
+        });
+
+        await toast.promise(uploadPromise, {
           pending: "Uploading Image...",
           success: "Image uploaded 👌",
           error: "Image can not be uploaded 🤯",

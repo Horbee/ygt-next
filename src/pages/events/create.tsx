@@ -1,30 +1,40 @@
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'
+import axios from "axios";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
-import { Attachment } from '@prisma/client'
+import { Attachment } from "@prisma/client";
 
-import { BaseLayout } from '../../components/BaseLayout'
-import { EventForm } from '../../components/event-form/EventForm'
-import { useAuthenticatedRedirect } from '../../hooks'
-import { mapToCreateEventDto } from '../../mappers'
-import { EventFormValues } from '../../types'
-import { api } from '../../utils/api'
-import { toBase64 } from '../../utils/base64'
+import { BaseLayout } from "../../components/BaseLayout";
+import { EventForm } from "../../components/event-form/EventForm";
+import { useAuthenticatedRedirect } from "../../hooks";
+import { mapToCreateEventDto } from "../../mappers";
+import { EventFormValues } from "../../types";
+import { api } from "../../utils/api";
 
 const CreateEventPage: NextPage = () => {
   useAuthenticatedRedirect("/login");
   const router = useRouter();
 
   const create = api.event.createEvent.useMutation();
-  const upload = api.attachment.uploadImage.useMutation();
+  const imageCreate = api.attachment.createAttachment.useMutation();
 
   const createEvent = async (values: EventFormValues, image: File | null) => {
     try {
-      let attachment: Attachment | null = null;
+      let createdAttachment: Attachment | null = null;
       if (image) {
-        const base64 = await toBase64(image);
-        attachment = await toast.promise(upload.mutateAsync(base64), {
+        const { preSignedUrl, attachment } = await imageCreate.mutateAsync({
+          fileName: image.name,
+          fileType: image.type,
+        });
+
+        createdAttachment = attachment;
+
+        const uploadPromise = axios.put(preSignedUrl, image, {
+          headers: { "Content-Type": image.type },
+        });
+
+        await toast.promise(uploadPromise, {
           pending: "Uploading Image...",
           success: "Image uploaded 👌",
           error: "Image can not be uploaded 🤯",
@@ -32,7 +42,7 @@ const CreateEventPage: NextPage = () => {
       }
 
       const created = await toast.promise(
-        create.mutateAsync(mapToCreateEventDto(values, attachment?.id)),
+        create.mutateAsync(mapToCreateEventDto(values, createdAttachment?.id)),
         {
           pending: "Saving...",
           success: "Event saved 👌",

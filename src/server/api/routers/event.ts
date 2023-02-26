@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { deleteImage } from "./attachment";
 
 export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
@@ -167,22 +166,6 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
         include: { coverImage: true },
       });
-
-      // If relation exists, try to delete image
-      if (deletedEvent.coverImage) {
-        try {
-          await deleteImage(
-            deletedEvent.coverImage.public_id,
-            ctx.prisma,
-            ctx.cloudinary
-          );
-        } catch (err) {
-          console.error(
-            `Cover image with id ${deletedEvent.coverImageId} can not be deleted`,
-            err
-          );
-        }
-      }
 
       return deletedEvent;
     }),

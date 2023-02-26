@@ -1,67 +1,61 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-import { PrismaClient } from '@prisma/client'
-import { TRPCError } from '@trpc/server'
-
-import { Cloudinary } from '../../cloudinary'
-import { createTRPCRouter, protectedProcedure } from '../trpc'
-
-export const deleteImage = async (
-  public_id: string,
-  prisma: PrismaClient,
-  cloudinary: Cloudinary
-) => {
-  try {
-    await cloudinary.deleteImage(public_id);
-
-    const attachment = await prisma.attachment.delete({
-      where: { public_id },
-    });
-
-    console.log(`Image file with id: ${attachment.id} deleted`);
-
-    return attachment;
-  } catch (err) {
-    console.error("Error while deleting image file", err);
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Error while deleting image file",
-    });
-  }
-};
+import { env } from "../../../env/server.mjs";
+import { CreateAttachment } from "../../dto/create-attachment.dto";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const attachmentRouter = createTRPCRouter({
-  uploadImage: protectedProcedure
+  deleteAttachment: protectedProcedure
     .input(z.string())
-    .mutation(async ({ input: file, ctx }) => {
-      try {
-        const data = await ctx.cloudinary.uploadImage(file);
+    .mutation(async ({ input: id, ctx }) => {
+      const attachments = await ctx.prisma.attachment.findMany({
+        where: {
+          id,
+          ownerId: ctx.session.user.id,
+        },
+      });
 
-        const attachment = await ctx.prisma.attachment.create({
-          data: {
-            public_id: data.public_id,
-            width: data.width,
-            height: data.height,
-            format: data.format,
-            resource_type: data.resource_type,
-            url: data.url,
-          },
-        });
+      const deleteS3Promises = attachments.map((a) =>
+        ctx.s3
+          .deleteObject({
+            Bucket: env.AWS_BUCKET_NAME,
+            Key: a.name,
+          })
+          .promise()
+      );
 
-        console.log(`Image file with id: ${attachment.id} uploaded`);
+      const deleteObjectPromises = attachments.map((a) =>
+        ctx.prisma.attachment.delete({
+          where: { id: a.id },
+        })
+      );
 
-        return attachment;
-      } catch (err) {
-        console.error("Error while uploading image file", err);
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Error while uploading image file",
-        });
-      }
+      await Promise.all([...deleteS3Promises, ...deleteObjectPromises]);
+
+      return attachments.length;
     }),
-  deleteImageByPublicId: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ input: public_id, ctx }) => {
-      return await deleteImage(public_id, ctx.prisma, ctx.cloudinary);
+
+  createAttachment: protectedProcedure
+    .input(CreateAttachment)
+    .mutation(async ({ input, ctx }) => {
+      const preSignedUrl = ctx.s3.getSignedUrl("putObject", {
+        Bucket: env.AWS_BUCKET_NAME,
+        Key: input.fileName,
+        ContentType: input.fileType,
+        Expires: 5 * 60,
+      });
+
+      const s3FileUrl = `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_BUCKET_REGION}.amazonaws.com/${input.fileName}`;
+
+      const attachment = await ctx.prisma.attachment.create({
+        data: {
+          type: input.fileType,
+          name: input.fileName,
+          url: s3FileUrl,
+          ownerId: ctx.session.user.id,
+        },
+      });
+
+      return { preSignedUrl, attachment };
     }),
 });

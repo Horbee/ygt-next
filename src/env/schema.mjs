@@ -24,6 +24,10 @@ export const serverSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_KEY: z.string(),
+  AWS_BUCKET_NAME: z.string(),
+  AWS_BUCKET_REGION: z.string(),
 });
 
 /**
@@ -41,6 +45,10 @@ export const serverEnv = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+  AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
+  AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION,
 };
 
 /**
