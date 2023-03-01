@@ -5,6 +5,14 @@ import { CreateAttachment } from "../../dto/create-attachment.dto";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const attachmentRouter = createTRPCRouter({
+  getAttachments: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.attachment.findMany({
+      where: {
+        ownerId: ctx.session.user.id,
+      },
+    });
+  }),
+
   deleteAttachment: protectedProcedure
     .input(z.string())
     .mutation(async ({ input: id, ctx }) => {

@@ -4,12 +4,12 @@ import CreatableSelect from "react-select/creatable";
 import { Box, Button, Input, Stack, Text, Textarea } from "@mantine/core";
 
 import { useEventForm } from "../../hooks";
+import { AttachmentSelector } from "../attachment-selector/AttachmentSelector";
 import { EventNameWithSlug, ReactSelectWrapper, SwitchInputWrapper } from "../fields";
 import { EventDatesSection, ImageDropzone, InvitedUsersSection } from "./sections";
 
 import type { SubmitHandler } from "react-hook-form";
 import type { EventDataForm, EventFormValues } from "../../types";
-
 interface Props {
   submitButtonText: string;
   submitCallback?: (values: EventFormValues, image: File | null) => void;
@@ -23,6 +23,7 @@ export const EventForm = ({
   selectedEvent,
   keepSlugValue = false,
 }: Props) => {
+  const [opened, setOpened] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const eventForm = useEventForm(selectedEvent);
   const {
@@ -45,6 +46,7 @@ export const EventForm = ({
 
   return (
     <Box py="md">
+      <AttachmentSelector opened={opened} setOpened={setOpened} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
           <EventNameWithSlug
