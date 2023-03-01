@@ -46,7 +46,13 @@ export const EventForm = ({
 
   return (
     <Box py="md">
-      <AttachmentSelector opened={opened} setOpened={setOpened} />
+      <AttachmentSelector
+        opened={opened}
+        setOpened={setOpened}
+        onSelect={(attachment) => {
+          console.log(attachment);
+        }}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
           <EventNameWithSlug

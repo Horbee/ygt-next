@@ -5,19 +5,23 @@ import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import { Button, Flex, Group, Image, Modal, Paper, Tabs, Text } from "@mantine/core";
+import { Attachment } from "@prisma/client";
 
 import { api } from "../../utils/api";
 import { ImageDropzone } from "./ImageDropzone";
+import { SelectableImage } from "./SelectableImage";
 
 type AttachmentTabs = "select" | "upload";
 
 interface Props {
   opened: boolean;
   setOpened: (opened: boolean) => void;
+  onSelect: (attachment: Attachment) => void;
 }
 
-export const AttachmentSelector = ({ opened, setOpened }: Props) => {
+export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
   const [activeTab, setActiveTab] = useState<AttachmentTabs>("select");
+  const [selectedAttachment, setSelectedAttachment] = useState<Attachment | null>(null);
   const attachments = api.attachment.getAttachments.useQuery();
   const upload = api.attachment.createAttachment.useMutation();
   const utils = api.useContext();
@@ -64,24 +68,30 @@ export const AttachmentSelector = ({ opened, setOpened }: Props) => {
           <Tabs.Panel value="select" pt="xs">
             <Group>
               {attachments.data?.map((a) => (
-                <Image
+                <SelectableImage
                   key={a.id}
-                  radius="md"
-                  width={100}
-                  height={100}
                   src={a.url}
-                  caption={
-                    <Text lineClamp={2} title={a.name}>
-                      {a.name}
-                    </Text>
-                  }
+                  onSelect={() => setSelectedAttachment(a)}
+                  caption={a.name}
+                  isSelected={selectedAttachment?.id === a.id}
                 />
               ))}
             </Group>
 
             <Flex py="xs" align="center" justify="flex-end" gap="xs">
-              <Button>Select</Button>
-              <Button variant="outline" color="red" size="sm" leftIcon={<FaTrash />}>
+              <Button
+                onClick={() => onSelect(selectedAttachment!)}
+                disabled={!selectedAttachment}
+              >
+                Select
+              </Button>
+              <Button
+                variant="outline"
+                color="red"
+                size="sm"
+                leftIcon={<FaTrash />}
+                disabled={!selectedAttachment}
+              >
                 Delete
               </Button>
             </Flex>
