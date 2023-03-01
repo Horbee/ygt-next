@@ -12,8 +12,9 @@ import {
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
-import type { DropzoneProps } from "@mantine/dropzone";
+import { WithBackgroundImage } from "./WithBackgroundImage";
 
+import type { DropzoneProps } from "@mantine/dropzone";
 type ImageState = { file?: File; imgSrc?: string };
 
 interface Props extends Partial<DropzoneProps> {
@@ -119,23 +120,3 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
     </>
   );
 }
-
-const WithBackgroundImage = ({
-  imgSrc,
-  children,
-}: {
-  imgSrc?: string;
-  children: ReactNode;
-}) => {
-  return (
-    <>
-      {imgSrc ? (
-        <BackgroundImage src={imgSrc} radius="sm">
-          {children}
-        </BackgroundImage>
-      ) : (
-        children
-      )}
-    </>
-  );
-};

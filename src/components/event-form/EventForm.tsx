@@ -1,18 +1,29 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 
-import { Box, Button, Input, Stack, Text, Textarea } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Group,
+  Image,
+  Input,
+  SimpleGrid,
+  Stack,
+  Text,
+  Textarea,
+} from "@mantine/core";
+import { Attachment } from "@prisma/client";
 
 import { useEventForm } from "../../hooks";
 import { AttachmentSelector } from "../attachment-selector/AttachmentSelector";
 import { EventNameWithSlug, ReactSelectWrapper, SwitchInputWrapper } from "../fields";
-import { EventDatesSection, ImageDropzone, InvitedUsersSection } from "./sections";
+import { EventDatesSection, ImageShowcase, InvitedUsersSection } from "./sections";
 
 import type { SubmitHandler } from "react-hook-form";
 import type { EventDataForm, EventFormValues } from "../../types";
 interface Props {
   submitButtonText: string;
-  submitCallback?: (values: EventFormValues, image: File | null) => void;
+  submitCallback?: (values: EventFormValues, attachment: Attachment | null) => void;
   selectedEvent?: EventDataForm;
   keepSlugValue?: boolean;
 }
@@ -23,8 +34,8 @@ export const EventForm = ({
   selectedEvent,
   keepSlugValue = false,
 }: Props) => {
-  const [opened, setOpened] = useState(true);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [opened, setOpened] = useState(false);
+  const [attachment, setAttachment] = useState<Attachment | null>(null);
   const eventForm = useEventForm(selectedEvent);
   const {
     register,
@@ -36,12 +47,7 @@ export const EventForm = ({
   } = eventForm;
 
   const onSubmit: SubmitHandler<EventFormValues> = async (values) => {
-    submitCallback?.(values, imageFile);
-  };
-
-  const setImage = (file: File | null, url: string | null) => {
-    setImageFile(file);
-    eventForm.setValue("coverImageUrl", url);
+    submitCallback?.(values, attachment);
   };
 
   return (
@@ -50,7 +56,9 @@ export const EventForm = ({
         opened={opened}
         setOpened={setOpened}
         onSelect={(attachment) => {
-          console.log(attachment);
+          eventForm.setValue("coverImageUrl", attachment.url);
+          setAttachment(attachment);
+          setOpened(false);
         }}
       />
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -69,17 +77,24 @@ export const EventForm = ({
 
           <Text fz="sm">Slug: {watch("slug")}</Text>
 
-          <ImageDropzone
-            setImage={setImage}
-            imgSrc={watch("coverImageUrl") || undefined}
-          />
+          <SimpleGrid cols={2} breakpoints={[{ maxWidth: 600, cols: 1 }]}>
+            <Textarea
+              placeholder="Describe the event..."
+              label="Description"
+              minRows={8}
+              {...register("description")}
+            />
 
-          <Textarea
-            placeholder="Describe the event..."
-            label="Description"
-            minRows={5}
-            {...register("description")}
-          />
+            <ImageShowcase
+              imgSrc={watch("coverImageUrl") || undefined}
+              onDeselect={(e) => {
+                e.stopPropagation();
+                eventForm.setValue("coverImageUrl", null);
+                setAttachment(null);
+              }}
+              onClick={() => setOpened(true)}
+            />
+          </SimpleGrid>
 
           <SwitchInputWrapper<EventFormValues>
             label="Whole Day"

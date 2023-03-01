@@ -24,6 +24,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
   const [selectedAttachment, setSelectedAttachment] = useState<Attachment | null>(null);
   const attachments = api.attachment.getAttachments.useQuery();
   const upload = api.attachment.createAttachment.useMutation();
+  const remove = api.attachment.deleteAttachment.useMutation();
   const utils = api.useContext();
 
   const uploadImage = async (file: File) => {
@@ -44,6 +45,23 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
 
     setActiveTab("select");
     utils.attachment.getAttachments.invalidate();
+  };
+
+  const deleteImage = async () => {
+    if (confirm("Are you sure you want to delete this image?")) {
+      try {
+        await toast.promise(remove.mutateAsync(selectedAttachment!.id), {
+          pending: "Deleting Image...",
+          success: "Image deleted 👌",
+          error: "Image can not be deleted 🤯",
+        });
+        utils.attachment.getAttachments.invalidate();
+        setSelectedAttachment(null);
+      } catch (error: any) {
+        console.error(error);
+        if (error.message) toast.error(error.message);
+      }
+    }
   };
 
   return (
@@ -91,6 +109,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
                 size="sm"
                 leftIcon={<FaTrash />}
                 disabled={!selectedAttachment}
+                onClick={deleteImage}
               >
                 Delete
               </Button>
