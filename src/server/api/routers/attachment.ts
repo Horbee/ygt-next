@@ -26,7 +26,7 @@ export const attachmentRouter = createTRPCRouter({
       const deleteS3Promises = attachments.map((a) =>
         ctx.s3
           .deleteObject({
-            Bucket: env.AWS_BUCKET_NAME,
+            Bucket: env.AWS__BUCKET_NAME,
             Key: a.name,
           })
           .promise()
@@ -47,13 +47,13 @@ export const attachmentRouter = createTRPCRouter({
     .input(CreateAttachment)
     .mutation(async ({ input, ctx }) => {
       const preSignedUrl = ctx.s3.getSignedUrl("putObject", {
-        Bucket: env.AWS_BUCKET_NAME,
+        Bucket: env.AWS__BUCKET_NAME,
         Key: input.fileName,
         ContentType: input.fileType,
         Expires: 5 * 60,
       });
 
-      const s3FileUrl = `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_BUCKET_REGION}.amazonaws.com/${input.fileName}`;
+      const s3FileUrl = `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${input.fileName}`;
 
       const attachment = await ctx.prisma.attachment.create({
         data: {

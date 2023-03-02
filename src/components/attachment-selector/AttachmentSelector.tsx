@@ -4,7 +4,7 @@ import { BsCardImage, BsCloudUpload } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-import { Button, Flex, Group, Image, Modal, Paper, Tabs, Text } from "@mantine/core";
+import { Button, Flex, Modal, Paper, SimpleGrid, Tabs } from "@mantine/core";
 import { Attachment } from "@prisma/client";
 
 import { api } from "../../utils/api";
@@ -66,10 +66,11 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
 
   return (
     <Modal
-      size="70%"
+      size="lg"
       opened={opened}
       onClose={() => setOpened(false)}
       title="Manage Attachments"
+      overflow="inside"
     >
       {/* Modal content */}
       <Paper shadow="xs" p="md" withBorder style={{ flexGrow: 1 }}>
@@ -84,7 +85,13 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
           </Tabs.List>
 
           <Tabs.Panel value="select" pt="xs">
-            <Group>
+            <SimpleGrid
+              cols={4}
+              breakpoints={[
+                { maxWidth: "sm", cols: 3 },
+                { maxWidth: "xs", cols: 2 },
+              ]}
+            >
               {attachments.data?.map((a) => (
                 <SelectableImage
                   key={a.id}
@@ -94,7 +101,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
                   isSelected={selectedAttachment?.id === a.id}
                 />
               ))}
-            </Group>
+            </SimpleGrid>
 
             <Flex py="xs" align="center" justify="flex-end" gap="xs">
               <Button

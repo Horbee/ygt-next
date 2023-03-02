@@ -21,10 +21,10 @@ export const serverSchema = z.object({
   ),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  AWS_ACCESS_KEY_ID: z.string(),
-  AWS_ACCESS_KEY_SECRET: z.string(),
-  AWS_BUCKET_NAME: z.string(),
-  AWS_BUCKET_REGION: z.string(),
+  AWS__ACCESS_KEY_ID: z.string(),
+  AWS__ACCESS_KEY_SECRET: z.string(),
+  AWS__BUCKET_NAME: z.string(),
+  AWS__BUCKET_REGION: z.string(),
 });
 
 /**
@@ -39,10 +39,10 @@ export const serverEnv = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-  AWS_ACCESS_KEY_SECRET: process.env.AWS_ACCESS_KEY_SECRET,
-  AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
-  AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION,
+  AWS__ACCESS_KEY_ID: process.env.AWS__ACCESS_KEY_ID,
+  AWS__ACCESS_KEY_SECRET: process.env.AWS__ACCESS_KEY_SECRET,
+  AWS__BUCKET_NAME: process.env.AWS__BUCKET_NAME,
+  AWS__BUCKET_REGION: process.env.AWS__BUCKET_REGION,
 };
 
 /**

@@ -4,7 +4,9 @@ import { MdFileUpload, MdImage, MdOutlineClose } from "react-icons/md";
 
 import {
   BackgroundImage,
+  Box,
   Button,
+  createStyles,
   Flex,
   Group,
   Text,
@@ -23,6 +25,7 @@ interface Props extends Partial<DropzoneProps> {
 
 export function ImageDropzone({ uploadImage, ...props }: Props) {
   const theme = useMantineTheme();
+  const { classes } = useStyles();
 
   const [image, setImage] = useState<ImageState>({});
 
@@ -82,14 +85,14 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
                   <MdImage size={50} />
                 </Dropzone.Idle>
 
-                <div>
+                <Box c="div" className={classes.textContainer}>
                   <Text size="xl" inline>
                     Drag image here or click to select file
                   </Text>
                   <Text size="sm" color="dimmed" inline mt={7}>
                     File size should not exceed 5mb
                   </Text>
-                </div>
+                </Box>
               </>
             )}
           </Group>
@@ -120,3 +123,14 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
     </>
   );
 }
+
+const useStyles = createStyles((theme) => {
+  return {
+    textContainer: {
+      textAlign: "left",
+      [`@media (max-width: ${theme.breakpoints.xs}px)`]: {
+        textAlign: "center",
+      },
+    },
+  };
+});
