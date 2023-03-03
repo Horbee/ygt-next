@@ -1,6 +1,6 @@
-import { Path, useController } from "react-hook-form"
+import { Path, useController } from "react-hook-form";
 
-import { TimeInput } from "@mantine/dates"
+import { TimeInput } from "@mantine/dates";
 
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
 import type { TimeInputProps } from "@mantine/dates";
@@ -8,7 +8,7 @@ import type { TimeInputProps } from "@mantine/dates";
 interface Props<T extends FieldValues> extends TimeInputProps {
   control: Control<T, any>;
   fieldName: Path<T>;
-  rules?: RegisterOptions;
+  rules?: RegisterOptions<T>;
 }
 
 /**

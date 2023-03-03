@@ -1,6 +1,6 @@
-import { Path, useController } from "react-hook-form"
+import { Path, useController } from "react-hook-form";
 
-import { DatePicker } from "@mantine/dates"
+import { DatePicker } from "@mantine/dates";
 
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
 import type { DatePickerProps } from "@mantine/dates";
@@ -8,7 +8,7 @@ import type { DatePickerProps } from "@mantine/dates";
 interface Props<T extends FieldValues> extends DatePickerProps {
   control: Control<T, any>;
   fieldName: Path<T>;
-  rules?: RegisterOptions;
+  rules?: RegisterOptions<T>;
 }
 
 /**

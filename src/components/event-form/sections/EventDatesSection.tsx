@@ -1,3 +1,5 @@
+import isSameDay from "date-fns/isSameDay";
+
 import { Grid, Text } from "@mantine/core";
 
 import { UseEventForm } from "../../../hooks";
@@ -60,6 +62,9 @@ export const EventDatesSection = ({ eventForm }: Props) => {
             label="End Date"
             rules={{
               required: { message: "End Date is required", value: true },
+              validate: (value, formValues) =>
+                (formValues.fromDate && (value as Date) >= formValues.fromDate) ||
+                "End Date must be >= Start Date",
             }}
             error={errors.untilDate?.message}
             withAsterisk
@@ -75,6 +80,19 @@ export const EventDatesSection = ({ eventForm }: Props) => {
                 required: {
                   message: 'End Time is required if "Whole Day" is not checked',
                   value: true,
+                },
+                validate: (value, formValues) => {
+                  if (
+                    formValues.fromDate &&
+                    formValues.untilDate &&
+                    formValues.fromTime &&
+                    isSameDay(formValues.fromDate, formValues.untilDate) &&
+                    (value as Date) < formValues.fromTime
+                  ) {
+                    return "End Time must be >= Start Time";
+                  }
+
+                  return true;
                 },
               }}
               error={errors.untilTime?.message}
