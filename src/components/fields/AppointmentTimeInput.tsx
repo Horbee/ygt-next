@@ -1,35 +1,18 @@
-import { useController } from "react-hook-form"
+import { Group } from "@mantine/core";
 
-import { TimeRangeInput } from "@mantine/dates"
+import { TimeInputWrapper } from "./TimeInputWrapper";
 
 import type { Control } from "react-hook-form";
 import type { AvailabilityFormValues } from "../../types";
-
 interface AppointmentTimeInputProps {
   control: Control<AvailabilityFormValues, any>;
 }
 
-// TODO: refactor to be reusable
-export const AppointmentTimeInput = ({
-  control,
-}: AppointmentTimeInputProps) => {
-  const {
-    field: { onChange, onBlur, name, value, ref },
-  } = useController<AvailabilityFormValues>({
-    name: "time",
-    control,
-    defaultValue: [null, null],
-  });
-
+export const AppointmentTimeInput = ({ control }: AppointmentTimeInputProps) => {
   return (
-    <TimeRangeInput
-      label="Appointment time"
-      clearable
-      onChange={onChange}
-      onBlur={onBlur}
-      value={value as [Date | null, Date | null]}
-      name={name}
-      ref={ref}
-    />
+    <Group grow>
+      <TimeInputWrapper fieldName="fromTime" label="From" control={control} />
+      <TimeInputWrapper fieldName="untilTime" label="Until" control={control} />
+    </Group>
   );
 };

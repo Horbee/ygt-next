@@ -1,18 +1,18 @@
 import { Path, useController } from "react-hook-form";
 
-import { DatePicker } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
-import type { DatePickerProps } from "@mantine/dates";
+import type { DatePickerInputProps } from "@mantine/dates";
 
-interface Props<T extends FieldValues> extends DatePickerProps {
+interface Props<T extends FieldValues> extends DatePickerInputProps {
   control: Control<T, any>;
   fieldName: Path<T>;
   rules?: RegisterOptions<T>;
 }
 
 /**
- * Wrapper component around Mantine's DatePicker to work with the
+ * Wrapper component around Mantine's DatePickerInput to work with the
  * onChange method of react-hook-form
  */
 export function DatePickerInputWrapper<T extends FieldValues>({
@@ -30,8 +30,11 @@ export function DatePickerInputWrapper<T extends FieldValues>({
   });
 
   return (
-    <DatePicker
-      onChange={(value) => onChange({ target: { value } })}
+    <DatePickerInput
+      onChange={(value) => {
+        console.log(value);
+        onChange({ target: { value } });
+      }}
       onBlur={onBlur}
       value={value}
       name={name}

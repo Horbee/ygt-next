@@ -24,6 +24,7 @@ export const EventDatesSection = ({ eventForm }: Props) => {
       <Grid>
         <Grid.Col span={wholeDay ? 12 : 6}>
           <DatePickerInputWrapper<EventFormValues>
+            clearable
             fieldName="fromDate"
             control={control}
             label="Start Date"
@@ -40,7 +41,6 @@ export const EventDatesSection = ({ eventForm }: Props) => {
               label="Start Time"
               fieldName="fromTime"
               control={control}
-              clearable
               rules={{
                 required: {
                   message: 'Start Time is required if "Whole Day" is not checked',
@@ -57,6 +57,7 @@ export const EventDatesSection = ({ eventForm }: Props) => {
       <Grid>
         <Grid.Col span={wholeDay ? 12 : 6}>
           <DatePickerInputWrapper<EventFormValues>
+            clearable
             fieldName="untilDate"
             control={control}
             label="End Date"
@@ -86,8 +87,9 @@ export const EventDatesSection = ({ eventForm }: Props) => {
                     formValues.fromDate &&
                     formValues.untilDate &&
                     formValues.fromTime &&
+                    value &&
                     isSameDay(formValues.fromDate, formValues.untilDate) &&
-                    (value as Date) < formValues.fromTime
+                    value < formValues.fromTime
                   ) {
                     return "End Time must be >= Start Time";
                   }
@@ -97,7 +99,6 @@ export const EventDatesSection = ({ eventForm }: Props) => {
               }}
               error={errors.untilTime?.message}
               withAsterisk
-              clearable
             />
           </Grid.Col>
         )}

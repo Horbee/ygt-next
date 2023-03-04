@@ -2,6 +2,7 @@ import type { AvailableTypes } from "./Availability";
 
 export type AvailabilityFormValues = {
   available: AvailableTypes | null;
-  time: [Date | null, Date | null];
+  fromTime: string;
+  untilTime: string;
   comment: string;
 };

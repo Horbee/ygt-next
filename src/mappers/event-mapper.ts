@@ -20,11 +20,8 @@ export function mapToCreateEventDto(
     ...rest,
     wholeDay,
     description,
-    fromDate: formatDateTime(fromDate!, wholeDay ? { hours: 12, minutes: 0 } : fromTime!),
-    untilDate: formatDateTime(
-      untilDate!,
-      wholeDay ? { hours: 12, minutes: 0 } : untilTime!
-    ),
+    fromDate: formatDateTime(fromDate!, fromTime, wholeDay),
+    untilDate: formatDateTime(untilDate!, untilTime, wholeDay),
     invitedUserIds: data.public ? [] : data.invitedUsers.map((u) => u.id),
     tags: data.tags.map((t) => t.label),
     coverImageId,

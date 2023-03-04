@@ -1,7 +1,7 @@
 import isSameDay from "date-fns/isSameDay";
 
-import { Center, createStyles } from "@mantine/core";
-import { Calendar } from "@mantine/dates";
+import { Center, Indicator } from "@mantine/core";
+import { DatePicker } from "@mantine/dates";
 
 import type { Event } from "@prisma/client";
 import type { AvailabilityDataWithOwner } from "../../../types";
@@ -13,24 +13,15 @@ type Props = {
   setSelectedDate: (value: Date | null) => void;
 };
 
-const useStyles = createStyles((theme) => ({
-  weekend: {
-    color: `${theme.colors.indigo[9]} !important`,
-  },
-}));
-
 export const AvailabilityCalendar = ({
   event,
   availabilities,
   selectedDate,
   setSelectedDate,
 }: Props) => {
-  const { classes, cx } = useStyles();
-
   const getDateColor = (currentDate: Date) => {
     const data =
-      availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ??
-      [];
+      availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
     if (data.some((d) => d.available === "notgood")) {
       return "red";
     }
@@ -48,19 +39,20 @@ export const AvailabilityCalendar = ({
 
   return (
     <Center>
-      <Calendar
+      <DatePicker
         value={selectedDate}
         onChange={setSelectedDate}
         minDate={new Date(event.fromDate)}
         maxDate={new Date(event.untilDate)}
-        dayStyle={(date) => ({
-          backgroundColor: getDateColor(date),
-          borderRadius: "50%",
-          // border: "1px solid #fff",
-        })}
-        dayClassName={(date, modifiers) =>
-          cx({ [classes.weekend]: modifiers.weekend })
-        }
+        renderDay={(date) => {
+          const color = getDateColor(date);
+          const day = date.getDate();
+          return (
+            <Indicator size={6} color={color} offset={-5} disabled={!!!color}>
+              <div>{day}</div>
+            </Indicator>
+          );
+        }}
       />
     </Center>
   );

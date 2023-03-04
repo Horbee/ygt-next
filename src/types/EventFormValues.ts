@@ -7,9 +7,9 @@ export type EventFormValues = {
   public: boolean;
   wholeDay: boolean;
   fromDate: Date | null;
-  fromTime: Date | null;
+  fromTime: string;
   untilDate: Date | null;
-  untilTime: Date | null;
+  untilTime: string;
   invitedUsers: User[];
   tags: { label: string; value: string }[];
   coverImageUrl: string | null;

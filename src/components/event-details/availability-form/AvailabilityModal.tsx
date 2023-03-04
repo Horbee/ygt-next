@@ -1,16 +1,15 @@
 import { toast } from "react-toastify";
 
 import { Modal, Text, useMantineTheme } from "@mantine/core";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { useAvailabilityModal } from "../../../context";
 import { api } from "../../../utils/api";
+import { formatDateTime } from "../../../utils/format-date-time";
 import { AvailabilityForm } from "./AvailabilityForm";
 
 import type { ModalProps } from "@mantine/core";
 import type { AvailabilityFormValues } from "../../../types";
-interface AvailabilityFormModalProps
-  extends Omit<ModalProps, "opened" | "onClose"> {
+interface AvailabilityFormModalProps extends Omit<ModalProps, "opened" | "onClose"> {
   selectedDate: Date | null;
 }
 
@@ -31,15 +30,19 @@ export const AvailabilityModal = ({
 
   const utils = api.useContext();
 
-  const saveAvailability = async (values: AvailabilityFormValues) => {
+  const saveAvailability = async ({
+    fromTime,
+    untilTime,
+    available,
+    comment,
+  }: AvailabilityFormValues) => {
     try {
-      const { time, available, comment } = values;
       const document = {
         available: available!,
         comment,
         date: selectedDate!,
-        fromTime: time[0] ?? null,
-        untilTime: time[1] ?? null,
+        fromTime: formatDateTime(selectedDate!, fromTime, false),
+        untilTime: formatDateTime(selectedDate!, untilTime, false),
         eventId: eventId!,
       };
 
@@ -64,13 +67,11 @@ export const AvailabilityModal = ({
   return (
     <Modal
       title="Are you available?"
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
-      overlayOpacity={0.55}
-      overlayBlur={3}
+      overlayProps={{
+        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        opacity: 0.55,
+        blur: 3,
+      }}
       opened={opened}
       onClose={closeModal}
       {...restProps}

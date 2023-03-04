@@ -1,10 +1,12 @@
+import { useRef } from "react";
 import { Path, useController } from "react-hook-form";
+import { AiOutlineClockCircle } from "react-icons/ai";
 
+import { ActionIcon } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
 import type { TimeInputProps } from "@mantine/dates";
-
 interface Props<T extends FieldValues> extends TimeInputProps {
   control: Control<T, any>;
   fieldName: Path<T>;
@@ -21,9 +23,9 @@ export function TimeInputWrapper<T extends FieldValues>({
   rules,
   ...restInputProps
 }: Props<T>) {
-  const {
-    field: { onChange, onBlur, name, value, ref },
-  } = useController<T>({
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { field } = useController<T>({
     name: fieldName,
     control,
     rules,
@@ -31,11 +33,13 @@ export function TimeInputWrapper<T extends FieldValues>({
 
   return (
     <TimeInput
-      onChange={(value) => onChange({ target: { value } })}
-      onBlur={onBlur}
-      value={value}
-      name={name}
-      ref={ref}
+      {...field}
+      ref={inputRef}
+      rightSection={
+        <ActionIcon onClick={() => inputRef.current?.showPicker()}>
+          <AiOutlineClockCircle />
+        </ActionIcon>
+      }
       {...restInputProps}
     />
   );
