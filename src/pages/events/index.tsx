@@ -34,7 +34,10 @@ const EventListPage: NextPage = () => {
           eventType={eventType}
           setEventType={setEventType}
           showPast={showPast}
-          setShowPast={setShowPast}
+          setShowPast={(value) => {
+            setShowPast(value);
+            setPage(1);
+          }}
         />
 
         <LoadingWrapper loading={isLoading} loader={<EventCardSkeleton count={3} />}>
