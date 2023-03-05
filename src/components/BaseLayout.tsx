@@ -2,15 +2,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 import { MdChevronLeft } from "react-icons/md";
 
-import {
-  ActionIcon,
-  AppShell,
-  Aside,
-  Container,
-  Group,
-  MediaQuery,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Container, Group, Text } from "@mantine/core";
 
 import { AppHeader } from "./app-header";
 import { AppNavbar } from "./app-navbar";
@@ -38,31 +30,24 @@ export const BaseLayout = ({
   return (
     <>
       <HeadContent title={title} />
-
-      <AppShell
-        navbarOffsetBreakpoint="sm"
-        header={
-          <AppHeader opened={navOpened} toggleOpened={() => setNavOpened((o) => !o)} />
-        }
-        navbar={<AppNavbar opened={navOpened} />}
-      >
-        <Container size="sm" px="xs" mb="lg" {...restProps}>
-          <Group>
-            {showBackButton && (
-              <ActionIcon
-                size="xl"
-                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
-              >
-                <MdChevronLeft size={34} />
-              </ActionIcon>
-            )}
-            <Text component="h3" fz="xl" truncate>
-              {title}
-            </Text>
-          </Group>
-          {children}
-        </Container>
-      </AppShell>
+      <AppHeader opened={navOpened} toggleOpened={() => setNavOpened((o) => !o)} />
+      <AppNavbar opened={navOpened} onClose={() => setNavOpened(false)} />
+      <Container size="sm" px="xs" mb="lg" {...restProps}>
+        <Group>
+          {showBackButton && (
+            <ActionIcon
+              size="xl"
+              onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+            >
+              <MdChevronLeft size={34} />
+            </ActionIcon>
+          )}
+          <Text component="h3" fz="xl" truncate>
+            {title}
+          </Text>
+        </Group>
+        {children}
+      </Container>
     </>
   );
 };
