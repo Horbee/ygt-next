@@ -70,7 +70,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
       opened={opened}
       onClose={() => setOpened(false)}
       title="Manage Attachments"
-      overflow="inside"
+      styles={{ header: { zIndex: 100 } }}
     >
       {/* Modal content */}
       <Paper shadow="xs" p="md" withBorder style={{ flexGrow: 1 }}>

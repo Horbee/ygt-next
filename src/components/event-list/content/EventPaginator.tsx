@@ -1,6 +1,6 @@
-import { useMemo } from "react"
+import { useMemo } from "react";
 
-import { Pagination } from "@mantine/core"
+import { Pagination, useMantineTheme } from "@mantine/core";
 
 type Props = {
   page: number;
@@ -9,30 +9,23 @@ type Props = {
   pageSize: number;
 };
 
-export const EventPaginator = ({
-  page,
-  setPage,
-  totalCount,
-  pageSize,
-}: Props) => {
-  const totalPages = useMemo(
-    () => Math.ceil(totalCount / pageSize),
-    [totalCount]
-  );
+export const EventPaginator = ({ page, setPage, totalCount, pageSize }: Props) => {
+  const totalPages = useMemo(() => Math.ceil(totalCount / pageSize), [totalCount]);
+  const theme = useMantineTheme();
 
   return (
     <Pagination
-      page={page}
+      value={page}
       onChange={setPage}
       total={totalPages}
       position="center"
-      styles={(theme) => ({
-        item: {
+      styles={{
+        control: {
           "&[data-active]": {
             backgroundImage: theme.fn.gradient({ from: "red", to: "yellow" }),
           },
         },
-      })}
+      }}
     />
   );
 };

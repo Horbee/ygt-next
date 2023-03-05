@@ -85,7 +85,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
                   <MdImage size={50} />
                 </Dropzone.Idle>
 
-                <Box c="div" className={classes.textContainer}>
+                <Box className={classes.textContainer}>
                   <Text size="xl" inline>
                     Drag image here or click to select file
                   </Text>
@@ -128,7 +128,7 @@ const useStyles = createStyles((theme) => {
   return {
     textContainer: {
       textAlign: "left",
-      [`@media (max-width: ${theme.breakpoints.xs}px)`]: {
+      [`@media (max-width: ${theme.breakpoints.xs})`]: {
         textAlign: "center",
       },
     },

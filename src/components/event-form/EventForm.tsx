@@ -46,8 +46,6 @@ export const EventForm = ({
     setValue,
   } = eventForm;
 
-  console.log(eventForm.getValues("untilTime"));
-
   const onSubmit: SubmitHandler<EventFormValues> = async (values) => {
     submitCallback?.(values, attachment);
   };
