@@ -2,8 +2,9 @@ import { useSession } from "next-auth/react";
 
 import { Avatar, Box, Group, Text } from "@mantine/core";
 
-import type { GroupProps } from "@mantine/core";
+import { LogoutButton } from "./LogoutButton";
 
+import type { GroupProps } from "@mantine/core";
 export const UserLink = (props: GroupProps) => {
   const { data } = useSession();
 
@@ -18,6 +19,7 @@ export const UserLink = (props: GroupProps) => {
           {data?.user.email}
         </Text>
       </Box>
+      <LogoutButton />
     </Group>
   );
 };

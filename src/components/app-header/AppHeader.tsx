@@ -25,7 +25,7 @@ export const AppHeader = ({ opened, toggleOpened }: Props) => {
 
         <Group style={{ cursor: "pointer" }} onClick={() => router.push("/events")}>
           <Image src="/favicon-32x32.png" width={32} />
-          <Title order={3}>You've got time</Title>
+          <Title order={4}>You've got time</Title>
         </Group>
 
         <ThemeToggler />

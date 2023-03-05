@@ -1,4 +1,4 @@
-import { FaAddressBook } from "react-icons/fa";
+import { FaListUl, FaRegCalendarPlus } from "react-icons/fa";
 
 import { Box, Divider, Drawer, Stack } from "@mantine/core";
 
@@ -19,7 +19,20 @@ export const AppNavbar = ({ opened, onClose }: Props) => {
 
         <Box style={{ flexGrow: 1 }}>
           <Divider my="sm" />
-          <MainLink label="Create Event" color="orange" icon={<FaAddressBook />} />
+          <MainLink
+            label="Event List"
+            href="/events"
+            color="blue"
+            icon={<FaListUl />}
+            onClose={onClose}
+          />
+          <MainLink
+            label="Create Event"
+            href="/events/create"
+            color="orange"
+            icon={<FaRegCalendarPlus />}
+            onClose={onClose}
+          />
         </Box>
 
         <Box>
