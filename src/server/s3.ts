@@ -1,10 +1,11 @@
-import S3 from "aws-sdk/clients/s3";
+import { S3Client } from "@aws-sdk/client-s3";
 
 import { env } from "../env/server.mjs";
 
-export const s3 = new S3({
-  signatureVersion: "v4",
+export const s3 = new S3Client({
   region: "eu-central-1",
-  accessKeyId: env.AWS__ACCESS_KEY_ID,
-  secretAccessKey: env.AWS__ACCESS_KEY_SECRET,
+  credentials: {
+    secretAccessKey: env.AWS__ACCESS_KEY_SECRET,
+    accessKeyId: env.AWS__ACCESS_KEY_ID,
+  },
 });

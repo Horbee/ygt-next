@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 import { env } from "../../../env/server.mjs";
 import { CreateAttachment } from "../../dto/create-attachment.dto";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -23,14 +26,12 @@ export const attachmentRouter = createTRPCRouter({
         },
       });
 
-      const deleteS3Promises = attachments.map((a) =>
-        ctx.s3
-          .deleteObject({
-            Bucket: env.AWS__BUCKET_NAME,
-            Key: a.name,
-          })
-          .promise()
-      );
+      const command = new DeleteObjectsCommand({
+        Bucket: env.AWS__BUCKET_NAME,
+        Delete: {
+          Objects: attachments.map((a) => ({ Key: a.name })),
+        },
+      });
 
       const deleteObjectPromises = attachments.map((a) =>
         ctx.prisma.attachment.delete({
@@ -38,7 +39,7 @@ export const attachmentRouter = createTRPCRouter({
         })
       );
 
-      await Promise.all([...deleteS3Promises, ...deleteObjectPromises]);
+      await Promise.all([ctx.s3.send(command), ...deleteObjectPromises]);
 
       return attachments.length;
     }),
@@ -46,12 +47,12 @@ export const attachmentRouter = createTRPCRouter({
   createAttachment: protectedProcedure
     .input(CreateAttachment)
     .mutation(async ({ input, ctx }) => {
-      const preSignedUrl = ctx.s3.getSignedUrl("putObject", {
+      const command = new PutObjectCommand({
         Bucket: env.AWS__BUCKET_NAME,
         Key: input.fileName,
         ContentType: input.fileType,
-        Expires: 5 * 60,
       });
+      const preSignedUrl = await getSignedUrl(ctx.s3, command, { expiresIn: 5 * 60 });
 
       const s3FileUrl = `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${input.fileName}`;
 
