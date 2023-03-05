@@ -1,17 +1,7 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 
-import {
-  Box,
-  Button,
-  Group,
-  Image,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-  Textarea,
-} from "@mantine/core";
+import { Box, Button, Input, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
 import { Attachment } from "@prisma/client";
 
 import { useEventForm } from "../../hooks";
@@ -35,7 +25,9 @@ export const EventForm = ({
   keepSlugValue = false,
 }: Props) => {
   const [opened, setOpened] = useState(false);
-  const [attachment, setAttachment] = useState<Attachment | null>(null);
+  const [attachment, setAttachment] = useState<Attachment | null>(
+    selectedEvent?.coverImage ?? null
+  );
   const eventForm = useEventForm(selectedEvent);
   const {
     register,
