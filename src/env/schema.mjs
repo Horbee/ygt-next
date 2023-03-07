@@ -25,6 +25,7 @@ export const serverSchema = z.object({
   AWS__ACCESS_KEY_SECRET: z.string(),
   AWS__BUCKET_NAME: z.string(),
   AWS__BUCKET_REGION: z.string(),
+  SEND_GRID_KEY: z.string(),
 });
 
 /**
@@ -43,6 +44,7 @@ export const serverEnv = {
   AWS__ACCESS_KEY_SECRET: process.env.AWS__ACCESS_KEY_SECRET,
   AWS__BUCKET_NAME: process.env.AWS__BUCKET_NAME,
   AWS__BUCKET_REGION: process.env.AWS__BUCKET_REGION,
+  SEND_GRID_KEY: process.env.SEND_GRID_KEY,
 };
 
 /**

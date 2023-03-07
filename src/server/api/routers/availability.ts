@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
+import { sendAvailabilityEmail, sendMail } from "../../sendgrid";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const availabilityRouter = createTRPCRouter({
@@ -21,6 +23,7 @@ export const availabilityRouter = createTRPCRouter({
 
       const event = await ctx.prisma.event.findFirst({
         where: { id: dto.eventId },
+        include: { availabilities: { include: { owner: true } } },
       });
 
       if (
@@ -37,6 +40,22 @@ export const availabilityRouter = createTRPCRouter({
       const createdAv = await ctx.prisma.availability.create({
         data: { ...dto, ownerId: userId },
       });
+
+      const users = event?.availabilities?.map((a) => a.owner) ?? [];
+      const uniqueUsers = users.reduce(
+        (unique, item) =>
+          unique.some((u) => u.id === item.id) ? unique : [...unique, item],
+        [] as User[]
+      );
+
+      sendAvailabilityEmail(
+        ctx.session.user.name!,
+        uniqueUsers,
+        event.slug,
+        event.name,
+        createdAv.date
+      );
+
       return createdAv;
     }),
 
