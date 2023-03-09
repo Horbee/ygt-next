@@ -31,10 +31,7 @@ export function DatePickerInputWrapper<T extends FieldValues>({
 
   return (
     <DatePickerInput
-      onChange={(value) => {
-        console.log(value);
-        onChange({ target: { value } });
-      }}
+      onChange={(value) => onChange({ target: { value } })}
       onBlur={onBlur}
       value={value}
       name={name}
