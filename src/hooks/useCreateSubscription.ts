@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import { useEffect } from "react";
 
-import { env } from "../env/client.mjs"
-import { api } from "../utils/api"
+import { env } from "../env/client.mjs";
+import { api } from "../utils/api";
 
 async function createNotificationSubscription() {
   //wait for service worker installation to be ready
@@ -19,11 +19,14 @@ async function createNotificationSubscription() {
   });
 }
 
+const isSupported = () =>
+  "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
+
 export const useCreateSubscription = () => {
   const subscribe = api.notification.subscribe.useMutation();
 
   useEffect(() => {
-    if (window) {
+    if (window && isSupported()) {
       Notification.requestPermission().then(() => {
         createNotificationSubscription().then((s) => {
           subscribe.mutateAsync(s as any);
