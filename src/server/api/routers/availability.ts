@@ -3,7 +3,6 @@ import { z } from "zod";
 import { Subscription, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-import { sendAvailabilityEmail } from "../../sendgrid";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 type UserWithSubscriptions = User & {

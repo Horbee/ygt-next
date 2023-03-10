@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import { SubscriptionDto } from "../../dto/subscription.dto";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 

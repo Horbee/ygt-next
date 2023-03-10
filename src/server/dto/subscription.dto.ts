@@ -1,8 +1,8 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const SubscriptionDto = z.object({
   endpoint: z.string(),
-  expirationTime: z.date().nullable(),
+  expirationTime: z.date().nullable().optional(),
   keys: z.object({
     p256dh: z.string(),
     auth: z.string(),
