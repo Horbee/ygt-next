@@ -1,12 +1,44 @@
 import { z } from "zod";
 
-import { Subscription, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
 
-type UserWithSubscriptions = User & {
-  subscriptions: Subscription[];
+const sendPushNotification = async (
+  eventId: string,
+  eventName: string,
+  ctx: TRPCContext
+) => {
+  const userName = ctx.session?.user.name;
+
+  const users = await ctx.prisma.user.findMany({
+    where: { availabilities: { some: { eventId } } },
+    include: { subscriptions: true },
+    distinct: ["id"],
+  });
+
+  try {
+    // .filter((u) => u.id !== ctx.session.user.id)
+    const notificationPromises = users
+      .flatMap((u) => u.subscriptions)
+      .map((userSub) =>
+        ctx.webPush.sendNotification(
+          userSub.sub!,
+          JSON.stringify({
+            title: "You've got time",
+            body: `${userName} modified availbility for event ${eventName}`,
+          })
+        )
+      );
+
+    await Promise.all(notificationPromises);
+    console.log(
+      `Push notifications sent to ${users.length} users, ${notificationPromises.length} devices, eventID: ${eventId}`
+    );
+  } catch (error) {
+    console.error("Push Notification error");
+    console.error(error);
+  }
 };
 
 export const availabilityRouter = createTRPCRouter({
@@ -22,15 +54,8 @@ export const availabilityRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: dto, ctx }) => {
-      const userName = ctx.session.user.name;
       const userId = ctx.session.user.id;
-
-      const event = await ctx.prisma.event.findFirst({
-        where: { id: dto.eventId },
-        include: {
-          availabilities: { include: { owner: { include: { subscriptions: true } } } },
-        },
-      });
+      const event = await ctx.prisma.event.findFirst({ where: { id: dto.eventId } });
 
       if (
         !event?.public &&
@@ -47,12 +72,7 @@ export const availabilityRouter = createTRPCRouter({
         data: { ...dto, ownerId: userId },
       });
 
-      const users = event?.availabilities?.map((a) => a.owner) ?? [];
-      const uniqueUsers = users.reduce(
-        (unique, item) =>
-          unique.some((u) => u.id === item.id) ? unique : [...unique, item],
-        [] as UserWithSubscriptions[]
-      );
+      await sendPushNotification(event.id, event.name, ctx);
 
       // await sendAvailabilityEmail(
       //   ctx.session.user.name!,
@@ -61,21 +81,6 @@ export const availabilityRouter = createTRPCRouter({
       //   event.name,
       //   createdAv.date
       // );
-
-      // .filter((u) => u.id !== ctx.session.user.id)
-      const notificationPromises = uniqueUsers
-        .flatMap((u) => u.subscriptions)
-        .map((userSub) =>
-          ctx.webPush.sendNotification(
-            userSub.sub!,
-            JSON.stringify({
-              title: "You've got time",
-              body: `${userName} added a new availbility!`,
-            })
-          )
-        );
-
-      await Promise.all(notificationPromises);
 
       return createdAv;
     }),
@@ -131,6 +136,8 @@ export const availabilityRouter = createTRPCRouter({
         where: { id: availabilityId },
       });
 
+      await sendPushNotification(event.id, event.name, ctx);
+
       return updatedAv;
     }),
 
@@ -141,6 +148,7 @@ export const availabilityRouter = createTRPCRouter({
 
       const avDoc = await ctx.prisma.availability.findFirst({
         where: { id: availabilityId, ownerId: userId },
+        include: { event: true },
       });
 
       if (!avDoc) {
@@ -153,6 +161,8 @@ export const availabilityRouter = createTRPCRouter({
       const deletedAv = await ctx.prisma.availability.delete({
         where: { id: availabilityId },
       });
+
+      await sendPushNotification(avDoc.event.id, avDoc.event.name, ctx);
 
       return deletedAv;
     }),
