@@ -26,6 +26,7 @@ export const serverSchema = z.object({
   AWS__BUCKET_NAME: z.string(),
   AWS__BUCKET_REGION: z.string(),
   SEND_GRID_KEY: z.string(),
+  PRIVATE_VAPID_KEY: z.string(),
 });
 
 /**
@@ -45,6 +46,7 @@ export const serverEnv = {
   AWS__BUCKET_NAME: process.env.AWS__BUCKET_NAME,
   AWS__BUCKET_REGION: process.env.AWS__BUCKET_REGION,
   SEND_GRID_KEY: process.env.SEND_GRID_KEY,
+  PRIVATE_VAPID_KEY: process.env.PRIVATE_VAPID_KEY,
 };
 
 /**
@@ -53,7 +55,7 @@ export const serverEnv = {
  * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 export const clientSchema = z.object({
-  // NEXT_PUBLIC_CLIENTVAR: z.string(),
+  NEXT_PUBLIC_VAPID_KEY: z.string(),
 });
 
 /**
@@ -63,5 +65,5 @@ export const clientSchema = z.object({
  * @type {{ [k in keyof z.input<typeof clientSchema>]: string | undefined }}
  */
 export const clientEnv = {
-  // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  NEXT_PUBLIC_VAPID_KEY: process.env.NEXT_PUBLIC_VAPID_KEY,
 };

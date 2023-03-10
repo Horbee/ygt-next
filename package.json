@@ -42,6 +42,7 @@
     "react-toastify": "^9.1.1",
     "slugify": "^1.6.5",
     "superjson": "1.9.1",
+    "web-push": "^3.5.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -49,6 +50,7 @@
     "@types/node": "^18.14.6",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/web-push": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
     "eslint": "^8.35.0",

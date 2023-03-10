@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-import { User } from "@prisma/client";
+import { Subscription, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-import { sendAvailabilityEmail, sendMail } from "../../sendgrid";
+import { sendAvailabilityEmail } from "../../sendgrid";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+type UserWithSubscriptions = User & {
+  subscriptions: Subscription[];
+};
 
 export const availabilityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -19,11 +23,14 @@ export const availabilityRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: dto, ctx }) => {
+      const userName = ctx.session.user.name;
       const userId = ctx.session.user.id;
 
       const event = await ctx.prisma.event.findFirst({
         where: { id: dto.eventId },
-        include: { availabilities: { include: { owner: true } } },
+        include: {
+          availabilities: { include: { owner: { include: { subscriptions: true } } } },
+        },
       });
 
       if (
@@ -45,16 +52,31 @@ export const availabilityRouter = createTRPCRouter({
       const uniqueUsers = users.reduce(
         (unique, item) =>
           unique.some((u) => u.id === item.id) ? unique : [...unique, item],
-        [] as User[]
+        [] as UserWithSubscriptions[]
       );
 
-      sendAvailabilityEmail(
-        ctx.session.user.name!,
-        uniqueUsers,
-        event.slug,
-        event.name,
-        createdAv.date
-      );
+      // await sendAvailabilityEmail(
+      //   ctx.session.user.name!,
+      //   uniqueUsers,
+      //   event.slug,
+      //   event.name,
+      //   createdAv.date
+      // );
+
+      // .filter((u) => u.id !== ctx.session.user.id)
+      const notificationPromises = uniqueUsers
+        .flatMap((u) => u.subscriptions)
+        .map((userSub) =>
+          ctx.webPush.sendNotification(
+            userSub.sub!,
+            JSON.stringify({
+              title: "You've got time",
+              body: `${userName} added a new availbility!`,
+            })
+          )
+        );
+
+      await Promise.all(notificationPromises);
 
       return createdAv;
     }),

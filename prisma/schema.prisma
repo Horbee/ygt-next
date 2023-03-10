@@ -57,6 +57,7 @@ model User {
     ownEvents       Event[]        @relation("ownedEvents")
     invitedEventIds String[]       @db.ObjectId
     invitedEvents   Event[]        @relation(name: "invitedEvents", fields: [invitedEventIds], references: [id])
+    subscriptions   Subscription[]
 
     createdAt DateTime @default(now()) @db.Date
     updatedAt DateTime @updatedAt() @db.Date
@@ -136,4 +137,31 @@ model Attachment {
     events    Event[]
 
     @@map("attachments")
+}
+
+model Subscription {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    v  Int    @default(0) @map("__v") @ignore
+
+    owner    User   @relation(fields: [ownerId], references: [id])
+    ownerId  String @map("owner") @db.ObjectId
+    endpoint String
+    sub      SubObj
+
+    createdAt DateTime @default(now()) @db.Date
+    updatedAt DateTime @updatedAt() @db.Date
+
+    @@unique([ownerId, endpoint])
+    @@map("subscriptions")
+}
+
+type SubObj {
+    endpoint       String
+    expirationTime DateTime? @db.Date
+    keys           SubKeys
+}
+
+type SubKeys {
+    p256dh String
+    auth   String
 }
