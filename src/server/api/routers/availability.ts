@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Event } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
+import { AvailabilityDto } from "../../dto/availability.dto";
 import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
 
 const sendPushNotification = async (event: Event, ctx: TRPCContext) => {
@@ -42,16 +43,7 @@ const sendPushNotification = async (event: Event, ctx: TRPCContext) => {
 
 export const availabilityRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(
-      z.object({
-        available: z.enum(["good", "maybe", "notgood"]),
-        comment: z.string().nullable(),
-        date: z.date(),
-        fromTime: z.date().nullable(),
-        untilTime: z.date().nullable(),
-        eventId: z.string(),
-      })
-    )
+    .input(AvailabilityDto)
     .mutation(async ({ input: dto, ctx }) => {
       const userId = ctx.session.user.id;
       const event = await ctx.prisma.event.findFirst({ where: { id: dto.eventId } });
@@ -88,14 +80,7 @@ export const availabilityRouter = createTRPCRouter({
     .input(
       z.object({
         availabilityId: z.string(),
-        dto: z.object({
-          available: z.enum(["good", "maybe", "notgood"]),
-          comment: z.string().nullable(),
-          date: z.date(),
-          fromTime: z.date().nullable(),
-          untilTime: z.date().nullable(),
-          eventId: z.string(),
-        }),
+        dto: AvailabilityDto,
       })
     )
     .mutation(async ({ input, ctx }) => {

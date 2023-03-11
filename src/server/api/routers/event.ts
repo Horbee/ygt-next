@@ -1,9 +1,45 @@
 import { z } from "zod";
 
-import { Prisma } from "@prisma/client";
+import { Event, Prisma, Subscription } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { EventDto } from "../../dto/event.dto";
+import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
+
+const sendPushNotification = async (event: Event, body: string, ctx: TRPCContext) => {
+  const url = "/events/" + event.slug;
+
+  let subs: Subscription[] = [];
+
+  if (event.public) {
+    subs = await ctx.prisma.subscription.findMany();
+  } else {
+    const users = await ctx.prisma.user.findMany({
+      where: { id: { in: event.invitedUserIds } },
+      include: { subscriptions: true },
+      distinct: ["id"],
+    });
+    subs = users.flatMap((u) => u.subscriptions);
+  }
+
+  try {
+    // .filter((u) => u.id !== ctx.session.user.id)
+    const notificationPromises = subs.map((s) =>
+      ctx.webPush.sendNotification(
+        s.sub,
+        JSON.stringify({ title: "You've got time", body, url })
+      )
+    );
+
+    await Promise.all(notificationPromises);
+    console.log(
+      `Push notifications sent to ${notificationPromises.length} devices, eventID: ${event.id}`
+    );
+  } catch (error) {
+    console.error("Push Notification error");
+    console.error(error);
+  }
+};
 
 export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
@@ -64,66 +100,45 @@ export const eventRouter = createTRPCRouter({
       return event;
     }),
 
-  createEvent: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        slug: z.string(),
-        description: z.string().nullable(),
-        public: z.boolean().optional(),
-        wholeDay: z.boolean(),
-        fromDate: z.date(),
-        untilDate: z.date(),
-        invitedUserIds: z.array(z.string()),
-        tags: z.array(z.string()),
-        coverImageId: z.string().nullable(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+  createEvent: protectedProcedure.input(EventDto).mutation(async ({ ctx, input }) => {
+    const user = ctx.session.user;
 
-      const eventWithSlug = await ctx.prisma.event.findUnique({
-        where: { slug: input.slug },
+    const eventWithSlug = await ctx.prisma.event.findUnique({
+      where: { slug: input.slug },
+    });
+
+    if (eventWithSlug) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Slug is already taken",
       });
+    }
 
-      if (eventWithSlug) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Slug is already taken",
-        });
-      }
+    const createdEvent = await ctx.prisma.event.create({
+      data: {
+        ...input,
+        ownerId: user.id,
+      },
+    });
 
-      const createdEvent = await ctx.prisma.event.create({
-        data: {
-          ...input,
-          ownerId: userId,
-        },
-      });
+    await sendPushNotification(
+      createdEvent,
+      `${user.name} created a new event: ${createdEvent.name}`,
+      ctx
+    );
 
-      return createdEvent;
-    }),
+    return createdEvent;
+  }),
 
   updateEvent: protectedProcedure
     .input(
       z.object({
         eventId: z.string(),
-        eventDto: z.object({
-          name: z.string(),
-          slug: z.string(),
-          description: z.string().nullable(),
-          public: z.boolean().optional(),
-          wholeDay: z.boolean(),
-          fromDate: z.date(),
-          untilDate: z.date(),
-          invitedUserIds: z.array(z.string()),
-          tags: z.array(z.string()),
-          coverImageId: z.string().nullable(),
-        }),
+        eventDto: EventDto,
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      const { eventId, eventDto } = input;
-      const userId = ctx.session.user.id;
+    .mutation(async ({ ctx, input: { eventId, eventDto } }) => {
+      const user = ctx.session.user;
 
       const event = await ctx.prisma.event.findFirst({
         where: { id: eventId },
@@ -131,7 +146,7 @@ export const eventRouter = createTRPCRouter({
 
       if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
-      if (event.ownerId !== userId)
+      if (event.ownerId !== user.id)
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only the owner can update this event",
@@ -142,13 +157,19 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
       });
 
+      await sendPushNotification(
+        updatedEvent,
+        `${user.name} updated an event: ${updatedEvent.name}`,
+        ctx
+      );
+
       return updatedEvent;
     }),
 
   deleteEvent: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input: eventId }) => {
-      const userId = ctx.session.user.id;
+      const user = ctx.session.user;
 
       const event = await ctx.prisma.event.findFirst({
         where: { id: eventId },
@@ -156,7 +177,7 @@ export const eventRouter = createTRPCRouter({
 
       if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
-      if (event.ownerId !== userId)
+      if (event.ownerId !== user.id)
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only the owner can delete this event",
@@ -166,6 +187,12 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
         include: { coverImage: true },
       });
+
+      await sendPushNotification(
+        deletedEvent,
+        `${user.name} deleted an event: ${deletedEvent.name}`,
+        ctx
+      );
 
       return deletedEvent;
     }),
