@@ -22,23 +22,31 @@ const sendPushNotification = async (event: Event, body: string, ctx: TRPCContext
     subs = users.flatMap((u) => u.subscriptions);
   }
 
-  try {
-    // .filter((u) => u.id !== ctx.session.user.id)
-    const notificationPromises = subs.map((s) =>
-      ctx.webPush.sendNotification(
-        s.sub,
-        JSON.stringify({ title: "You've got time", body, url })
-      )
+  let sent = 0;
+  let errors = 0;
+
+  const notificationPromises = subs
+    .filter((s) => s.ownerId !== ctx.session?.user.id)
+    .map((s) =>
+      ctx.webPush
+        .sendNotification(s.sub, JSON.stringify({ title: "You've got time", body, url }))
+        .then(() => sent++)
+        .catch((error) => {
+          errors++;
+          console.error("Push Notification error");
+          console.error(error);
+          if (error.statusCode === 410 || error.statusCode === 404) {
+            console.error("Deleting old subscription");
+            return ctx.prisma.subscription.delete({ where: { id: s.id } });
+          }
+        })
     );
 
-    await Promise.all(notificationPromises);
-    console.log(
-      `Push notifications sent to ${notificationPromises.length} devices, eventID: ${event.id}`
-    );
-  } catch (error) {
-    console.error("Push Notification error");
-    console.error(error);
-  }
+  await Promise.allSettled(notificationPromises);
+
+  console.log(
+    `Push notifications sent to ${sent} devices, rejected: ${errors} devices, eventID: ${event.id}`
+  );
 };
 
 export const eventRouter = createTRPCRouter({
