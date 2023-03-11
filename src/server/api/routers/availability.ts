@@ -1,18 +1,16 @@
 import { z } from "zod";
 
+import { Event } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
 
-const sendPushNotification = async (
-  eventId: string,
-  eventName: string,
-  ctx: TRPCContext
-) => {
+const sendPushNotification = async (event: Event, ctx: TRPCContext) => {
   const userName = ctx.session?.user.name;
+  const url = "/events/" + event.slug;
 
   const users = await ctx.prisma.user.findMany({
-    where: { availabilities: { some: { eventId } } },
+    where: { availabilities: { some: { eventId: event.id } } },
     include: { subscriptions: true },
     distinct: ["id"],
   });
@@ -26,14 +24,15 @@ const sendPushNotification = async (
           userSub.sub!,
           JSON.stringify({
             title: "You've got time",
-            body: `${userName} modified availbility for event ${eventName}`,
+            body: `${userName} modified availbility for event ${event.name}`,
+            url,
           })
         )
       );
 
     await Promise.all(notificationPromises);
     console.log(
-      `Push notifications sent to ${users.length} users, ${notificationPromises.length} devices, eventID: ${eventId}`
+      `Push notifications sent to ${users.length} users, ${notificationPromises.length} devices, eventID: ${event.id}`
     );
   } catch (error) {
     console.error("Push Notification error");
@@ -72,7 +71,7 @@ export const availabilityRouter = createTRPCRouter({
         data: { ...dto, ownerId: userId },
       });
 
-      await sendPushNotification(event.id, event.name, ctx);
+      await sendPushNotification(event, ctx);
 
       // await sendAvailabilityEmail(
       //   ctx.session.user.name!,
@@ -136,7 +135,7 @@ export const availabilityRouter = createTRPCRouter({
         where: { id: availabilityId },
       });
 
-      await sendPushNotification(event.id, event.name, ctx);
+      await sendPushNotification(event, ctx);
 
       return updatedAv;
     }),
@@ -162,7 +161,7 @@ export const availabilityRouter = createTRPCRouter({
         where: { id: availabilityId },
       });
 
-      await sendPushNotification(avDoc.event.id, avDoc.event.name, ctx);
+      await sendPushNotification(avDoc.event, ctx);
 
       return deletedAv;
     }),
