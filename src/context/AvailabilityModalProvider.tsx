@@ -18,14 +18,9 @@ const AvailabilityModalContext = createContext<
   | undefined
 >(undefined);
 
-export const AvailabilityModalProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const AvailabilityModalProvider = ({ children }: { children: ReactNode }) => {
   const [opened, setOpened] = useState(false);
-  const [selectedAvailability, setSelectedAvailability] =
-    useState<Availability>();
+  const [selectedAvailability, setSelectedAvailability] = useState<Availability>();
   const [eventId, setEventId] = useState<string>();
 
   const create = api.availability.create.useMutation();
@@ -71,9 +66,7 @@ export const useAvailabilityModal = () => {
   const ctx = useContext(AvailabilityModalContext);
 
   if (ctx === undefined) {
-    throw Error(
-      "useAvailabilityModal must be used within AvailabilityModalProvider"
-    );
+    throw Error("useAvailabilityModal must be used within AvailabilityModalProvider");
   }
 
   return ctx;

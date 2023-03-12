@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 import { env } from "../env/client.mjs";
@@ -23,15 +24,18 @@ const isSupported = () =>
   "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
 
 export const useCreateSubscription = () => {
+  const { status } = useSession();
   const subscribe = api.notification.subscribe.useMutation();
 
   useEffect(() => {
-    if (window && isSupported()) {
+    if (status === "authenticated" && window && isSupported()) {
       Notification.requestPermission().then(() => {
-        createNotificationSubscription().then((s) => {
-          subscribe.mutateAsync(s as any);
-        });
+        createNotificationSubscription()
+          .then((s) => {
+            subscribe.mutateAsync(s as any);
+          })
+          .catch((err) => console.error(err));
       });
     }
-  }, []);
+  }, [status]);
 };

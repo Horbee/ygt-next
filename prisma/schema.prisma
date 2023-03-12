@@ -93,6 +93,7 @@ model Availability {
     createdAt DateTime @default(now()) @db.Date
     updatedAt DateTime @updatedAt() @db.Date
 
+    @@unique([ownerId, id])
     @@map("availabilities")
 }
 

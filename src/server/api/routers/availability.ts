@@ -92,8 +92,7 @@ export const availabilityRouter = createTRPCRouter({
         dto: AvailabilityDto,
       })
     )
-    .mutation(async ({ input, ctx }) => {
-      const { availabilityId, dto } = input;
+    .mutation(async ({ input: { availabilityId, dto }, ctx }) => {
       const userId = ctx.session.user.id;
 
       const event = await ctx.prisma.event.findFirst({
@@ -112,22 +111,18 @@ export const availabilityRouter = createTRPCRouter({
         });
       }
 
-      const avDoc = await ctx.prisma.availability.findFirst({
-        where: { id: availabilityId, ownerId: userId },
-      });
-
-      if (!avDoc)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Availability not found or you are not the owner",
-        });
-
       const { eventId, ...restUpdates } = dto;
 
       const updatedAv = await ctx.prisma.availability.update({
         data: restUpdates,
-        where: { id: availabilityId },
+        where: { ownerId_id: { id: availabilityId, ownerId: userId } },
       });
+
+      if (!updatedAv)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Availability not found or you are not the owner",
+        });
 
       await sendPushNotification(event, ctx);
 
@@ -139,23 +134,19 @@ export const availabilityRouter = createTRPCRouter({
     .mutation(async ({ input: availabilityId, ctx }) => {
       const userId = ctx.session.user.id;
 
-      const avDoc = await ctx.prisma.availability.findFirst({
-        where: { id: availabilityId, ownerId: userId },
+      const deletedAv = await ctx.prisma.availability.delete({
+        where: { ownerId_id: { id: availabilityId, ownerId: userId } },
         include: { event: true },
       });
 
-      if (!avDoc) {
+      if (!deletedAv) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Availability not found or you are not the owner",
         });
       }
 
-      const deletedAv = await ctx.prisma.availability.delete({
-        where: { id: availabilityId },
-      });
-
-      await sendPushNotification(avDoc.event, ctx);
+      await sendPushNotification(deletedAv.event, ctx);
 
       return deletedAv;
     }),
