@@ -137,6 +137,7 @@ model Attachment {
     updatedAt DateTime @updatedAt() @db.Date
     events    Event[]
 
+    @@unique([id, ownerId])
     @@map("attachments")
 }
 

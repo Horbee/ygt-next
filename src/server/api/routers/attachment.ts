@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { TRPCError } from "@trpc/server";
 
 import { env } from "../../../env/server.mjs";
 import { CreateAttachment } from "../../dto/create-attachment.dto";
@@ -19,29 +20,27 @@ export const attachmentRouter = createTRPCRouter({
   deleteAttachment: protectedProcedure
     .input(z.string())
     .mutation(async ({ input: id, ctx }) => {
-      const attachments = await ctx.prisma.attachment.findMany({
+      const attachment = await ctx.prisma.attachment.delete({
         where: {
-          id,
-          ownerId: ctx.session.user.id,
+          id_ownerId: { id, ownerId: ctx.session.user.id },
         },
       });
 
-      const command = new DeleteObjectsCommand({
+      if (!attachment) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Attachment not found.",
+        });
+      }
+
+      const command = new DeleteObjectCommand({
         Bucket: env.AWS__BUCKET_NAME,
-        Delete: {
-          Objects: attachments.map((a) => ({ Key: a.name })),
-        },
+        Key: attachment.name,
       });
 
-      const deleteObjectPromises = attachments.map((a) =>
-        ctx.prisma.attachment.delete({
-          where: { id: a.id },
-        })
-      );
+      await ctx.s3.send(command);
 
-      await Promise.all([ctx.s3.send(command), ...deleteObjectPromises]);
-
-      return attachments.length;
+      return attachment.id;
     }),
 
   createAttachment: protectedProcedure
