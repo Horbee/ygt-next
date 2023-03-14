@@ -15,6 +15,7 @@ type Props = ContainerProps & {
   children: ReactNode;
   showBackButton?: boolean;
   backUrl?: string;
+  actionElement?: ReactNode;
 };
 
 export const BaseLayout = ({
@@ -22,6 +23,7 @@ export const BaseLayout = ({
   children,
   showBackButton = true,
   backUrl,
+  actionElement,
   ...restProps
 }: Props) => {
   const [navOpened, setNavOpened] = useState(false);
@@ -36,18 +38,22 @@ export const BaseLayout = ({
       <AppHeader opened={navOpened} toggleOpened={() => setNavOpened((o) => !o)} />
       <AppNavbar opened={navOpened} onClose={() => setNavOpened(false)} />
       <Container size="sm" px="xs" mb="lg" {...restProps}>
-        <Group>
-          {showBackButton && (
-            <ActionIcon
-              size="xl"
-              onClick={() => (backUrl ? router.push(backUrl) : router.back())}
-            >
-              <MdChevronLeft size={34} />
-            </ActionIcon>
-          )}
-          <Text component="h3" fz="xl" truncate>
-            {title}
-          </Text>
+        <Group position="apart">
+          <Group spacing="xs">
+            {showBackButton && (
+              <ActionIcon
+                size="xl"
+                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+              >
+                <MdChevronLeft size={34} />
+              </ActionIcon>
+            )}
+            <Text component="h3" fz="xl" truncate>
+              {title}
+            </Text>
+          </Group>
+
+          {actionElement}
         </Group>
         {children}
       </Container>

@@ -3,13 +3,16 @@ import { useCallback, useEffect, useReducer } from "react";
 
 import type { EventActions, EventPaginationState } from "./types";
 import type { ParsedUrlQuery } from "querystring";
-import type { EventType } from "../../types";
+import type { EventFilterType } from "../../types";
 
 const initialState = (query: ParsedUrlQuery | null): EventPaginationState => {
-  // TODO: check
   const initialType = (
-    typeof query?.type === "string" ? query.type : "public"
-  ) as EventType;
+    typeof query?.type === "string"
+      ? [query.type]
+      : Array.isArray(query?.type)
+      ? query!.type
+      : []
+  ) as EventFilterType[];
 
   const initialPage =
     typeof query?.page === "string" && !isNaN(parseInt(query.page, 10))
@@ -17,7 +20,7 @@ const initialState = (query: ParsedUrlQuery | null): EventPaginationState => {
       : 1;
 
   return {
-    eventType: initialType,
+    selectedFilter: initialType,
     page: initialPage,
     pageSize: 8,
   };
@@ -28,8 +31,8 @@ const eventPaginationReducer = (
   action: EventActions
 ): EventPaginationState => {
   switch (action.type) {
-    case "SET_EVENT_TYPE":
-      return { ...state, eventType: action.payload, page: 1 };
+    case "SET_EVENT_FILTER":
+      return { ...state, selectedFilter: action.payload, page: 1 };
     case "SET_PAGE":
       return { ...state, page: action.payload };
     default:
@@ -48,19 +51,29 @@ export const useEventPagination = () => {
     router.push({
       pathname: "/events",
       query: {
-        type: state.eventType,
+        type: state.selectedFilter,
         page: state.page,
       },
     });
   }, [state]);
 
-  const setEventType = useCallback((value: EventType) => {
-    dispatch({ type: "SET_EVENT_TYPE", payload: value });
-  }, []);
+  const toggleEventFilter = useCallback(
+    (value: EventFilterType) => {
+      if (state.selectedFilter.includes(value)) {
+        dispatch({
+          type: "SET_EVENT_FILTER",
+          payload: state.selectedFilter.filter((f) => f !== value),
+        });
+      } else {
+        dispatch({ type: "SET_EVENT_FILTER", payload: [...state.selectedFilter, value] });
+      }
+    },
+    [state]
+  );
 
   const setPage = useCallback((value: number) => {
     dispatch({ type: "SET_PAGE", payload: value });
   }, []);
 
-  return { ...state, setEventType, setPage };
+  return { ...state, toggleEventFilter, setPage };
 };

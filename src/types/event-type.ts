@@ -1,1 +1,1 @@
-export type EventType = "invited" | "own" | "public";
+export type EventFilterType = "invited" | "own" | "public" | "past";

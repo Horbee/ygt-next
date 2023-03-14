@@ -4,6 +4,7 @@ import { Event, Prisma, Subscription } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { EventDto } from "../../dto/event.dto";
+import { getEventsWhereClause } from "../helpers/get-events-helper";
 import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
 
 const sendPushNotification = async (event: Event, body: string, ctx: TRPCContext) => {
@@ -53,21 +54,13 @@ export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
     .input(
       z.object({
-        type: z.enum(["invited", "own", "public"]),
-        showPast: z.boolean().optional(),
+        eventFilters: z.array(z.enum(["invited", "own", "public", "past"])),
         start: z.number(),
         size: z.number(),
       })
     )
-    .query(async ({ input: { type, showPast = false, start, size }, ctx }) => {
-      const userId = ctx.session.user.id;
-
-      const where: Prisma.EventWhereInput = {
-        ownerId: type === "own" ? userId : undefined,
-        invitedUserIds: type === "invited" ? { has: userId } : undefined,
-        public: type === "public" ? true : undefined,
-        untilDate: !showPast ? { gte: new Date() } : undefined,
-      };
+    .query(async ({ input: { eventFilters, start, size }, ctx }) => {
+      const where = getEventsWhereClause(eventFilters, ctx);
 
       const totalPromise = ctx.prisma.event.count({ where });
 

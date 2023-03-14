@@ -1,16 +1,20 @@
-import { motion } from 'framer-motion'
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { motion } from "framer-motion";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
-import { BaseLayout } from '../../../components/BaseLayout'
+import { BaseLayout } from "../../../components/BaseLayout";
 import {
-    AvailabilityCalendar, AvailabilityList, AvailabilityModal, EventDescription, OwnAvailability
-} from '../../../components/event-details'
-import { AvailabilityModalProvider } from '../../../context'
-import { useAuthenticatedRedirect } from '../../../hooks'
-import { AvailabilityDataWithOwner } from '../../../types'
-import { api } from '../../../utils/api'
+  AvailabilityCalendar,
+  AvailabilityList,
+  AvailabilityModal,
+  EventDescription,
+  OwnAvailability,
+} from "../../../components/event-details";
+import { AvailabilityModalProvider } from "../../../context";
+import { useAuthenticatedRedirect } from "../../../hooks";
+import { AvailabilityDataWithOwner } from "../../../types";
+import { api } from "../../../utils/api";
 
 const EventDetailsPage: NextPage = () => {
   useAuthenticatedRedirect("/login");
@@ -30,7 +34,7 @@ const EventDetailsPage: NextPage = () => {
   const availabilities = event?.availabilities as AvailabilityDataWithOwner[];
 
   return (
-    <BaseLayout title="Event Details" backUrl="/events">
+    <BaseLayout title="Event Details">
       <AvailabilityModalProvider>
         <AvailabilityModal selectedDate={selectedDate} />
         {!!event && (

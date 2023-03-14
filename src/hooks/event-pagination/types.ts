@@ -1,4 +1,4 @@
-import { EventType } from "../../types";
+import { EventFilterType } from "../../types";
 
 type PageAction = {
   type: "SET_PAGE";
@@ -6,14 +6,14 @@ type PageAction = {
 };
 
 type EventAction = {
-  type: "SET_EVENT_TYPE";
-  payload: EventType;
+  type: "SET_EVENT_FILTER";
+  payload: EventFilterType[];
 };
 
 type EventActions = PageAction | EventAction;
 
 type EventPaginationState = {
-  eventType: EventType;
+  selectedFilter: EventFilterType[];
   page: number;
   pageSize: number;
 };
