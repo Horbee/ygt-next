@@ -1,16 +1,16 @@
 import { useState } from "react";
 
-import { Box, Button, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
+import { Box, Button, SimpleGrid, Stack, Textarea } from "@mantine/core";
 import { Attachment } from "@prisma/client";
 
 import { useEventForm } from "../../hooks";
 import { AttachmentSelector } from "../attachment-selector/AttachmentSelector";
-import { EventNameWithSlug, SwitchInputWrapper } from "../fields";
+import { SwitchInputWrapper, TagsField } from "../fields";
 import {
   EventDatesSection,
+  EventNameWithSlug,
   ImageShowcase,
   InvitedUsersSection,
-  TagsSection,
 } from "./sections";
 
 import type { SubmitHandler } from "react-hook-form";
@@ -38,8 +38,7 @@ export const EventForm = ({
     handleSubmit,
     control,
     watch,
-    formState: { isSubmitting, errors },
-    setValue,
+    formState: { isSubmitting },
   } = eventForm;
 
   const onSubmit: SubmitHandler<EventFormValues> = async (values) => {
@@ -59,19 +58,7 @@ export const EventForm = ({
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
-          <EventNameWithSlug
-            withAsterisk
-            label="Event name"
-            control={control}
-            fieldName="name"
-            rules={{ required: "Event Name is required" }}
-            setSlugValue={(slug) => {
-              if (!keepSlugValue) setValue("slug", slug);
-            }}
-            error={errors.name?.message}
-          />
-
-          <Text fz="sm">Slug: {watch("slug")}</Text>
+          <EventNameWithSlug eventForm={eventForm} keepSlugValue={keepSlugValue} />
 
           <SimpleGrid cols={2} breakpoints={[{ maxWidth: 600, cols: 1 }]}>
             <Textarea
@@ -108,7 +95,7 @@ export const EventForm = ({
 
           <InvitedUsersSection eventForm={eventForm} />
 
-          <TagsSection eventForm={eventForm} />
+          <TagsField eventForm={eventForm} />
 
           <Button
             type="submit"

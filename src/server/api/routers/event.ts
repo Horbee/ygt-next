@@ -210,6 +210,14 @@ export const eventRouter = createTRPCRouter({
 
       return flat
         .filter((t) => t.match(new RegExp(input, "i")))
+        .slice(0, 5)
         .map((t) => ({ label: t.toUpperCase(), value: t.toUpperCase() }));
+    }),
+
+  isSlugTaken: protectedProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const event = await ctx.prisma.event.findUnique({ where: { slug: input.slug } });
+      return event !== null;
     }),
 });

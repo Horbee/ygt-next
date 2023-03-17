@@ -1,7 +1,7 @@
-import { Path, useController } from "react-hook-form"
-import slugify from "slugify"
+import { Path, useController } from "react-hook-form";
+import slugify from "slugify";
 
-import { TextInput } from "@mantine/core"
+import { TextInput } from "@mantine/core";
 
 import type { TextInputProps } from "@mantine/core";
 import type { Control, FieldValues, RegisterOptions } from "react-hook-form";
@@ -13,7 +13,7 @@ interface Props<T extends FieldValues> extends TextInputProps {
   setSlugValue: (value: string) => void;
 }
 
-export function EventNameWithSlug<T extends FieldValues>({
+export function EventNameField<T extends FieldValues>({
   control,
   fieldName,
   rules,

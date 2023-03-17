@@ -4,5 +4,6 @@ export * from "./DatePickerInputWrapper";
 export * from "./SwitchInputWrapper";
 export * from "./TimeInputWrapper";
 export * from "./AsyncSelectWrapper";
-export * from "./EventNameWithSlug";
+export * from "./EventNameField";
 export * from "./react-select";
+export * from "./TagsField";
