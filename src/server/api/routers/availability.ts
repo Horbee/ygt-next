@@ -1,14 +1,20 @@
+import format from "date-fns/format";
 import { z } from "zod";
 
 import { Event } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
+import { getFormattedDate } from "../../../hooks/useSelectedDate";
 import { AvailabilityDto } from "../../dto/availability.dto";
 import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
 
-const sendPushNotification = async (event: Event, ctx: TRPCContext) => {
+const sendPushNotification = async (
+  event: Event,
+  availabilityDate: Date,
+  ctx: TRPCContext
+) => {
   const userName = ctx.session?.user.name;
-  const url = "/events/" + event.slug;
+  const url = `/events/${event.slug}?date=${getFormattedDate(availabilityDate)}`;
 
   const users = await ctx.prisma.user.findMany({
     where: { availabilities: { some: { eventId: event.id } } },
@@ -19,7 +25,7 @@ const sendPushNotification = async (event: Event, ctx: TRPCContext) => {
   let sent = 0;
   let errors = 0;
   const notificationPromises = users
-    .filter((u) => u.id !== ctx.session?.user.id)
+    // .filter((u) => u.id !== ctx.session?.user.id)
     .flatMap((u) => u.subscriptions)
     .map((userSub) =>
       ctx.webPush
@@ -72,7 +78,7 @@ export const availabilityRouter = createTRPCRouter({
         data: { ...dto, ownerId: userId },
       });
 
-      await sendPushNotification(event, ctx);
+      await sendPushNotification(event, dto.date, ctx);
 
       // await sendAvailabilityEmail(
       //   ctx.session.user.name!,
@@ -124,7 +130,7 @@ export const availabilityRouter = createTRPCRouter({
           message: "Availability not found or you are not the owner",
         });
 
-      await sendPushNotification(event, ctx);
+      await sendPushNotification(event, dto.date, ctx);
 
       return updatedAv;
     }),
@@ -146,7 +152,7 @@ export const availabilityRouter = createTRPCRouter({
         });
       }
 
-      await sendPushNotification(deletedAv.event, ctx);
+      await sendPushNotification(deletedAv.event, deletedAv.date, ctx);
 
       return deletedAv;
     }),

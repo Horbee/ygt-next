@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import { BaseLayout } from "../../../components/BaseLayout";
 import {
@@ -13,6 +12,7 @@ import {
 } from "../../../components/event-details";
 import { AvailabilityModalProvider } from "../../../context";
 import { useAuthenticatedRedirect } from "../../../hooks";
+import { useSelectedDate } from "../../../hooks/useSelectedDate";
 import { AvailabilityDataWithOwner } from "../../../types";
 import { api } from "../../../utils/api";
 
@@ -21,7 +21,7 @@ const EventDetailsPage: NextPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const { selectedDate, setSelectedDate } = useSelectedDate();
 
   const getEvent = api.event.getEventBySlug.useQuery(
     { slug, withAvailabilities: true },
