@@ -17,7 +17,9 @@ export const useSelectedDate = () => {
     if (date) params.set("date", getFormattedDate(date));
     else params.delete("date");
 
-    router.push(pathname + "?" + params.toString());
+    router.push({ pathname: pathname, query: params.toString() }, undefined, {
+      scroll: false,
+    });
   };
 
   return { selectedDate, setSelectedDate };
