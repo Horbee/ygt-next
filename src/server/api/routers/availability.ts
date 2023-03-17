@@ -25,7 +25,7 @@ const sendPushNotification = async (
   let sent = 0;
   let errors = 0;
   const notificationPromises = users
-    // .filter((u) => u.id !== ctx.session?.user.id)
+    .filter((u) => u.id !== ctx.session?.user.id)
     .flatMap((u) => u.subscriptions)
     .map((userSub) =>
       ctx.webPush
