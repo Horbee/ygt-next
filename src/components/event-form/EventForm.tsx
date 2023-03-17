@@ -1,13 +1,17 @@
 import { useState } from "react";
-import CreatableSelect from "react-select/creatable";
 
-import { Box, Button, Input, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
+import { Box, Button, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
 import { Attachment } from "@prisma/client";
 
 import { useEventForm } from "../../hooks";
 import { AttachmentSelector } from "../attachment-selector/AttachmentSelector";
-import { EventNameWithSlug, ReactSelectWrapper, SwitchInputWrapper } from "../fields";
-import { EventDatesSection, ImageShowcase, InvitedUsersSection } from "./sections";
+import { EventNameWithSlug, SwitchInputWrapper } from "../fields";
+import {
+  EventDatesSection,
+  ImageShowcase,
+  InvitedUsersSection,
+  TagsSection,
+} from "./sections";
 
 import type { SubmitHandler } from "react-hook-form";
 import type { EventDataForm, EventFormValues } from "../../types";
@@ -104,15 +108,7 @@ export const EventForm = ({
 
           <InvitedUsersSection eventForm={eventForm} />
 
-          <Input.Wrapper label="Tags">
-            <ReactSelectWrapper
-              as={CreatableSelect<string, true>}
-              placeholder="Add some tags..."
-              control={control}
-              isMulti
-              fieldName="tags"
-            />
-          </Input.Wrapper>
+          <TagsSection eventForm={eventForm} />
 
           <Button
             type="submit"

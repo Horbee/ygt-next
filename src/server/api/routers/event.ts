@@ -197,4 +197,19 @@ export const eventRouter = createTRPCRouter({
 
       return deletedEvent;
     }),
+
+  getDistinctTags: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      const eventsWithTags = await ctx.prisma.event.findMany({
+        select: { tags: true },
+        distinct: ["tags"],
+      });
+
+      const flat = [...new Set(eventsWithTags.flatMap((e) => e.tags))];
+
+      return flat
+        .filter((t) => t.match(new RegExp(input, "i")))
+        .map((t) => ({ label: t.toUpperCase(), value: t.toUpperCase() }));
+    }),
 });
