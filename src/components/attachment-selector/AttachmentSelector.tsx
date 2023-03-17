@@ -22,7 +22,9 @@ interface Props {
 export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
   const [activeTab, setActiveTab] = useState<AttachmentTabs>("select");
   const [selectedAttachment, setSelectedAttachment] = useState<Attachment | null>(null);
-  const attachments = api.attachment.getAttachments.useQuery();
+  const attachments = api.attachment.getAttachments.useQuery(undefined, {
+    enabled: opened,
+  });
   const upload = api.attachment.createAttachment.useMutation();
   const remove = api.attachment.deleteAttachment.useMutation();
   const utils = api.useContext();
