@@ -41,7 +41,7 @@ export const AvailabilityCalendar = ({
     <Center>
       <DatePicker
         value={selectedDate}
-        date={selectedDate ?? undefined}
+        defaultDate={selectedDate ?? undefined}
         onChange={setSelectedDate}
         minDate={new Date(event.fromDate)}
         maxDate={new Date(event.untilDate)}
