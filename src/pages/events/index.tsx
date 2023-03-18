@@ -8,7 +8,7 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { EventCardSkeleton } from "../../components/event-list/content/event-card/EventCardSkeleton";
 import { EventCardList } from "../../components/event-list/content/EventCardList";
 import { EventPaginator } from "../../components/event-list/content/EventPaginator";
-import { LoadingWrapper } from "../../components/LoadingWrapper";
+import { LoadingWrapper } from "../../components/loaders";
 import { useAuthenticatedRedirect } from "../../hooks";
 import { useEventPagination } from "../../hooks/event-pagination";
 import { EventFilterType } from "../../types";
