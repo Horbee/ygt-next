@@ -80,10 +80,19 @@ export const eventRouter = createTRPCRouter({
   getEventBySlug: protectedProcedure
     .input(z.object({ slug: z.string(), withAvailabilities: z.boolean().optional() }))
     .query(async ({ input, ctx }) => {
+      const userId = ctx.session?.user.id;
+
       const { slug, withAvailabilities = false } = input;
 
-      const event = await ctx.prisma.event.findUnique({
-        where: { slug },
+      const event = await ctx.prisma.event.findFirst({
+        where: {
+          slug,
+          OR: [
+            { ownerId: userId },
+            { invitedUserIds: { has: userId } },
+            { public: true },
+          ],
+        },
         include: {
           owner: true,
           invitedUsers: true,
