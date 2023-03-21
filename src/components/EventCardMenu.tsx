@@ -1,11 +1,16 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { BsPencil, BsThreeDotsVertical, BsTrash } from 'react-icons/bs'
-import { toast } from 'react-toastify'
+import Link from "next/link";
+import { useRouter } from "next/router";
+import {
+  BsFileEarmarkBreak,
+  BsPencil,
+  BsThreeDotsVertical,
+  BsTrash,
+} from "react-icons/bs";
+import { toast } from "react-toastify";
 
-import { ActionIcon, Menu, Portal } from '@mantine/core'
+import { ActionIcon, Menu, Portal } from "@mantine/core";
 
-import { api } from '../utils/api'
+import { api } from "../utils/api";
 
 import type { ActionIconProps } from "@mantine/core";
 type Props = ActionIconProps & {
@@ -56,6 +61,14 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
             href={`/events/${slug}/edit`}
           >
             Edit
+          </Menu.Item>
+          <Menu.Item
+            icon={<BsFileEarmarkBreak size={14} />}
+            onClick={() =>
+              router.push({ pathname: "/events/create", query: { from: slug } })
+            }
+          >
+            Copy
           </Menu.Item>
           <Menu.Item
             color="red"

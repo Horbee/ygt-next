@@ -15,6 +15,13 @@ const CreateEventPage: NextPage = () => {
   useAuthenticatedRedirect("/login");
   const router = useRouter();
 
+  const fromSlug = router.query.from as string;
+
+  const fromEvent = api.event.getEventBySlug.useQuery(
+    { slug: fromSlug },
+    { enabled: !!fromSlug, cacheTime: 0 }
+  );
+
   const create = api.event.createEvent.useMutation();
 
   const createEvent = async (values: EventFormValues, attachment: Attachment | null) => {
@@ -36,7 +43,12 @@ const CreateEventPage: NextPage = () => {
 
   return (
     <BaseLayout title="Create new Event">
-      <EventForm submitButtonText="Create" submitCallback={createEvent} />
+      <EventForm
+        key={fromEvent.data?.id}
+        submitButtonText="Create"
+        submitCallback={createEvent}
+        selectedEvent={fromEvent.data}
+      />
     </BaseLayout>
   );
 };
