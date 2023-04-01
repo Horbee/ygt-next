@@ -1,18 +1,17 @@
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useSession } from "next-auth/react"
+import { useEffect } from "react"
 
-import { env } from "../env/client.mjs";
-import { api } from "../utils/api";
+import { env } from "../env/client.mjs"
+import { api } from "../utils/api"
 
 async function createNotificationSubscription() {
-  //wait for service worker installation to be ready
-  const serviceWorker = await navigator.serviceWorker.ready;
-  // subscribe and return the subscription
-  const existingSub = await serviceWorker.pushManager.getSubscription();
+  const existingSub = await getExistingSubscription();
 
   if (existingSub) {
     return existingSub;
   }
+
+  const serviceWorker = await navigator.serviceWorker.ready;
 
   return await serviceWorker.pushManager.subscribe({
     userVisibleOnly: true,
@@ -20,15 +19,33 @@ async function createNotificationSubscription() {
   });
 }
 
+async function getExistingSubscription(): Promise<PushSubscription | null> {
+  const serviceWorker = await navigator.serviceWorker.ready;
+  return serviceWorker.pushManager.getSubscription();
+}
+
 const isSupported = () =>
   "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
 
-export const useCreateSubscription = () => {
+export const useCreateSubscription = (
+  options: { autoSub?: boolean } = { autoSub: true }
+) => {
   const { status } = useSession();
   const subscribe = api.notification.subscribe.useMutation();
 
   useEffect(() => {
-    if (status === "authenticated" && window && isSupported()) {
+    if (options.autoSub) {
+      triggerSubscription();
+    }
+  }, [options.autoSub]);
+
+  const triggerSubscription = () => {
+    if (status !== "authenticated") {
+      console.log("triggerSubscription: Not authenticated");
+      return;
+    }
+
+    if (window && isSupported()) {
       Notification.requestPermission().then(() => {
         createNotificationSubscription()
           .then((s) => {
@@ -36,6 +53,10 @@ export const useCreateSubscription = () => {
           })
           .catch((err) => console.error(err));
       });
+    } else {
+      console.log("triggerSubscription: Web Push API not supported.");
     }
-  }, [status]);
+  };
+
+  return { triggerSubscription };
 };
