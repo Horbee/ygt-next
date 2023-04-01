@@ -1,6 +1,6 @@
-import fs from "fs"
+import fs from "fs";
 
-import { chromium, expect, test } from "@playwright/test"
+import { chromium, expect, test } from "@playwright/test";
 
 // test("has title", async () => {
 //   const browser = await chromium.launch();
@@ -47,4 +47,21 @@ test("Can create event", async ({ page }) => {
   await page.getByRole("button", { name: /create/i }).click();
 
   await expect(page.getByText(/test event/i)).toBeVisible();
+});
+
+test("Can upload attachment", async ({ page }) => {
+  await page.goto("http://localhost:3000/events/create");
+
+  await page.getByTestId("image-selector").click();
+
+  await page.getByRole("tab", { name: "Upload" }).click();
+
+  await page.locator("input[type=file]").setInputFiles("tests/test-img.jpg");
+
+  await page.getByRole("button", { name: "Upload" }).click();
+
+  await page.getByRole("tabpanel", { name: "Select" }).getByRole("img").first().click();
+  await page.getByRole("button", { name: "Select" }).click();
+
+  await expect(page.getByTestId("background-img")).toBeVisible();
 });

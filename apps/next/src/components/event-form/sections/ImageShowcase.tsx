@@ -14,7 +14,12 @@ export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
   const { classes } = useStyles();
 
   return (
-    <Box c="div" onClick={onClick} className={classes.container}>
+    <Box
+      c="div"
+      onClick={onClick}
+      className={classes.container}
+      data-testid="image-selector"
+    >
       {imgSrc && (
         <ActionIcon
           variant="outline"
