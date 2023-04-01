@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
-import { ReactNode, useState } from "react";
-import { MdChevronLeft } from "react-icons/md";
+import { useRouter } from "next/router"
+import { ReactNode, useState } from "react"
+import { MdChevronLeft } from "react-icons/md"
 
-import { ActionIcon, Container, Group, Text } from "@mantine/core";
+import { ActionIcon, Container, Group, Text } from "@mantine/core"
 
-import { useCreateSubscription } from "../hooks/useCreateSubscription";
-import { AppHeader } from "./app-header";
-import { AppNavbar } from "./app-navbar";
-import { HeadContent } from "./HeadContent";
+import { useCreateSubscription } from "../hooks/useCreateSubscription"
+import { AppHeader } from "./app-header"
+import { AppNavbar } from "./app-navbar"
+import { HeadContent } from "./HeadContent"
 
 import type { ContainerProps } from "@mantine/core";
 type Props = ContainerProps & {
