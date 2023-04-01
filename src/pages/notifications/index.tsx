@@ -14,7 +14,7 @@ export default function NotificationsPage() {
   return (
     <BaseLayout title="Notification Settings">
       <Stack>
-        <Button leftIcon={<FaBell />} variant="white" onClick={triggerSubscription}>
+        <Button leftIcon={<FaBell />} variant="outline" onClick={triggerSubscription}>
           Trigger Subscription
         </Button>
 
