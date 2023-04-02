@@ -23,9 +23,11 @@ export function getEventsWhereClause(
   }
 
   return {
-    ownerId: eventFilters.includes("own") ? userId : undefined,
-    invitedUserIds: eventFilters.includes("invited") ? { has: userId } : undefined,
-    public: eventFilters.includes("public") ? true : undefined,
-    untilDate: !eventFilters.includes("past") ? { gte: new Date() } : undefined,
+    OR: [
+      { ownerId: eventFilters.includes("own") ? userId : undefined },
+      { invitedUserIds: eventFilters.includes("invited") ? { has: userId } : undefined },
+      { public: eventFilters.includes("public") ? true : undefined },
+      { untilDate: !eventFilters.includes("past") ? { gte: new Date() } : undefined },
+    ],
   };
 }
