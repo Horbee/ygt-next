@@ -25,10 +25,10 @@ export const InvitedUsersSection = ({ eventForm }: Props) => {
         as={AsyncSelect<User, true>}
         control={control}
         fieldName="invitedUsers"
-        defaultOptions
+        noOptionsMessage={() => "⚡ Type away and refine your search ⚡"}
         isMulti
         placeholder="Add some users..."
-        loadOptions={(name) => debouncedFindUser(name)}
+        loadOptions={(name) => debouncedFindUser(name.trim())}
         getOptionLabel={(opt) => opt.name ?? ""}
         getOptionValue={(opt) => opt.id}
       />
