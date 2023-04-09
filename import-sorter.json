@@ -6,7 +6,7 @@
       "count": 200
     },
     "quoteMark": "double",
-    "hasSemicolon": false
+    "hasSemicolon": true
   },
   "sortConfiguration": {
     "customOrderingRules": {

@@ -1,4 +1,3 @@
-import format from "date-fns/format";
 import { z } from "zod";
 
 import { Event } from "@prisma/client";
@@ -79,14 +78,6 @@ export const availabilityRouter = createTRPCRouter({
       });
 
       await sendPushNotification(event, dto.date, ctx);
-
-      // await sendAvailabilityEmail(
-      //   ctx.session.user.name!,
-      //   uniqueUsers,
-      //   event.slug,
-      //   event.name,
-      //   createdAv.date
-      // );
 
       return createdAv;
     }),

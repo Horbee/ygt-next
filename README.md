@@ -13,6 +13,7 @@ T3 Stack - take a look here if you want to know more about it: [https://create.t
 - tRPC: A framework for building modern and fast APIs with TypeScript and Next.js, designed for simplicity and scalability.
 - MongoDB: A popular, cross-platform, NoSQL database used for storing high-volume, high-velocity data.
 - Mantine-UI: A fully featured React components library which includes more than 100 customizable components and 40 hooks.
+- Web-Push: Sending push notifications with the Web Push protocol
 
 ## Prerequisites
 
@@ -39,17 +40,17 @@ cd ygt-next
 pnpm install
 ```
 
-3. Start the MongoDB database with the help of the `docker-compose.yaml` file or use MongoDB Atlas. Then create collections and indexes:
+3. Make a copy of the `.env.example` file and rename it to `.env.local`. Fill out the necessary details:
+
+```bash
+mv .env.example .env.local
+```
+
+4. Start the MongoDB database with the help of the `docker-compose.yaml` file or use MongoDB Atlas. Then create collections and indexes:
 
 ```bash
 docker compose up -d
 pnpm prisma db push
-```
-
-4. Make a copy of the `.env.example` file and rename it to `.env.local`. Fill out the necessary details:
-
-```bash
-mv .env.example .env.local
 ```
 
 5. Start the development server:
