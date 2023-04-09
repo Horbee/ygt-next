@@ -1,10 +1,10 @@
-import { FaBell, FaListUl, FaRegCalendarPlus } from "react-icons/fa"
+import { FaBell, FaInfo, FaListUl, FaRegCalendarPlus } from "react-icons/fa";
 
-import { Box, Divider, Drawer, Stack } from "@mantine/core"
+import { Box, Divider, Drawer, Stack } from "@mantine/core";
 
-import { MainLink } from "./MainLink"
-import { NavHeader } from "./NavHeader"
-import { UserLink } from "./UserLink"
+import { MainLink } from "./MainLink";
+import { NavHeader } from "./NavHeader";
+import { UserLink } from "./UserLink";
 
 interface Props {
   opened: boolean;
@@ -38,6 +38,13 @@ export const AppNavbar = ({ opened, onClose }: Props) => {
             href="/notifications"
             color="grape"
             icon={<FaBell />}
+            onClose={onClose}
+          />
+          <MainLink
+            label="About"
+            href="/about"
+            color="green"
+            icon={<FaInfo />}
             onClose={onClose}
           />
         </Box>

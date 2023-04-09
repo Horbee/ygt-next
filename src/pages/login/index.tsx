@@ -1,12 +1,13 @@
-import { GetServerSidePropsContext } from 'next'
-import { getServerSession } from 'next-auth/next'
-import { signIn } from 'next-auth/react'
-import Head from 'next/head'
-import { IoLogoGoogle } from 'react-icons/io'
+import { GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth/next";
+import { signIn } from "next-auth/react";
+import Head from "next/head";
+import Link from "next/link";
+import { IoLogoGoogle } from "react-icons/io";
 
-import { Button, Center, Container, Stack } from '@mantine/core'
+import { Anchor, Button, Container, Stack } from "@mantine/core";
 
-import { authOptions } from '../../server/auth'
+import { authOptions } from "../../server/auth";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -30,7 +31,7 @@ export default function LoginPage() {
         <title>You've got time: Login</title>
       </Head>
       <Container size="xs" px="md">
-        <Stack align="center">
+        <Stack align="center" h="97vh">
           <h1>Sign into your account</h1>
 
           <Button
@@ -42,6 +43,12 @@ export default function LoginPage() {
           >
             Sign in with Google
           </Button>
+
+          <div style={{ marginTop: "auto", padding: "10px" }}>
+            <Anchor component={Link} href="/about">
+              About
+            </Anchor>
+          </div>
         </Stack>
       </Container>
     </>
