@@ -7,6 +7,7 @@ import { IoLogoGoogle } from "react-icons/io";
 
 import { Anchor, Button, Container, Stack } from "@mantine/core";
 
+import { EmailSigninForm } from "../../components/email-signin-form/EmailSigninForm";
 import { authOptions } from "../../server/auth";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -31,8 +32,10 @@ export default function LoginPage() {
         <title>You've got time: Login</title>
       </Head>
       <Container size="xs" px="md">
-        <Stack align="center" h="97vh">
-          <h1>Sign into your account</h1>
+        <Stack h="97vh">
+          <h1 style={{ textAlign: "center" }}>Sign into your account</h1>
+
+          <EmailSigninForm />
 
           <Button
             color="red"
@@ -44,7 +47,7 @@ export default function LoginPage() {
             Sign in with Google
           </Button>
 
-          <div style={{ marginTop: "auto", padding: "10px" }}>
+          <div style={{ marginTop: "auto", padding: "10px", textAlign: "center" }}>
             <Anchor component={Link} href="/about">
               About
             </Anchor>

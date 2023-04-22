@@ -1,11 +1,13 @@
 import type { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
+import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
+import { sendVerificationRequest } from "./verification-request";
 
 import type { DefaultSession, NextAuthOptions } from "next-auth";
 /**
@@ -51,6 +53,11 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: env.EMAIL_SERVER,
+      from: env.EMAIL_FROM,
+      sendVerificationRequest,
     }),
     /**
      * ...add more providers here

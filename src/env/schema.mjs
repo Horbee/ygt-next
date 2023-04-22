@@ -26,6 +26,8 @@ export const serverSchema = z.object({
   AWS__BUCKET_NAME: z.string(),
   AWS__BUCKET_REGION: z.string(),
   PRIVATE_VAPID_KEY: z.string(),
+  EMAIL_SERVER: z.string(),
+  EMAIL_FROM: z.string(),
 });
 
 /**
@@ -45,6 +47,8 @@ export const serverEnv = {
   AWS__BUCKET_NAME: process.env.AWS__BUCKET_NAME,
   AWS__BUCKET_REGION: process.env.AWS__BUCKET_REGION,
   PRIVATE_VAPID_KEY: process.env.PRIVATE_VAPID_KEY,
+  EMAIL_FROM: process.env.EMAIL_FROM,
+  EMAIL_SERVER: process.env.EMAIL_SERVER,
 };
 
 /**
