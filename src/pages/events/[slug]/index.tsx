@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { BaseLayout } from "../../../components/BaseLayout";
@@ -11,13 +11,16 @@ import {
   OwnAvailability,
 } from "../../../components/event-details";
 import { AvailabilityModalProvider } from "../../../context";
-import { useAuthenticatedRedirect } from "../../../hooks";
 import { useSelectedDate } from "../../../hooks/useSelectedDate";
 import { AvailabilityDataWithOwner } from "../../../types";
 import { api } from "../../../utils/api";
+import { withAuthentication } from "../../../utils/withAuthentication";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return await withAuthentication(context);
+};
 
 const EventDetailsPage: NextPage = () => {
-  useAuthenticatedRedirect("/login");
   const router = useRouter();
   const slug = router.query.slug as string;
 

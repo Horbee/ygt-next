@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useState } from "react";
 import { MdAdd } from "react-icons/md";
 
 import { ActionIcon, Chip, DefaultMantineColor, Group, Stack } from "@mantine/core";
@@ -9,12 +8,12 @@ import { EventCardSkeleton } from "../../components/event-list/content/event-car
 import { EventCardList } from "../../components/event-list/content/EventCardList";
 import { EventPaginator } from "../../components/event-list/content/EventPaginator";
 import { LoadingWrapper } from "../../components/loaders";
-import { useAuthenticatedRedirect } from "../../hooks";
 import { useEventPagination } from "../../hooks/event-pagination";
 import { EventFilterType } from "../../types";
 import { api } from "../../utils/api";
 
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import { withAuthentication } from "../../utils/withAuthentication";
 
 const eventFilters: {
   title: string;
@@ -27,8 +26,12 @@ const eventFilters: {
   { title: "Inclue past events", value: "past", color: "blue" },
 ];
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return await withAuthentication(context);
+};
+
 const EventListPage: NextPage = () => {
-  useAuthenticatedRedirect("/login");
+  // useAuthenticatedRedirect("/login");
 
   const { page, pageSize, selectedFilter, setPage, toggleEventFilter } =
     useEventPagination();

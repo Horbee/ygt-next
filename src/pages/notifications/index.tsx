@@ -1,14 +1,17 @@
-import { FaBell } from "react-icons/fa"
+import { FaBell } from "react-icons/fa";
 
-import { Button, Stack, Text } from "@mantine/core"
+import { Button, Stack, Text } from "@mantine/core";
 
-import { BaseLayout } from "../../components/BaseLayout"
-import { useAuthenticatedRedirect } from "../../hooks"
-import { useCreateSubscription } from "../../hooks/useCreateSubscription"
+import { BaseLayout } from "../../components/BaseLayout";
+import { useCreateSubscription } from "../../hooks/useCreateSubscription";
+import { GetServerSideProps } from "next";
+import { withAuthentication } from "../../utils/withAuthentication";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return await withAuthentication(context);
+};
 
 export default function NotificationsPage() {
-  useAuthenticatedRedirect("/login");
-
   const { triggerSubscription } = useCreateSubscription({ autoSub: false });
 
   return (

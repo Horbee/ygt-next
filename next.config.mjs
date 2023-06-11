@@ -27,7 +27,7 @@ const config = {
       {
         source: "/",
         destination: "/events",
-        permanent: true,
+        permanent: false,
       },
     ];
   },

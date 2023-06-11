@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
@@ -6,13 +6,16 @@ import { Attachment } from "@prisma/client";
 
 import { BaseLayout } from "../../../components/BaseLayout";
 import { EventForm } from "../../../components/event-form/EventForm";
-import { useAuthenticatedRedirect } from "../../../hooks";
 import { mapToCreateEventDto } from "../../../mappers";
 import { EventFormValues } from "../../../types";
 import { api } from "../../../utils/api";
+import { withAuthentication } from "../../../utils/withAuthentication";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return await withAuthentication(context);
+};
 
 const EditEventPage: NextPage = () => {
-  useAuthenticatedRedirect("/login");
   const router = useRouter();
 
   const slug = router.query.slug as string;
