@@ -22,6 +22,7 @@ export const AvailabilityCalendar = ({
   const getDateColor = (currentDate: Date) => {
     const data =
       availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
+
     if (data.some((d) => d.available === "notgood")) {
       return "red";
     }

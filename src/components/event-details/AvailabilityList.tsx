@@ -16,15 +16,13 @@ interface Props {
 
 export const AvailabilityList = ({ selectedDate, availabilities }: Props) => {
   const session = useSession();
+  const userId = session.data?.user.id;
 
   const filteredAvailabilities = useMemo(() => {
     return availabilities
-      .filter(
-        (a) =>
-          isSameDay(new Date(a.date), selectedDate) && a.ownerId !== session.data?.user.id
-      )
+      .filter((a) => isSameDay(new Date(a.date), selectedDate) && a.ownerId !== userId)
       .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
-  }, [availabilities, selectedDate, session]);
+  }, [availabilities, selectedDate, userId]);
 
   return (
     <div>

@@ -11,6 +11,7 @@ import { api } from "../../utils/api";
 import { AvailabilityCard } from "./availability-card";
 
 import type { AvailabilityDataWithOwner } from "../../types";
+import { useMemo } from "react";
 interface OwnAvailabilityProps {
   selectedDate: Date;
   availabilities: AvailabilityDataWithOwner[];
@@ -23,21 +24,22 @@ export const OwnAvailability = ({
   eventId,
 }: OwnAvailabilityProps) => {
   const session = useSession();
-
+  const userId = session.data?.user.id;
   const utils = api.useContext();
+
+  const { openModal } = useAvailabilityModal();
+
   const deleteAvailability = api.availability.deleteById.useMutation({
     onSuccess: () => {
       utils.event.getEventBySlug.invalidate();
     },
   });
 
-  const { openModal } = useAvailabilityModal();
-
-  const myAvailability = availabilities.find(
-    (a) =>
-      isSameDay(new Date(a.date), selectedDate) &&
-      a.ownerId === session.data?.user.id
-  );
+  const myAvailability = useMemo(() => {
+    return availabilities.find(
+      (a) => isSameDay(new Date(a.date), selectedDate) && a.ownerId === userId
+    );
+  }, [availabilities, selectedDate, userId]);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this?")) {

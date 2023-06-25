@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 import { Availability } from "@prisma/client";
 
+import { useDisclosure } from "@mantine/hooks";
 import { api } from "../utils/api";
 
 import type { ReactNode } from "react";
@@ -19,7 +20,7 @@ const AvailabilityModalContext = createContext<
 >(undefined);
 
 export const AvailabilityModalProvider = ({ children }: { children: ReactNode }) => {
-  const [opened, setOpened] = useState(false);
+  const [opened, { open: openInternal, close: closeModal }] = useDisclosure();
   const [selectedAvailability, setSelectedAvailability] = useState<Availability>();
   const [eventId, setEventId] = useState<string>();
 
@@ -29,10 +30,8 @@ export const AvailabilityModalProvider = ({ children }: { children: ReactNode })
   const openModal = (myAvailability?: Availability, eventId?: string) => {
     setSelectedAvailability(myAvailability);
     setEventId(eventId);
-    setOpened(true);
+    openInternal();
   };
-
-  const closeModal = () => setOpened(false);
 
   const updateAvailability = (doc: any) => {
     return update.mutateAsync({
