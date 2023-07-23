@@ -37,7 +37,7 @@ export function ReactSelectWrapper<T extends FieldValues, C extends ElementType>
 
   return (
     <Component
-      onChange={(value: any) => onChange({ target: { value } })}
+      onChange={onChange}
       onBlur={onBlur}
       value={value}
       name={name}
