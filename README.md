@@ -29,35 +29,53 @@ The application uses Google Auth Provider to sign in users and AWS S3 to save th
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/Horbee/ygt-next
-```
+   ```bash
+   git clone https://github.com/Horbee/ygt-next
+   ```
 
 2. Install the dependencies:
 
-```bash
-cd ygt-next
-pnpm install
-```
+   ```bash
+   cd ygt-next
+   pnpm install
+   ```
 
-3. Make a copy of the `.env.example` file and rename it to `.env.local`. Fill out the necessary details:
+   The install script should also execute `pnpm prisma generate` automatically. In case the prisma client is not generated properly, you have to exectue this command manually.
 
-```bash
-mv .env.example .env.local
-```
+3. Create .env file: you have two options to create this file, choose one:
 
-4. Start the MongoDB database with the help of the `docker-compose.yaml` file or use MongoDB Atlas. Then create collections and indexes:
+- 3.1 execute the following script which will generate the .env file for you:
 
-```bash
-docker compose up -d
-pnpm prisma db push
-```
+  ```bash
+  ./scripts/environment-config-dev.mjs
+
+  # optionally
+  ./scripts/environment-config-dev.mjs --GOOGLE_CLIENT_ID <your_google_client_id> --GOOGLE_CLIENT_SECRET <your_google_client_secret>
+  ```
+
+- 3.2 Make a copy of the `.env.example` file and rename it to `.env.local`. Fill out the necessary details:
+
+  ```bash
+  mv .env.example .env.local
+  ```
+
+  _Please note: Adding a Google ClientId and Secret for OAuth is not necessary. You can use the Mailhog service with the Email provider to send out and catch magic login links._
+
+4. Start the required services with the help of the `docker-compose.yaml` file. Then you need to create collections and indexes for MongoDB and setup the local S3 Bucket:
+
+   ```bash
+   docker compose up -d
+
+   pnpm prisma db push
+
+   ./scripts/setup-s3-local.mjs
+   ```
 
 5. Start the development server:
 
-```bash
-pnpm dev
-```
+   ```bash
+   pnpm dev
+   ```
 
 6. Open your browser and navigate to http://localhost:3000. You should see the You've got time application's login screen.
 
@@ -65,7 +83,11 @@ pnpm dev
 
 ## Authenticating users
 
-To sign in to the application, click the "Sign in with Google" button on the login page. This will redirect you to the Google's authentication page, where you can sign in with your preferred account.
+To login to the application, enter your email address and click the "Send a magic link" button on the login page. This will send you a login email which you can catch using the Mailhog service.
+
+Navigate to `http://localhost:8025/` and use the login link in the email.
+
+Alternatively, you can use Google Oauth if you have it set up.
 
 ## Creating events
 
