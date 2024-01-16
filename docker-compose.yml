@@ -25,5 +25,24 @@ services:
     depends_on:
       - mongo
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ygt-dev-mailhog
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=eu-central-1
+      - DEBUG=1
+    volumes:
+      - "./localstack:/tmp/localstack-ygt" # Persist data
+      - "/var/run/docker.sock:/var/run/docker.sock" # Docker daemon socket
+
 volumes:
   mongo-db:

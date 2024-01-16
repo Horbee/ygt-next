@@ -53,7 +53,10 @@ export const attachmentRouter = createTRPCRouter({
       });
       const preSignedUrl = await getSignedUrl(ctx.s3, command, { expiresIn: 5 * 60 });
 
-      const s3FileUrl = `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${input.fileName}`;
+      const s3FileUrl =
+        env.NODE_ENV === "development"
+          ? `http://localhost:4566/${env.AWS__BUCKET_NAME}/${input.fileName}`
+          : `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${input.fileName}`;
 
       const attachment = await ctx.prisma.attachment.create({
         data: {

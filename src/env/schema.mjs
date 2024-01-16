@@ -19,12 +19,18 @@ export const serverSchema = z.object({
     // VERCEL_URL doesn't include `https` so it cant be validated as a URL
     process.env.VERCEL ? z.string() : z.string().url()
   ),
-  GOOGLE_CLIENT_ID: z.string(),
-  GOOGLE_CLIENT_SECRET: z.string(),
-  AWS__ACCESS_KEY_ID: z.string(),
-  AWS__ACCESS_KEY_SECRET: z.string(),
+  GOOGLE_CLIENT_ID:
+    process.env.NODE_ENV === "production" ? z.string().min(1) : z.string().optional(),
+  GOOGLE_CLIENT_SECRET:
+    process.env.NODE_ENV === "production" ? z.string().min(1) : z.string().optional(),
+  AWS__ACCESS_KEY_ID:
+    process.env.NODE_ENV === "production" ? z.string().min(1) : z.string(),
+  AWS__ACCESS_KEY_SECRET:
+    process.env.NODE_ENV === "production" ? z.string().min(1) : z.string(),
+
   AWS__BUCKET_NAME: z.string(),
   AWS__BUCKET_REGION: z.string(),
+
   PRIVATE_VAPID_KEY: z.string(),
   EMAIL_SERVER: z.string(),
   EMAIL_FROM: z.string(),
