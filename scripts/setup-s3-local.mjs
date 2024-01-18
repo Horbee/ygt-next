@@ -37,6 +37,7 @@ const createBucket = async () => {
         },
       })
     );
+    console.log("YGT local S3 Bucket is setup!");
   } catch (error) {
     console.error("Error while creating local bucket!", error);
   }

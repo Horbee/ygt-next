@@ -71,6 +71,8 @@ The application uses Google Auth Provider to sign in users and AWS S3 to save th
    ./scripts/setup-s3-local.mjs
    ```
 
+- 4.1 If you are using a Mac with Apple-Chip, you will need to use the `zcube/bitnami-compat-mongodb` image, as the original `bitnami/mongodb` is not compatible with arm64. Open the `docker-compose.yml` file and switch the comments on the lines 3 and 4.
+
 5. Start the development server:
 
    ```bash
