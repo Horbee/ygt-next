@@ -1,7 +1,7 @@
 services:
   mongo:
     image: "bitnami/mongodb:latest"
-    restart: always
+    # image: "zcube/bitnami-compat-mongodb:latest" # use this image on Apple Silicon instead
     environment:
       MONGODB_ADVERTISED_HOSTNAME: 127.0.0.1
       MONGODB_REPLICA_SET_MODE: primary
@@ -15,15 +15,31 @@ services:
 
   mongo-express:
     image: mongo-express
-    restart: always
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin
     depends_on:
       - mongo
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ygt-dev-mailhog
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=eu-central-1
+      - DEBUG=1
+    volumes:
+      - "./localstack:/tmp/localstack-ygt" # Persist data
+      - "/var/run/docker.sock:/var/run/docker.sock" # Docker daemon socket
 
 volumes:
   mongo-db:

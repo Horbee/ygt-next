@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth/next";
-import { signIn } from "next-auth/react";
+import { signIn, getProviders } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { IoLogoGoogle } from "react-icons/io";
@@ -17,12 +17,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return { redirect: { destination: "/" } };
   }
 
+  const providers = await getProviders();
+
   return {
-    props: {},
+    props: { providers: Object.keys(providers ?? {}) },
   };
 }
 
-export default function LoginPage() {
+export default function LoginPage({ providers }: { providers: string[] }) {
   return (
     <>
       <Head>
@@ -43,6 +45,7 @@ export default function LoginPage() {
             fullWidth
             leftIcon={<IoLogoGoogle size={18} />}
             onClick={() => signIn("google")}
+            disabled={!providers.includes("google")}
           >
             Sign in with Google
           </Button>
