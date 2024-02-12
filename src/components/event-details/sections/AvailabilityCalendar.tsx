@@ -1,4 +1,5 @@
 import isSameDay from "date-fns/isSameDay";
+import max from "date-fns/max";
 
 import { Center, Indicator } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
@@ -19,6 +20,10 @@ export const AvailabilityCalendar = ({
   selectedDate,
   setSelectedDate,
 }: Props) => {
+  const latestAvailability = availabilities.length
+    ? max(availabilities.map((a) => a.date))
+    : null;
+
   const getDateColor = (currentDate: Date) => {
     const data =
       availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
@@ -42,7 +47,7 @@ export const AvailabilityCalendar = ({
     <Center>
       <DatePicker
         value={selectedDate}
-        defaultDate={selectedDate ?? undefined}
+        defaultDate={selectedDate ?? latestAvailability ?? event.untilDate ?? undefined}
         onChange={setSelectedDate}
         minDate={new Date(event.fromDate)}
         maxDate={new Date(event.untilDate)}

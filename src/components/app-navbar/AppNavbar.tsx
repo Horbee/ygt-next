@@ -1,10 +1,11 @@
-import { FaBell, FaInfo, FaListUl, FaRegCalendarPlus } from "react-icons/fa";
+import { FaBell, FaInfo, FaListUl, FaRegCalendarPlus, FaRegUser } from "react-icons/fa";
 
 import { Box, Divider, Drawer, Stack } from "@mantine/core";
 
 import { MainLink } from "./MainLink";
 import { NavHeader } from "./NavHeader";
 import { UserLink } from "./UserLink";
+import { useSession } from "next-auth/react";
 
 interface Props {
   opened: boolean;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export const AppNavbar = ({ opened, onClose }: Props) => {
+  const { data: session } = useSession();
+
   return (
     <Drawer opened={opened} onClose={onClose} withCloseButton={false} padding="none">
       <Stack p="sm" h="100vh" spacing="xs">
@@ -31,6 +34,13 @@ export const AppNavbar = ({ opened, onClose }: Props) => {
             href="/events/create"
             color="orange"
             icon={<FaRegCalendarPlus />}
+            onClose={onClose}
+          />
+          <MainLink
+            label="User Settings"
+            href="/users/me"
+            color="indigo"
+            icon={<FaRegUser />}
             onClose={onClose}
           />
           <MainLink

@@ -1,59 +1,14 @@
 import { z } from "zod";
 
-import { Event } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
-import { getFormattedDate } from "../../../hooks/useSelectedDate";
 import { AvailabilityDto } from "../../dto/availability.dto";
-import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
-
-const sendPushNotification = async (
-  event: Event,
-  availabilityDate: Date,
-  ctx: TRPCContext
-) => {
-  const userName = ctx.session?.user.name;
-  const url = `/events/${event.slug}?date=${getFormattedDate(availabilityDate)}`;
-
-  const users = await ctx.prisma.user.findMany({
-    where: { availabilities: { some: { eventId: event.id } } },
-    include: { subscriptions: true },
-    distinct: ["id"],
-  });
-
-  let sent = 0;
-  let errors = 0;
-  const notificationPromises = users
-    .filter((u) => u.id !== ctx.session?.user.id)
-    .flatMap((u) => u.subscriptions)
-    .map((userSub) =>
-      ctx.webPush
-        .sendNotification(
-          userSub.sub!,
-          JSON.stringify({
-            title: "You've got time",
-            body: `${userName} modified availbility for event ${event.name}`,
-            url,
-          })
-        )
-        .then(() => sent++)
-        .catch((error) => {
-          errors++;
-          console.error("Push Notification error");
-          console.error(error);
-          if (error.statusCode === 410 || error.statusCode === 404) {
-            console.error("Deleting old subscription");
-            return ctx.prisma.subscription.delete({ where: { id: userSub.id } });
-          }
-        })
-    );
-
-  await Promise.allSettled(notificationPromises);
-
-  console.log(
-    `Push notifications sent to ${sent} devices, rejected: ${errors} devices, eventID: ${event.id}`
-  );
-};
+import { createTRPCRouter, protectedProcedure } from "../trpc";
+import {
+  sendAvailabilityModificationPushNotifications,
+  sendReactionPushNotifications,
+} from "../helpers/send-push-notification";
+import { getFormattedDate } from "../../../hooks/useSelectedDate";
 
 export const availabilityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -77,7 +32,7 @@ export const availabilityRouter = createTRPCRouter({
         data: { ...dto, ownerId: userId },
       });
 
-      await sendPushNotification(event, dto.date, ctx);
+      sendAvailabilityModificationPushNotifications(event, dto.date, ctx);
 
       return createdAv;
     }),
@@ -121,7 +76,7 @@ export const availabilityRouter = createTRPCRouter({
           message: "Availability not found or you are not the owner",
         });
 
-      await sendPushNotification(event, dto.date, ctx);
+      sendAvailabilityModificationPushNotifications(event, dto.date, ctx);
 
       return updatedAv;
     }),
@@ -143,8 +98,76 @@ export const availabilityRouter = createTRPCRouter({
         });
       }
 
-      await sendPushNotification(deletedAv.event, deletedAv.date, ctx);
+      sendAvailabilityModificationPushNotifications(deletedAv.event, deletedAv.date, ctx);
 
       return deletedAv;
+    }),
+  toggleUserReaction: protectedProcedure
+    .input(
+      z.object({
+        availabilityId: z.string(),
+        reaction: z.object({ native: z.string(), shortcodes: z.string() }),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { id: userId, name: userName, email: userEmail } = ctx.session.user;
+      const { availabilityId, reaction } = input;
+
+      const availability = await ctx.prisma.availability.findFirst({
+        where: {
+          id: availabilityId,
+          reactions: { some: { ownerId: userId, shortcodes: reaction.shortcodes } },
+        },
+      });
+
+      let updatedAv;
+      if (availability) {
+        updatedAv = await ctx.prisma.availability.update({
+          where: { id: availabilityId },
+          data: {
+            reactions: {
+              deleteMany: { where: { ownerId: userId, shortcodes: reaction.shortcodes } },
+            },
+          },
+          include: { event: true },
+        });
+      } else {
+        updatedAv = await ctx.prisma.availability.update({
+          where: { id: availabilityId },
+          data: {
+            reactions: {
+              push: {
+                ownerId: userId,
+                ownerName: userName ?? userEmail!,
+                emoji: reaction.native,
+                shortcodes: reaction.shortcodes,
+              },
+            },
+          },
+          include: { event: true },
+        });
+      }
+
+      if (!updatedAv)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Availability not found or you are not the owner",
+        });
+
+      // Send push notification only if reaction was added
+      if (!availability) {
+        const notificationUrl = `/events/${updatedAv.event.slug}?date=${getFormattedDate(
+          updatedAv.date
+        )}`;
+
+        sendReactionPushNotifications(
+          `${userName} reacted to your availability with: ${reaction.native}`,
+          updatedAv.ownerId,
+          notificationUrl,
+          ctx
+        );
+      }
+
+      return updatedAv;
     }),
 });

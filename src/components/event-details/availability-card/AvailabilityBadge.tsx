@@ -3,11 +3,11 @@ import { Badge } from "@mantine/core";
 import type { AvailableTypes } from "../../../types";
 
 export const AvailabilityBadge = ({ type }: { type: AvailableTypes }) => {
-  const data = getAvailabilityBadge(type);
+  const { color, text } = getAvailabilityBadge(type);
 
   return (
-    <Badge color={data.color} variant="light">
-      {data.text}
+    <Badge color={color} variant="light">
+      {text}
     </Badge>
   );
 };

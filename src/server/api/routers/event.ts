@@ -1,54 +1,11 @@
 import { z } from "zod";
 
-import { Event, Prisma, Subscription } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { EventDto } from "../../dto/event.dto";
 import { getEventsWhereClause } from "../helpers/get-events-helper";
-import { createTRPCRouter, protectedProcedure, TRPCContext } from "../trpc";
-
-const sendPushNotification = async (event: Event, body: string, ctx: TRPCContext) => {
-  const url = "/events/" + event.slug;
-
-  let subs: Subscription[] = [];
-
-  if (event.public) {
-    subs = await ctx.prisma.subscription.findMany();
-  } else {
-    const users = await ctx.prisma.user.findMany({
-      where: { id: { in: event.invitedUserIds } },
-      include: { subscriptions: true },
-      distinct: ["id"],
-    });
-    subs = users.flatMap((u) => u.subscriptions);
-  }
-
-  let sent = 0;
-  let errors = 0;
-
-  const notificationPromises = subs
-    .filter((s) => s.ownerId !== ctx.session?.user.id)
-    .map((s) =>
-      ctx.webPush
-        .sendNotification(s.sub, JSON.stringify({ title: "You've got time", body, url }))
-        .then(() => sent++)
-        .catch((error) => {
-          errors++;
-          console.error("Push Notification error");
-          console.error(error);
-          if (error.statusCode === 410 || error.statusCode === 404) {
-            console.error("Deleting old subscription");
-            return ctx.prisma.subscription.delete({ where: { id: s.id } });
-          }
-        })
-    );
-
-  await Promise.allSettled(notificationPromises);
-
-  console.log(
-    `Push notifications sent to ${sent} devices, rejected: ${errors} devices, eventID: ${event.id}`
-  );
-};
+import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { sendEventModificationPushNotification } from "../helpers/send-push-notification";
 
 export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
@@ -131,7 +88,7 @@ export const eventRouter = createTRPCRouter({
       },
     });
 
-    await sendPushNotification(
+    sendEventModificationPushNotification(
       createdEvent,
       `${user.name} created a new event: ${createdEvent.name}`,
       ctx
@@ -167,7 +124,7 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
       });
 
-      await sendPushNotification(
+      sendEventModificationPushNotification(
         updatedEvent,
         `${user.name} updated an event: ${updatedEvent.name}`,
         ctx
@@ -198,7 +155,7 @@ export const eventRouter = createTRPCRouter({
         include: { coverImage: true },
       });
 
-      await sendPushNotification(
+      sendEventModificationPushNotification(
         deletedEvent,
         `${user.name} deleted an event: ${deletedEvent.name}`,
         ctx

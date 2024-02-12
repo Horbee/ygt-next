@@ -82,19 +82,27 @@ model Availability {
 
     available String
     comment   String?
-    date      DateTime  @db.Date
-    fromTime  DateTime? @db.Date
-    untilTime DateTime? @db.Date
-    owner     User      @relation(fields: [ownerId], references: [id])
-    ownerId   String    @map("owner") @db.ObjectId
-    event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId   String    @map("event") @db.ObjectId
+    date      DateTime   @db.Date
+    fromTime  DateTime?  @db.Date
+    untilTime DateTime?  @db.Date
+    owner     User       @relation(fields: [ownerId], references: [id])
+    ownerId   String     @map("owner") @db.ObjectId
+    event     Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    eventId   String     @map("event") @db.ObjectId
+    reactions Reaction[]
 
     createdAt DateTime @default(now()) @db.Date
     updatedAt DateTime @updatedAt() @db.Date
 
     @@unique([ownerId, id])
     @@map("availabilities")
+}
+
+type Reaction {
+    ownerId    String @db.ObjectId
+    ownerName  String
+    emoji      String
+    shortcodes String
 }
 
 model Event {
