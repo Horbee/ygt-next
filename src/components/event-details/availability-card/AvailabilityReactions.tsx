@@ -1,4 +1,4 @@
-import { Group, Tooltip, Badge, Flex, Button, Box } from "@mantine/core";
+import { Group, Tooltip, Badge, Flex, Button, Box, type Sx } from "@mantine/core";
 import { MdOutlineAddReaction } from "react-icons/md";
 import { useSession } from "next-auth/react";
 
@@ -17,17 +17,28 @@ type Props = {
   groupedReactions: GroupedReactions;
   handleAddReaction: (emoji: { native: string; shortcodes: string }) => Promise<void>;
   openEmojiSelector: () => void;
+  isDisabled?: boolean;
 };
 
 export const AvailabilityReactions = ({
   groupedReactions,
   handleAddReaction,
   openEmojiSelector,
+  isDisabled,
 }: Props) => {
   const { data: sessionData } = useSession();
 
   const ownerNames = (emoji: string) =>
     groupedReactions[emoji]?.users.map((u) => u.ownerName).join(", ");
+
+  const hoverStyles: Sx = isDisabled
+    ? {}
+    : {
+        "&:hover": {
+          border: "1px solid #016c69",
+          cursor: "pointer",
+        },
+      };
 
   return (
     <Group position="left" spacing="5px">
@@ -49,15 +60,16 @@ export const AvailabilityReactions = ({
               sx={{
                 border: "1px solid transparent",
                 userSelect: "none",
-                "&:hover": {
-                  border: "1px solid #016c69",
-                  cursor: "pointer",
-                },
+                ...hoverStyles,
               }}
               py="sm"
               size="md"
               variant={userReacted ? "light" : "subtle"}
-              onClick={() => handleAddReaction({ native: emoji, shortcodes })}
+              onClick={() => {
+                if (isDisabled) return;
+
+                handleAddReaction({ native: emoji, shortcodes });
+              }}
             >
               <Flex gap="5px">
                 <Box component="span" fz="1.2rem">
@@ -71,7 +83,7 @@ export const AvailabilityReactions = ({
           </Tooltip>
         );
       })}
-      <Button variant="subtle" onClick={openEmojiSelector} compact>
+      <Button variant="subtle" onClick={openEmojiSelector} disabled={isDisabled} compact>
         <MdOutlineAddReaction size={20} />
       </Button>
     </Group>

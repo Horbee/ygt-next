@@ -1,5 +1,8 @@
 import isSameDay from "date-fns/isSameDay";
+import isFuture from "date-fns/isFuture";
+import isPast from "date-fns/isPast";
 import max from "date-fns/max";
+import closestTo from "date-fns/closestTo";
 
 import { Center, Indicator } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
@@ -43,11 +46,17 @@ export const AvailabilityCalendar = ({
     }
   };
 
+  const isOngoing = isPast(event.fromDate) && isFuture(event.untilDate);
+
+  const closestDate = closestTo(new Date(), [event.fromDate, event.untilDate]);
+
   return (
     <Center>
       <DatePicker
         value={selectedDate}
-        defaultDate={selectedDate ?? latestAvailability ?? event.untilDate ?? undefined}
+        defaultDate={
+          selectedDate ?? latestAvailability ?? (isOngoing ? new Date() : closestDate)
+        }
         onChange={setSelectedDate}
         minDate={new Date(event.fromDate)}
         maxDate={new Date(event.untilDate)}

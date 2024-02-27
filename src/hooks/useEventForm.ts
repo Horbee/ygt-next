@@ -13,6 +13,7 @@ export const useEventForm = (
     slug: event?.slug ?? "",
     description: event?.description ?? null,
     public: event?.public ?? false,
+    published: event?.published ?? false,
     wholeDay: event?.wholeDay ?? false,
     fromDate: event?.fromDate ? resetTime(event.fromDate) : null,
     fromTime: event?.fromDate && !event.wholeDay ? mapToDateInput(event.fromDate) : "",

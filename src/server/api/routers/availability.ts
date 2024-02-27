@@ -17,11 +17,20 @@ export const availabilityRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
       const event = await ctx.prisma.event.findFirst({ where: { id: dto.eventId } });
 
-      if (
-        !event?.public &&
-        event?.ownerId !== userId &&
-        !event?.invitedUserIds.includes(userId)
-      ) {
+      const createConditions = [
+        !!event, // event must exists
+        !!event?.published, // event must be published
+        !!(
+          // event must be public OR you have to be the owner OR you must be invited
+          (
+            event?.public ||
+            event?.ownerId === userId ||
+            event?.invitedUserIds.includes(userId)
+          )
+        ),
+      ];
+
+      if (!createConditions.every((c) => c)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "User is not the owner and not invited",
@@ -32,7 +41,7 @@ export const availabilityRouter = createTRPCRouter({
         data: { ...dto, ownerId: userId },
       });
 
-      sendAvailabilityModificationPushNotifications(event, dto.date, ctx);
+      sendAvailabilityModificationPushNotifications(event!, dto.date, ctx);
 
       return createdAv;
     }),
@@ -51,12 +60,20 @@ export const availabilityRouter = createTRPCRouter({
         where: { id: dto.eventId },
       });
 
-      if (
-        !event ||
-        (!event.public &&
-          event.ownerId !== userId &&
-          !event.invitedUserIds.includes(userId))
-      ) {
+      const updateConditions = [
+        !!event, // event must exists
+        !!event?.published, // event must be published
+        !!(
+          // event must be public OR you have to be the owner OR you must be invited
+          (
+            event?.public ||
+            event?.ownerId === userId ||
+            event?.invitedUserIds.includes(userId)
+          )
+        ),
+      ];
+
+      if (!updateConditions.every((c) => c)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "User is not the owner and not invited",
@@ -76,7 +93,7 @@ export const availabilityRouter = createTRPCRouter({
           message: "Availability not found or you are not the owner",
         });
 
-      sendAvailabilityModificationPushNotifications(event, dto.date, ctx);
+      sendAvailabilityModificationPushNotifications(event!, dto.date, ctx);
 
       return updatedAv;
     }),
@@ -91,10 +108,11 @@ export const availabilityRouter = createTRPCRouter({
         include: { event: true },
       });
 
-      if (!deletedAv) {
+      if (!deletedAv || !deletedAv.event.published) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Availability not found or you are not the owner",
+          message:
+            "Availability not found or you are not the owner or event is not published",
         });
       }
 
@@ -118,7 +136,16 @@ export const availabilityRouter = createTRPCRouter({
           id: availabilityId,
           reactions: { some: { ownerId: userId, shortcodes: reaction.shortcodes } },
         },
+        include: { event: true },
       });
+
+      if (!availability?.event.published) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message:
+            "Availability not found or you are not the owner or event is not published",
+        });
+      }
 
       let updatedAv;
       if (availability) {

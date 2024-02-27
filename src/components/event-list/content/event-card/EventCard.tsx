@@ -2,7 +2,7 @@ import isPast from "date-fns/isPast";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { Card, Grid, Group, Image, Stack, Text } from "@mantine/core";
+import { Badge, Card, Grid, Group, Image, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Attachment, Event } from "@prisma/client";
 
@@ -29,7 +29,7 @@ export const EventCard = ({ event }: Props) => {
           <Grid.Col xs={3} p={0} m={0}>
             <Image
               src={event.coverImage?.url ?? "/default_event.png"}
-              height={xsScreen ? 180 : 135}
+              height={xsScreen ? 180 : event.tags.length ? 170 : 135}
               alt="Event Cover"
               style={{ filter: isPastEvent ? "grayscale(1)" : undefined }}
             />
@@ -44,16 +44,18 @@ export const EventCard = ({ event }: Props) => {
                   {formatEventDuration(event)}
                 </Text>
 
-                {/* <Group style={{}}> */}
-                {!xsScreen && (
-                  <ScrollableTagList padLeft tags={event.tags} style={{ flex: 1 }} />
-                )}
+                <Group noWrap>
+                  {!event.published && (
+                    <Badge variant="outline" color="red">
+                      Unpublished
+                    </Badge>
+                  )}
 
-                {isOwned && <EventCardMenu eventId={event.id} slug={event.slug} />}
-                {/* </Group> */}
+                  {isOwned && <EventCardMenu eventId={event.id} slug={event.slug} />}
+                </Group>
               </Group>
 
-              {xsScreen && <ScrollableTagList tags={event.tags} w="100%" mt="xs" />}
+              <ScrollableTagList tags={event.tags} w="100%" mt="xs" />
 
               {/* Second Row: Title + Description */}
               <Text

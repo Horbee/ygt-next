@@ -5,6 +5,7 @@ export type EventFormValues = {
   slug: string;
   description: string | null;
   public: boolean;
+  published: boolean;
   wholeDay: boolean;
   fromDate: Date | null;
   fromTime: string;

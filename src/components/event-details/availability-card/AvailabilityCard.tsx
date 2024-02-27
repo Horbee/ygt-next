@@ -1,15 +1,24 @@
 import format from "date-fns/format";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 import { useMemo } from "react";
-import { Card, Group, Stack, Text } from "@mantine/core";
+import { Box, Card, Group, Stack, Text } from "@mantine/core";
 
 import { AvailabilityBadge } from "./AvailabilityBadge";
 import { AvailabilityReactions, type GroupedReactions } from "./AvailabilityReactions";
 import { useEmojiSelectorModal } from "../../../context/EmojiSelectorModalProvider";
 
+import { MdAccessTime } from "react-icons/md";
+
 import type { AvailabilityDataWithOwner, AvailableTypes } from "../../../types";
 
-export const AvailabilityCard = ({ av }: { av: AvailabilityDataWithOwner }) => {
+export const AvailabilityCard = ({
+  av,
+  disableReactions,
+}: {
+  av: AvailabilityDataWithOwner;
+  disableReactions?: boolean;
+}) => {
   const { openModal, handleAddReaction } = useEmojiSelectorModal();
 
   const groupedReactions = useMemo(() => {
@@ -40,7 +49,15 @@ export const AvailabilityCard = ({ av }: { av: AvailabilityDataWithOwner }) => {
     <>
       <Card key={av.id} shadow="sm" p="sm" radius="md" pos="relative" withBorder>
         <Group position="apart">
-          <Text weight={500}>{av.owner.name}</Text>
+          <Box>
+            <Text weight={500}>{av.owner.name}</Text>
+            <Text size="sm" color="dimmed">
+              <Group spacing="xs">
+                <MdAccessTime />
+                {formatDistanceToNow(av.updatedAt)} ago
+              </Group>
+            </Text>
+          </Box>
           <Stack style={{ gap: 0 }} align="center">
             <AvailabilityBadge type={av.available as AvailableTypes} />
             <Text size="sm" color="dimmed">
@@ -52,7 +69,7 @@ export const AvailabilityCard = ({ av }: { av: AvailabilityDataWithOwner }) => {
           </Stack>
         </Group>
 
-        <Text size="sm" color="dimmed" mb="lg">
+        <Text size="sm" color="dimmed" mt="sm" mb="lg">
           {av.comment}
         </Text>
 
@@ -60,6 +77,7 @@ export const AvailabilityCard = ({ av }: { av: AvailabilityDataWithOwner }) => {
           groupedReactions={groupedReactions}
           handleAddReaction={handleAddReaction(av.id)}
           openEmojiSelector={() => openModal(av.id)}
+          isDisabled={disableReactions}
         />
       </Card>
     </>

@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 
-import { Text, TextInput } from "@mantine/core";
+import { Box, type BoxProps, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 
 import { UseEventForm } from "../../../hooks";
 import { api } from "../../../utils/api";
 import { EventNameField } from "../../fields";
 
-interface Props {
+interface Props extends BoxProps {
   eventForm: UseEventForm;
   keepSlugValue?: boolean;
 }
 
-export function EventNameWithSlug({ eventForm, keepSlugValue }: Props) {
+export function EventNameWithSlug({ eventForm, keepSlugValue, ...boxProps }: Props) {
   const {
     watch,
     setError,
@@ -40,7 +40,7 @@ export function EventNameWithSlug({ eventForm, keepSlugValue }: Props) {
   }, [isSlugTaken.data]);
 
   return (
-    <div>
+    <Box {...boxProps}>
       <EventNameField
         withAsterisk
         label="Event name"
@@ -60,6 +60,6 @@ export function EventNameWithSlug({ eventForm, keepSlugValue }: Props) {
           {errors.slug.message}
         </Text>
       )}
-    </div>
+    </Box>
   );
 }

@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import { Box, Button, SimpleGrid, Stack, Textarea } from "@mantine/core";
+import { Box, Button, Flex, SimpleGrid, Stack, Textarea } from "@mantine/core";
 import { Attachment } from "@prisma/client";
 
 import { useEventForm } from "../../hooks";
 import { AttachmentSelector } from "../attachment-selector/AttachmentSelector";
+import { UnpublishedEventWarning } from "../UnpublishedEventWarning";
 import { SwitchInputWrapper, TagsField } from "../fields";
 import {
   EventDatesSection,
@@ -38,6 +39,7 @@ export const EventForm = ({
     handleSubmit,
     control,
     watch,
+    getValues,
     formState: { isSubmitting },
   } = eventForm;
 
@@ -58,7 +60,23 @@ export const EventForm = ({
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
-          <EventNameWithSlug eventForm={eventForm} keepSlugValue={keepSlugValue} />
+          <Flex
+            direction={{ base: "column-reverse", sm: "row" }}
+            gap="md"
+            align={{ base: "flex-start", sm: "center" }}
+            justify="space-between"
+          >
+            <EventNameWithSlug
+              w={{ base: "100%", sm: "50%" }}
+              eventForm={eventForm}
+              keepSlugValue={keepSlugValue}
+            />
+            <SwitchInputWrapper<EventFormValues>
+              label="Publish"
+              fieldName="published"
+              control={control}
+            />
+          </Flex>
 
           <SimpleGrid cols={2} breakpoints={[{ maxWidth: 600, cols: 1 }]}>
             <Textarea
@@ -96,6 +114,10 @@ export const EventForm = ({
           <InvitedUsersSection eventForm={eventForm} />
 
           <TagsField eventForm={eventForm} />
+
+          {watch("published", getValues().published) === false && (
+            <UnpublishedEventWarning />
+          )}
 
           <Button
             type="submit"

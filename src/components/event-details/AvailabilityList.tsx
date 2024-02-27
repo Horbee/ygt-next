@@ -12,9 +12,14 @@ import type { AvailabilityDataWithOwner } from "../../types";
 interface Props {
   selectedDate: Date;
   availabilities: AvailabilityDataWithOwner[];
+  disableReactions?: boolean;
 }
 
-export const AvailabilityList = ({ selectedDate, availabilities }: Props) => {
+export const AvailabilityList = ({
+  selectedDate,
+  availabilities,
+  disableReactions,
+}: Props) => {
   const session = useSession();
   const userId = session.data?.user.id;
 
@@ -36,7 +41,7 @@ export const AvailabilityList = ({ selectedDate, availabilities }: Props) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: i * 0.2 }}
           >
-            <AvailabilityCard av={av} />
+            <AvailabilityCard av={av} disableReactions={disableReactions} />
           </motion.div>
         ))}
       </Stack>

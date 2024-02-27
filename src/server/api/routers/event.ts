@@ -46,8 +46,8 @@ export const eventRouter = createTRPCRouter({
           slug,
           OR: [
             { ownerId: userId },
-            { invitedUserIds: { has: userId } },
-            { public: true },
+            { invitedUserIds: { has: userId }, published: true },
+            { public: true, published: true },
           ],
         },
         include: {
@@ -88,11 +88,13 @@ export const eventRouter = createTRPCRouter({
       },
     });
 
-    sendEventModificationPushNotification(
-      createdEvent,
-      `${user.name} created a new event: ${createdEvent.name}`,
-      ctx
-    );
+    if (createdEvent.published) {
+      sendEventModificationPushNotification(
+        createdEvent,
+        `${user.name} created a new event: ${createdEvent.name}`,
+        ctx
+      );
+    }
 
     return createdEvent;
   }),
@@ -124,11 +126,13 @@ export const eventRouter = createTRPCRouter({
         where: { id: eventId },
       });
 
-      sendEventModificationPushNotification(
-        updatedEvent,
-        `${user.name} updated an event: ${updatedEvent.name}`,
-        ctx
-      );
+      if (updatedEvent.published) {
+        sendEventModificationPushNotification(
+          updatedEvent,
+          `${user.name} updated an event: ${updatedEvent.name}`,
+          ctx
+        );
+      }
 
       return updatedEvent;
     }),
@@ -155,11 +159,13 @@ export const eventRouter = createTRPCRouter({
         include: { coverImage: true },
       });
 
-      sendEventModificationPushNotification(
-        deletedEvent,
-        `${user.name} deleted an event: ${deletedEvent.name}`,
-        ctx
-      );
+      if (deletedEvent.published) {
+        sendEventModificationPushNotification(
+          deletedEvent,
+          `${user.name} deleted an event: ${deletedEvent.name}`,
+          ctx
+        );
+      }
 
       return deletedEvent;
     }),

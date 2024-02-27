@@ -16,12 +16,14 @@ interface OwnAvailabilityProps {
   selectedDate: Date;
   availabilities: AvailabilityDataWithOwner[];
   eventId: string;
+  isEventPublished: boolean;
 }
 
 export const OwnAvailability = ({
   selectedDate,
   availabilities,
   eventId,
+  isEventPublished,
 }: OwnAvailabilityProps) => {
   const session = useSession();
   const userId = session.data?.user.id;
@@ -62,7 +64,7 @@ export const OwnAvailability = ({
             color="orange"
             variant="outline"
             onClick={() => openModal(myAvailability, eventId)}
-            disabled={!myAvailability}
+            disabled={!myAvailability || !isEventPublished}
           >
             <MdEdit size={18} />
           </ActionIcon>
@@ -71,7 +73,7 @@ export const OwnAvailability = ({
             color="red"
             variant="outline"
             onClick={handleDelete}
-            disabled={!myAvailability}
+            disabled={!myAvailability || !isEventPublished}
           >
             <MdDelete size={18} />
           </ActionIcon>
@@ -84,13 +86,14 @@ export const OwnAvailability = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <AvailabilityCard av={myAvailability} />
+          <AvailabilityCard av={myAvailability} disableReactions={!isEventPublished} />
         </motion.div>
       ) : (
         <Button
           variant="gradient"
           gradient={{ from: "teal", to: "lime", deg: 105 }}
           onClick={() => openModal(undefined, eventId)}
+          disabled={!isEventPublished}
         >
           Create Availability
         </Button>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { toast } from "react-toastify";
 
 import { api } from "../utils/api";
 
@@ -40,10 +41,15 @@ export const EmojiSelectorModalProvider = ({ children }: { children: ReactNode }
     (availabilityId: string) => async (emoji: { native: string; shortcodes: string }) => {
       closeModal();
 
-      await addOrRemoveReaction.mutateAsync({
-        availabilityId,
-        reaction: { native: emoji.native, shortcodes: emoji.shortcodes },
-      });
+      try {
+        await addOrRemoveReaction.mutateAsync({
+          availabilityId,
+          reaction: { native: emoji.native, shortcodes: emoji.shortcodes },
+        });
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error?.message || "Reaction is not added");
+      }
     };
 
   return (

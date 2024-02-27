@@ -5,6 +5,7 @@ export const EventDto = z.object({
   slug: z.string(),
   description: z.string().nullable(),
   public: z.boolean().optional(),
+  published: z.boolean().optional(),
   wholeDay: z.boolean(),
   fromDate: z.date(),
   untilDate: z.date(),

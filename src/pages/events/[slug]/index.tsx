@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
+import { Alert, Group, Text } from "@mantine/core";
+import { FiAlertTriangle } from "react-icons/fi";
 
 import { BaseLayout } from "../../../components/BaseLayout";
 import {
@@ -17,6 +19,7 @@ import { api } from "../../../utils/api";
 import { withAuthentication } from "../../../utils/withAuthentication";
 import { EmojiSelectorModalProvider } from "../../../context/EmojiSelectorModalProvider";
 import { EmojiSelectorModal } from "../../../components/event-details/availability-card/EmojiSelectorModal";
+import { UnpublishedEventWarning } from "../../../components/UnpublishedEventWarning";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return await withAuthentication(context);
@@ -30,16 +33,31 @@ const EventDetailsPage: NextPage = () => {
 
   const getEvent = api.event.getEventBySlug.useQuery(
     { slug, withAvailabilities: true },
-    {
-      enabled: !!slug,
-    }
+    { enabled: !!slug }
   );
 
   const event = getEvent.data;
-  const availabilities = event?.availabilities as AvailabilityDataWithOwner[];
+
+  if (!event) {
+    return (
+      <BaseLayout title="Event Details">
+        <Alert icon={<FiAlertTriangle size="1rem" />} color="orange">
+          <Group>
+            <Text>
+              This event is hidden or cannot be found. Maybe it never existed...
+            </Text>
+            <Text size="xl">🤯</Text>
+          </Group>
+        </Alert>
+      </BaseLayout>
+    );
+  }
+
+  const availabilities = event.availabilities as AvailabilityDataWithOwner[];
 
   return (
     <BaseLayout title="Event Details">
+      {!event.published && <UnpublishedEventWarning mb="lg" />}
       <AvailabilityModalProvider>
         <AvailabilityModal selectedDate={selectedDate} />
         <EmojiSelectorModalProvider>
@@ -80,10 +98,12 @@ const EventDetailsPage: NextPage = () => {
                 selectedDate={selectedDate}
                 availabilities={availabilities}
                 eventId={event.id}
+                isEventPublished={event.published}
               />
               <AvailabilityList
                 selectedDate={selectedDate}
                 availabilities={availabilities}
+                disableReactions={!event.published}
               />
             </motion.div>
           )}

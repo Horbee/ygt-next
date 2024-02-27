@@ -1,10 +1,10 @@
-import { useSession } from 'next-auth/react'
+import { useSession } from "next-auth/react";
 
-import { Badge, Grid, Group, Image, Paper, Spoiler, Text } from '@mantine/core'
-import { Attachment, Event } from '@prisma/client'
+import { Badge, Grid, Group, Image, Paper, Spoiler, Text } from "@mantine/core";
+import { Attachment, Event } from "@prisma/client";
 
-import { formatEventDuration } from '../../../utils/duration'
-import { EventCardMenu } from '../../EventCardMenu'
+import { formatEventDuration } from "../../../utils/duration";
+import { EventCardMenu } from "../../EventCardMenu";
 
 type Props = {
   event: Event & { coverImage: Attachment | null };
@@ -22,11 +22,7 @@ export const EventDescription = ({ event }: Props) => {
           {formatEventDuration(event)}
         </Text>
 
-        {event.public && (
-          <Badge variant="outline" color="green">
-            Public
-          </Badge>
-        )}
+        <StatusBadge event={event} />
       </Group>
 
       {/* Title & Actions */}
@@ -77,4 +73,20 @@ export const EventDescription = ({ event }: Props) => {
       </Paper>
     </>
   );
+};
+
+const StatusBadge = ({ event }: { event: Event }) => {
+  if (!event.published)
+    return (
+      <Badge variant="outline" color="red">
+        Unpublished
+      </Badge>
+    );
+
+  if (event.public)
+    <Badge variant="outline" color="green">
+      Public
+    </Badge>;
+
+  return null;
 };
