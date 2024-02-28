@@ -1,6 +1,6 @@
 import { Group, Tooltip, Badge, Flex, Button, Box, type Sx } from "@mantine/core";
-import { MdOutlineAddReaction } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import { SmilePlus } from "lucide-react";
 
 export type GroupedReactions = {
   [emoji: string]: {
@@ -84,7 +84,7 @@ export const AvailabilityReactions = ({
         );
       })}
       <Button variant="subtle" onClick={openEmojiSelector} disabled={isDisabled} compact>
-        <MdOutlineAddReaction size={20} />
+        <SmilePlus size={20} />
       </Button>
     </Group>
   );

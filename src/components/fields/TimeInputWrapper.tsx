@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Path, useController } from "react-hook-form";
-import { AiOutlineClockCircle } from "react-icons/ai";
 
+import { Clock } from "lucide-react";
 import { ActionIcon } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 
@@ -37,7 +37,7 @@ export function TimeInputWrapper<T extends FieldValues>({
       ref={inputRef}
       rightSection={
         <ActionIcon onClick={() => inputRef.current?.showPicker()}>
-          <AiOutlineClockCircle />
+          <Clock size={16} />
         </ActionIcon>
       }
       {...restInputProps}

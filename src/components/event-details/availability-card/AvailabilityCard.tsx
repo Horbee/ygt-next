@@ -3,12 +3,11 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 import { useMemo } from "react";
 import { Box, Card, Group, Stack, Text } from "@mantine/core";
+import { Clock } from "lucide-react";
 
 import { AvailabilityBadge } from "./AvailabilityBadge";
 import { AvailabilityReactions, type GroupedReactions } from "./AvailabilityReactions";
 import { useEmojiSelectorModal } from "../../../context/EmojiSelectorModalProvider";
-
-import { MdAccessTime } from "react-icons/md";
 
 import type { AvailabilityDataWithOwner, AvailableTypes } from "../../../types";
 
@@ -53,7 +52,7 @@ export const AvailabilityCard = ({
             <Text weight={500}>{av.owner.name}</Text>
             <Text size="sm" color="dimmed">
               <Group spacing="xs">
-                <MdAccessTime />
+                <Clock size={14} />
                 {formatDistanceToNow(av.updatedAt)} ago
               </Group>
             </Text>

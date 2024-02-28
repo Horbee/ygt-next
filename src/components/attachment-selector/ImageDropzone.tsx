@@ -1,9 +1,6 @@
-import { ReactNode, useState } from "react";
-import { FaCloudUploadAlt, FaTrash } from "react-icons/fa";
-import { MdFileUpload, MdImage, MdOutlineClose } from "react-icons/md";
+import { useState } from "react";
 
 import {
-  BackgroundImage,
   Box,
   Button,
   createStyles,
@@ -17,6 +14,7 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { WithBackgroundImage } from "./WithBackgroundImage";
 
 import type { DropzoneProps } from "@mantine/dropzone";
+import { ArrowUpFromLine, Image, Trash, UploadCloud, X } from "lucide-react";
 type ImageState = { file?: File; imgSrc?: string };
 
 interface Props extends Partial<DropzoneProps> {
@@ -65,7 +63,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
             style={{ minHeight: 220, pointerEvents: "none" }}
           >
             <Dropzone.Accept>
-              <MdFileUpload
+              <ArrowUpFromLine
                 size={50}
                 color={
                   theme.colors[theme.primaryColor]![theme.colorScheme === "dark" ? 4 : 6]
@@ -73,7 +71,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
               />
             </Dropzone.Accept>
             <Dropzone.Reject>
-              <MdOutlineClose
+              <X
                 size={50}
                 color={theme.colors.red[theme.colorScheme === "dark" ? 4 : 6]}
               />
@@ -82,7 +80,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
             {!image.imgSrc && (
               <>
                 <Dropzone.Idle>
-                  <MdImage size={50} />
+                  <Image size={50} />
                 </Dropzone.Idle>
 
                 <Box className={classes.textContainer}>
@@ -103,7 +101,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
         <Button
           color="blue"
           size="sm"
-          leftIcon={<FaCloudUploadAlt />}
+          leftIcon={<UploadCloud size={16} />}
           onClick={handleUpload}
           disabled={!image.file}
         >
@@ -114,7 +112,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
           color="red"
           size="sm"
           onClick={handleDelete}
-          leftIcon={<FaTrash />}
+          leftIcon={<Trash size={16} />}
           disabled={!image.file}
         >
           Remove Image

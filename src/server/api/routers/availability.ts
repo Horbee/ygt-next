@@ -132,10 +132,7 @@ export const availabilityRouter = createTRPCRouter({
       const { availabilityId, reaction } = input;
 
       const availability = await ctx.prisma.availability.findFirst({
-        where: {
-          id: availabilityId,
-          reactions: { some: { ownerId: userId, shortcodes: reaction.shortcodes } },
-        },
+        where: { id: availabilityId },
         include: { event: true },
       });
 
@@ -147,8 +144,12 @@ export const availabilityRouter = createTRPCRouter({
         });
       }
 
+      const userAddedReactionAlready = availability.reactions.some(
+        (r) => r.ownerId === userId && r.shortcodes === reaction.shortcodes
+      );
+
       let updatedAv;
-      if (availability) {
+      if (userAddedReactionAlready) {
         updatedAv = await ctx.prisma.availability.update({
           where: { id: availabilityId },
           data: {

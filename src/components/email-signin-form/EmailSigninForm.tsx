@@ -1,8 +1,8 @@
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IoMdMail } from "react-icons/io";
 
 import { Button, Stack, TextInput } from "@mantine/core";
+import { Mail } from "lucide-react";
 
 type MagicLinkFormValues = {
   email: string;
@@ -38,7 +38,7 @@ export const EmailSigninForm = () => {
           color="blue"
           type="submit"
           fullWidth
-          leftIcon={<IoMdMail size={18} />}
+          leftIcon={<Mail size={18} />}
           disabled={formState.isSubmitting}
         >
           Send a magic link

@@ -1,4 +1,4 @@
-import { FaBell } from "react-icons/fa";
+import { Bell } from "lucide-react";
 
 import { Button, Stack, Text } from "@mantine/core";
 
@@ -17,7 +17,11 @@ export default function NotificationsPage() {
   return (
     <BaseLayout title="Notification Settings">
       <Stack>
-        <Button leftIcon={<FaBell />} variant="outline" onClick={triggerSubscription}>
+        <Button
+          leftIcon={<Bell size={16} />}
+          variant="outline"
+          onClick={triggerSubscription}
+        >
           Trigger Subscription
         </Button>
 

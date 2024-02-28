@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { Alert, Group, Text } from "@mantine/core";
-import { FiAlertTriangle } from "react-icons/fi";
+import { AlertTriangle } from "lucide-react";
 
 import { BaseLayout } from "../../../components/BaseLayout";
 import {
@@ -41,7 +41,7 @@ const EventDetailsPage: NextPage = () => {
   if (!event) {
     return (
       <BaseLayout title="Event Details">
-        <Alert icon={<FiAlertTriangle size="1rem" />} color="orange">
+        <Alert icon={<AlertTriangle size={16} />} color="orange">
           <Group>
             <Text>
               This event is hidden or cannot be found. Maybe it never existed...

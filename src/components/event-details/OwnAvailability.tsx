@@ -1,9 +1,10 @@
 import isSameDay from "date-fns/isSameDay";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { MdDelete, MdEdit } from "react-icons/md";
 import { toast } from "react-toastify";
 
+import { useMemo } from "react";
+import { Pencil, Trash } from "lucide-react";
 import { ActionIcon, Button, Group } from "@mantine/core";
 
 import { useAvailabilityModal } from "../../context";
@@ -11,7 +12,7 @@ import { api } from "../../utils/api";
 import { AvailabilityCard } from "./availability-card";
 
 import type { AvailabilityDataWithOwner } from "../../types";
-import { useMemo } from "react";
+
 interface OwnAvailabilityProps {
   selectedDate: Date;
   availabilities: AvailabilityDataWithOwner[];
@@ -66,7 +67,7 @@ export const OwnAvailability = ({
             onClick={() => openModal(myAvailability, eventId)}
             disabled={!myAvailability || !isEventPublished}
           >
-            <MdEdit size={18} />
+            <Pencil size={16} />
           </ActionIcon>
 
           <ActionIcon
@@ -75,7 +76,7 @@ export const OwnAvailability = ({
             onClick={handleDelete}
             disabled={!myAvailability || !isEventPublished}
           >
-            <MdDelete size={18} />
+            <Trash size={16} />
           </ActionIcon>
         </Group>
       </Group>

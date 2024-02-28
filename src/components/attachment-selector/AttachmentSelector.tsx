@@ -1,7 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-import { BsCardImage, BsCloudUpload } from "react-icons/bs";
-import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import { Button, Flex, Modal, Paper, SimpleGrid, Tabs } from "@mantine/core";
@@ -10,6 +8,7 @@ import { Attachment } from "@prisma/client";
 import { api } from "../../utils/api";
 import { ImageDropzone } from "./ImageDropzone";
 import { SelectableImage } from "./SelectableImage";
+import { Image, Trash, UploadCloud } from "lucide-react";
 
 type AttachmentTabs = "select" | "upload";
 
@@ -78,10 +77,10 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
       <Paper shadow="xs" p="md" withBorder style={{ flexGrow: 1 }}>
         <Tabs value={activeTab} onTabChange={(tab: AttachmentTabs) => setActiveTab(tab)}>
           <Tabs.List>
-            <Tabs.Tab value="select" icon={<BsCardImage size={14} />}>
+            <Tabs.Tab value="select" icon={<Image size={16} />}>
               Select
             </Tabs.Tab>
-            <Tabs.Tab value="upload" icon={<BsCloudUpload size={14} />}>
+            <Tabs.Tab value="upload" icon={<UploadCloud size={16} />}>
               Upload
             </Tabs.Tab>
           </Tabs.List>
@@ -116,7 +115,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
                 variant="outline"
                 color="red"
                 size="sm"
-                leftIcon={<FaTrash />}
+                leftIcon={<Trash size={16} />}
                 disabled={!selectedAttachment}
                 onClick={deleteImage}
               >

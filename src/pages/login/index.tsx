@@ -3,13 +3,13 @@ import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth/next";
 import { signIn, getProviders } from "next-auth/react";
-import { IoLogoGoogle } from "react-icons/io";
 
 import { Anchor, Button, Container, Stack } from "@mantine/core";
 
 import { EmailSigninForm } from "../../components/email-signin-form/EmailSigninForm";
 import { authOptions } from "../../server/auth";
 import { HeadContent } from "../../components/HeadContent";
+import { GoogleIcon } from "../../components/brand-icons/GoogleIcon";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -39,7 +39,7 @@ export default function LoginPage({ providers }: { providers: string[] }) {
             color="red"
             type="button"
             fullWidth
-            leftIcon={<IoLogoGoogle size={18} />}
+            leftIcon={<GoogleIcon width={18} height={18} />}
             onClick={() => signIn("google")}
             disabled={!providers.includes("google")}
           >

@@ -74,6 +74,9 @@ dependencies:
   framer-motion:
     specifier: ^10.12.17
     version: 10.12.17(react-dom@18.2.0)(react@18.2.0)
+  lucide-react:
+    specifier: ^0.341.0
+    version: 0.341.0(react@18.2.0)
   next:
     specifier: 13.1.6
     version: 13.1.6(@babel/core@7.22.5)(react-dom@18.2.0)(react@18.2.0)
@@ -95,9 +98,6 @@ dependencies:
   react-hook-form:
     specifier: ^7.45.0
     version: 7.45.0(react@18.2.0)
-  react-icons:
-    specifier: ^4.10.1
-    version: 4.10.1(react@18.2.0)
   react-select:
     specifier: ^5.7.3
     version: 5.7.3(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)
@@ -5419,6 +5419,14 @@ packages:
     dependencies:
       yallist: 4.0.0
 
+  /lucide-react@0.341.0(react@18.2.0):
+    resolution: {integrity: sha512-fqI0TLU/VbzC3p90MHP3kdCRRUMTRT5qBfxwaXlllkZieYfRrMVd/RORXytqJUC2GBrvZdWYs6yvJIrqdsOmDQ==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
@@ -5969,14 +5977,6 @@ packages:
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
-    dependencies:
-      react: 18.2.0
-    dev: false
-
-  /react-icons@4.10.1(react@18.2.0):
-    resolution: {integrity: sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==}
-    peerDependencies:
-      react: '*'
     dependencies:
       react: 18.2.0
     dev: false

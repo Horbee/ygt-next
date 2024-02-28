@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MdAdd } from "react-icons/md";
+import { Plus } from "lucide-react";
 
 import { ActionIcon, Chip, DefaultMantineColor, Group, Stack } from "@mantine/core";
 
@@ -55,7 +55,7 @@ const EventListPage: NextPage = () => {
           href="/events/create"
           title="Add new Event"
         >
-          <MdAdd size={18} />
+          <Plus size={18} />
         </ActionIcon>
       }
     >

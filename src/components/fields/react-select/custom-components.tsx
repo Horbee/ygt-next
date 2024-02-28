@@ -1,7 +1,7 @@
-import { FaTimes } from "react-icons/fa";
 import { MultiValueProps } from "react-select";
 
 import { ActionIcon, Badge } from "@mantine/core";
+import { X } from "lucide-react";
 
 export const MultiValue = ({ children, ...props }: MultiValueProps) => {
   const removeButton = (
@@ -11,7 +11,7 @@ export const MultiValue = ({ children, ...props }: MultiValueProps) => {
       variant="transparent"
       onClick={props.removeProps.onClick as any}
     >
-      <FaTimes size={10} />
+      <X strokeWidth={4} size={12} />
     </ActionIcon>
   );
 

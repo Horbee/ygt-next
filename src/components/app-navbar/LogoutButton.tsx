@@ -1,6 +1,6 @@
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { MdLogout } from "react-icons/md";
+import { LogOut } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { Button } from "@mantine/core";
@@ -15,7 +15,12 @@ export const LogoutButton = () => {
   };
 
   return (
-    <Button leftIcon={<MdLogout />} variant="outline" color="red" onClick={handleLogout}>
+    <Button
+      leftIcon={<LogOut size={16} />}
+      variant="outline"
+      color="red"
+      onClick={handleLogout}
+    >
       Logout
     </Button>
   );

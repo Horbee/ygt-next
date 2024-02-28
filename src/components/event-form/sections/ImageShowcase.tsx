@@ -1,7 +1,5 @@
 import { MouseEvent } from "react";
-import { FaTrash } from "react-icons/fa";
-import { MdImage } from "react-icons/md";
-
+import { Image, Trash } from "lucide-react";
 import { ActionIcon, Box, createStyles, Group, Text } from "@mantine/core";
 
 import { WithBackgroundImage } from "../../attachment-selector/WithBackgroundImage";
@@ -26,7 +24,7 @@ export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
           pos="absolute"
           onClick={onDeselect}
         >
-          <FaTrash size={16} />
+          <Trash size={16} />
         </ActionIcon>
       )}
 
@@ -38,7 +36,7 @@ export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
         >
           {!imgSrc && (
             <>
-              <MdImage size={50} />
+              <Image size={50} />
 
               <div>
                 <Text size="xl" inline>

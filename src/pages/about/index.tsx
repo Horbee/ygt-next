@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { FaGithub } from "react-icons/fa";
-import { MdChevronLeft } from "react-icons/md";
 
+import { ChevronLeft } from "lucide-react";
 import { ActionIcon, Anchor, Box, Card, Container, Group, Text } from "@mantine/core";
 
 import { HeadContent } from "../../components/HeadContent";
+import { GithubIcon } from "../../components/brand-icons/GithubIcon";
 
 const MotionContainer = motion(Container);
 
@@ -25,7 +25,7 @@ export default function AboutPage() {
       >
         <Group spacing="xs">
           <ActionIcon size="xl" onClick={() => router.back()}>
-            <MdChevronLeft size={34} />
+            <ChevronLeft size={24} />
           </ActionIcon>
           <Text component="h3" fz="xl" truncate>
             About
@@ -36,7 +36,7 @@ export default function AboutPage() {
           <Group position="apart" mt="md" mb="xs">
             <Text weight={500}>You've got time</Text>
             <Anchor href="https://github.com/Horbee/ygt-next">
-              <FaGithub size={25} />
+              <GithubIcon width={25} height={25} />
             </Anchor>
           </Group>
 

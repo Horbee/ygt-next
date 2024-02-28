@@ -1,13 +1,13 @@
-import { useRouter } from "next/router"
-import { ReactNode, useState } from "react"
-import { MdChevronLeft } from "react-icons/md"
+import { useRouter } from "next/router";
+import { ReactNode, useState } from "react";
+import { ChevronLeft } from "lucide-react";
 
-import { ActionIcon, Container, Group, Text } from "@mantine/core"
+import { ActionIcon, Container, Group, Text } from "@mantine/core";
 
-import { useCreateSubscription } from "../hooks/useCreateSubscription"
-import { AppHeader } from "./app-header"
-import { AppNavbar } from "./app-navbar"
-import { HeadContent } from "./HeadContent"
+import { useCreateSubscription } from "../hooks/useCreateSubscription";
+import { AppHeader } from "./app-header";
+import { AppNavbar } from "./app-navbar";
+import { HeadContent } from "./HeadContent";
 
 import type { ContainerProps } from "@mantine/core";
 type Props = ContainerProps & {
@@ -45,7 +45,7 @@ export const BaseLayout = ({
                 size="xl"
                 onClick={() => (backUrl ? router.push(backUrl) : router.back())}
               >
-                <MdChevronLeft size={34} />
+                <ChevronLeft size="1.8rem" />
               </ActionIcon>
             )}
             <Text component="h3" fz="xl" truncate>

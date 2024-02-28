@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-  BsFileEarmarkBreak,
-  BsPencil,
-  BsThreeDotsVertical,
-  BsTrash,
-} from "react-icons/bs";
+import { Files, MoreVertical, Pencil, Trash2 } from "lucide-react";
+
 import { toast } from "react-toastify";
 
 import { ActionIcon, Menu, Portal } from "@mantine/core";
@@ -48,7 +44,7 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
     <Menu shadow="md" width={200} position="bottom-end">
       <Menu.Target>
         <ActionIcon {...restProps}>
-          <BsThreeDotsVertical size={18} />
+          <MoreVertical size={20} />
         </ActionIcon>
       </Menu.Target>
 
@@ -57,13 +53,13 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
           <Menu.Label>Owner Actions</Menu.Label>
           <Menu.Item
             component={Link}
-            icon={<BsPencil size={14} />}
+            icon={<Pencil size={14} />}
             href={`/events/${slug}/edit`}
           >
             Edit
           </Menu.Item>
           <Menu.Item
-            icon={<BsFileEarmarkBreak size={14} />}
+            icon={<Files size={14} />}
             onClick={() =>
               router.push({ pathname: "/events/create", query: { from: slug } })
             }
@@ -72,7 +68,7 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
           </Menu.Item>
           <Menu.Item
             color="red"
-            icon={<BsTrash size={14} />}
+            icon={<Trash2 size={14} />}
             onClick={() => handleDelete()}
           >
             Delete
