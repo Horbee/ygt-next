@@ -16,7 +16,11 @@ export const AppLoader = ({ children }: Props) => {
   const isLoading = status === "loading";
 
   useEffect(() => {
-    if (status === "authenticated" && !data.user.name) {
+    if (
+      status === "authenticated" &&
+      !data.user.name &&
+      router.pathname !== "/users/me"
+    ) {
       router.replace("/users/me");
     }
   }, [status, data?.user.name, router]);
