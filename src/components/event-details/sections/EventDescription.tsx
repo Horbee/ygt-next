@@ -5,6 +5,7 @@ import { Attachment, Event } from "@prisma/client";
 
 import { formatEventDuration } from "../../../utils/duration";
 import { EventCardMenu } from "../../EventCardMenu";
+import { EventStatusBadge } from "../../EventStatusBadge";
 
 type Props = {
   event: Event & { coverImage: Attachment | null };
@@ -22,7 +23,7 @@ export const EventDescription = ({ event }: Props) => {
           {formatEventDuration(event)}
         </Text>
 
-        <StatusBadge event={event} />
+        <EventStatusBadge event={event} />
       </Group>
 
       {/* Title & Actions */}
@@ -73,20 +74,4 @@ export const EventDescription = ({ event }: Props) => {
       </Paper>
     </>
   );
-};
-
-const StatusBadge = ({ event }: { event: Event }) => {
-  if (!event.published)
-    return (
-      <Badge variant="outline" color="red">
-        Unpublished
-      </Badge>
-    );
-
-  if (event.public)
-    <Badge variant="outline" color="green">
-      Public
-    </Badge>;
-
-  return null;
 };

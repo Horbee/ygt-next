@@ -66,11 +66,7 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
           >
             Copy
           </Menu.Item>
-          <Menu.Item
-            color="red"
-            icon={<Trash2 size={14} />}
-            onClick={() => handleDelete()}
-          >
+          <Menu.Item color="red" icon={<Trash2 size={14} />} onClick={handleDelete}>
             Delete
           </Menu.Item>
         </Menu.Dropdown>

@@ -2,14 +2,15 @@ import isPast from "date-fns/isPast";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { Badge, Card, Grid, Group, Image, Stack, Text } from "@mantine/core";
+import { Card, Grid, Group, Image, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { Attachment, Event } from "@prisma/client";
 
 import { formatEventDuration } from "../../../../utils/duration";
 import { EventCardMenu } from "../../../EventCardMenu";
 import { ScrollableTagList } from "./ScrollableTagList";
+import { EventStatusBadge } from "../../../EventStatusBadge";
 
+import type { Attachment, Event } from "@prisma/client";
 interface Props {
   event: Event & {
     coverImage: Attachment | null;
@@ -45,11 +46,7 @@ export const EventCard = ({ event }: Props) => {
                 </Text>
 
                 <Group noWrap>
-                  {!event.published && (
-                    <Badge variant="outline" color="red">
-                      Unpublished
-                    </Badge>
-                  )}
+                  <EventStatusBadge event={event} />
 
                   {isOwned && <EventCardMenu eventId={event.id} slug={event.slug} />}
                 </Group>
