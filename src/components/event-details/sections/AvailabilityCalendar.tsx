@@ -31,13 +31,13 @@ export const AvailabilityCalendar = ({
     const data =
       availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
 
-    if (data.some((d) => d.available === "notgood")) {
+    if (data.some((d) => d.available === "NOT_GOOD")) {
       return "red";
     }
 
-    const goodCount = data.filter((d) => d.available === "good").length;
+    const goodCount = data.filter((d) => d.available === "GOOD").length;
 
-    if (data.some((d) => d.available === "maybe") || goodCount === 1) {
+    if (data.some((d) => d.available === "MAYBE") || goodCount === 1) {
       return "orange";
     }
 

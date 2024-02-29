@@ -17,7 +17,7 @@ export function getEventsWhereClause(
     return {
       OR: [
         { ownerId: userId }, // owner sees own unpublished as well
-        { invitedUserIds: { has: userId }, published: true },
+        { invitedUsers: { some: { userId } }, published: true },
         { public: true, published: true },
       ],
       untilDate: { gte: new Date() },
@@ -28,7 +28,7 @@ export function getEventsWhereClause(
     return {
       OR: [
         { ownerId: userId }, // owner sees own unpublished as well
-        { invitedUserIds: { has: userId }, published: true },
+        { invitedUsers: { some: { userId } }, published: true },
         { public: true, published: true },
       ],
     };
@@ -41,7 +41,7 @@ export function getEventsWhereClause(
   }
 
   if (showInvited) {
-    orClause.push({ invitedUserIds: { has: userId }, published: true });
+    orClause.push({ invitedUsers: { some: { userId } }, published: true });
   }
 
   if (showPublic) {

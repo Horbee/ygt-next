@@ -9,13 +9,13 @@ import { AvailabilityBadge } from "./AvailabilityBadge";
 import { AvailabilityReactions, type GroupedReactions } from "./AvailabilityReactions";
 import { useEmojiSelectorModal } from "../../../context/EmojiSelectorModalProvider";
 
-import type { AvailabilityDataWithOwner, AvailableTypes } from "../../../types";
+import type { AvailabilityDataWithOwnerAndReactions } from "../../../types";
 
 export const AvailabilityCard = ({
   av,
   disableReactions,
 }: {
-  av: AvailabilityDataWithOwner;
+  av: AvailabilityDataWithOwnerAndReactions;
   disableReactions?: boolean;
 }) => {
   const { openModal, handleAddReaction } = useEmojiSelectorModal();
@@ -58,7 +58,7 @@ export const AvailabilityCard = ({
             </Text>
           </Box>
           <Stack style={{ gap: 0 }} align="center">
-            <AvailabilityBadge type={av.available as AvailableTypes} />
+            <AvailabilityBadge type={av.available} />
             <Text size="sm" color="dimmed">
               {getTime(
                 av.fromTime ? new Date(av.fromTime) : null,

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const AvailabilityDto = z.object({
-  available: z.enum(["good", "maybe", "notgood"]),
+  available: z.enum(["GOOD", "MAYBE", "NOT_GOOD"]),
   comment: z.string().nullable(),
   date: z.date(),
   fromTime: z.date().nullable(),

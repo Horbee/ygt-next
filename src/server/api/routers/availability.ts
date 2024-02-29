@@ -15,7 +15,10 @@ export const availabilityRouter = createTRPCRouter({
     .input(AvailabilityDto)
     .mutation(async ({ input: dto, ctx }) => {
       const userId = ctx.session.user.id;
-      const event = await ctx.prisma.event.findFirst({ where: { id: dto.eventId } });
+      const event = await ctx.prisma.event.findFirst({
+        where: { id: dto.eventId },
+        include: { invitedUsers: true },
+      });
 
       const createConditions = [
         !!event, // event must exists
@@ -25,7 +28,7 @@ export const availabilityRouter = createTRPCRouter({
           (
             event?.public ||
             event?.ownerId === userId ||
-            event?.invitedUserIds.includes(userId)
+            event?.invitedUsers.some((invitedUser) => invitedUser.userId === userId)
           )
         ),
       ];
@@ -58,6 +61,7 @@ export const availabilityRouter = createTRPCRouter({
 
       const event = await ctx.prisma.event.findFirst({
         where: { id: dto.eventId },
+        include: { invitedUsers: true },
       });
 
       const updateConditions = [
@@ -68,7 +72,7 @@ export const availabilityRouter = createTRPCRouter({
           (
             event?.public ||
             event?.ownerId === userId ||
-            event?.invitedUserIds.includes(userId)
+            event?.invitedUsers.some((invitedUser) => invitedUser.userId === userId)
           )
         ),
       ];
@@ -84,7 +88,7 @@ export const availabilityRouter = createTRPCRouter({
 
       const updatedAv = await ctx.prisma.availability.update({
         data: restUpdates,
-        where: { ownerId_id: { id: availabilityId, ownerId: userId } },
+        where: { id: availabilityId, ownerId: userId },
       });
 
       if (!updatedAv)
@@ -104,7 +108,7 @@ export const availabilityRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       const deletedAv = await ctx.prisma.availability.delete({
-        where: { ownerId_id: { id: availabilityId, ownerId: userId } },
+        where: { id: availabilityId, ownerId: userId },
         include: { event: true },
       });
 
@@ -132,15 +136,14 @@ export const availabilityRouter = createTRPCRouter({
       const { availabilityId, reaction } = input;
 
       const availability = await ctx.prisma.availability.findFirst({
-        where: { id: availabilityId },
-        include: { event: true },
+        where: { id: availabilityId, event: { published: true } },
+        include: { reactions: true },
       });
 
-      if (!availability?.event.published) {
+      if (!availability) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message:
-            "Availability not found or you are not the owner or event is not published",
+          message: "Availability not found or event is not published",
         });
       }
 
@@ -154,7 +157,7 @@ export const availabilityRouter = createTRPCRouter({
           where: { id: availabilityId },
           data: {
             reactions: {
-              deleteMany: { where: { ownerId: userId, shortcodes: reaction.shortcodes } },
+              deleteMany: { ownerId: userId, shortcodes: reaction.shortcodes },
             },
           },
           include: { event: true },
@@ -164,7 +167,7 @@ export const availabilityRouter = createTRPCRouter({
           where: { id: availabilityId },
           data: {
             reactions: {
-              push: {
+              create: {
                 ownerId: userId,
                 ownerName: userName ?? userEmail!,
                 emoji: reaction.native,
@@ -175,12 +178,6 @@ export const availabilityRouter = createTRPCRouter({
           include: { event: true },
         });
       }
-
-      if (!updatedAv)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Availability not found or you are not the owner",
-        });
 
       // Send push notification only if reaction was added
       if (!availability) {

@@ -11,11 +11,11 @@ import { useAvailabilityModal } from "../../context";
 import { api } from "../../utils/api";
 import { AvailabilityCard } from "./availability-card";
 
-import type { AvailabilityDataWithOwner } from "../../types";
+import type { AvailabilityDataWithOwnerAndReactions } from "../../types";
 
 interface OwnAvailabilityProps {
   selectedDate: Date;
-  availabilities: AvailabilityDataWithOwner[];
+  availabilities: AvailabilityDataWithOwnerAndReactions[];
   eventId: string;
   isEventPublished: boolean;
 }

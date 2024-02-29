@@ -14,12 +14,13 @@ import {
 } from "../../../components/event-details";
 import { AvailabilityModalProvider } from "../../../context";
 import { useSelectedDate } from "../../../hooks/useSelectedDate";
-import { AvailabilityDataWithOwner } from "../../../types";
 import { api } from "../../../utils/api";
 import { withAuthentication } from "../../../utils/withAuthentication";
 import { EmojiSelectorModalProvider } from "../../../context/EmojiSelectorModalProvider";
 import { EmojiSelectorModal } from "../../../components/event-details/availability-card/EmojiSelectorModal";
 import { UnpublishedEventWarning } from "../../../components/UnpublishedEventWarning";
+
+import type { AvailabilityDataWithOwnerAndReactions } from "../../../types";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return await withAuthentication(context);
@@ -53,7 +54,7 @@ const EventDetailsPage: NextPage = () => {
     );
   }
 
-  const availabilities = event.availabilities as AvailabilityDataWithOwner[];
+  const availabilities = event.availabilities as AvailabilityDataWithOwnerAndReactions[];
 
   return (
     <BaseLayout title="Event Details">

@@ -22,7 +22,8 @@ export const attachmentRouter = createTRPCRouter({
     .mutation(async ({ input: id, ctx }) => {
       const attachment = await ctx.prisma.attachment.delete({
         where: {
-          id_ownerId: { id, ownerId: ctx.session.user.id },
+          id,
+          ownerId: ctx.session.user.id,
         },
       });
 

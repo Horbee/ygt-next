@@ -2,13 +2,26 @@ import { TRPCContext } from "../trpc";
 import { getFormattedDate } from "../../../hooks/useSelectedDate";
 
 import type { Event, Subscription } from "@prisma/client";
+import type { PushSubscription } from "web-push";
 import { TRPCError } from "@trpc/server";
 
 export const sendEventModificationPushNotification = async (
-  event: Event,
+  eventId: string,
   body: string,
   ctx: TRPCContext
 ) => {
+  const event = await ctx.prisma.event.findFirst({
+    where: { id: eventId },
+    include: { invitedUsers: true },
+  });
+
+  if (!event) {
+    console.error(
+      `Error sending push notification. Event with id: ${eventId} not found.`
+    );
+    return;
+  }
+
   const url = "/events/" + event.slug;
 
   let subs: Subscription[] = [];
@@ -16,21 +29,16 @@ export const sendEventModificationPushNotification = async (
   if (event.public) {
     subs = await ctx.prisma.subscription.findMany();
   } else {
-    const users = await ctx.prisma.user.findMany({
-      where: { id: { in: event.invitedUserIds } },
-      include: { subscriptions: true },
-      distinct: ["id"],
+    subs = await ctx.prisma.subscription.findMany({
+      where: { ownerId: { in: event.invitedUsers.map((u) => u.userId) } },
     });
-    subs = users.flatMap((u) => u.subscriptions);
   }
 
-  // Filter currrent user out
-  const finalSubs = subs.filter((s) => s.ownerId !== ctx.session?.user.id);
-
   console.log("Sending event modification push notifications");
-  await pushSender(finalSubs, body, url, ctx);
+  await pushSender(subs, body, url, ctx);
 };
 
+// TODO refactor
 export const sendAvailabilityModificationPushNotifications = async (
   event: Event,
   availabilityDate: Date,
@@ -92,7 +100,7 @@ const pushSender = async (
   const notificationPromises = subscriptions.map((userSub) =>
     ctx.webPush
       .sendNotification(
-        userSub.sub!,
+        userSub.sub! as any as PushSubscription,
         JSON.stringify({
           title: "You've got time",
           body: message,

@@ -1,8 +1,8 @@
 import { Badge } from "@mantine/core";
 
-import type { AvailableTypes } from "../../../types";
+import type { AvailabilityType } from "@prisma/client";
 
-export const AvailabilityBadge = ({ type }: { type: AvailableTypes }) => {
+export const AvailabilityBadge = ({ type }: { type: AvailabilityType }) => {
   const { color, text } = getAvailabilityBadge(type);
 
   return (
@@ -12,13 +12,13 @@ export const AvailabilityBadge = ({ type }: { type: AvailableTypes }) => {
   );
 };
 
-const getAvailabilityBadge = (available: AvailableTypes) => {
+const getAvailabilityBadge = (available: AvailabilityType) => {
   switch (available) {
-    case "good":
+    case "GOOD":
       return { text: "Available", color: "green" };
-    case "maybe":
+    case "MAYBE":
       return { text: "Maybe", color: "orange" };
-    case "notgood":
+    case "NOT_GOOD":
       return { text: "Not Available", color: "red" };
     default:
       return { text: "Default", color: "yellow" };

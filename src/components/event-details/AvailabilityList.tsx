@@ -7,11 +7,11 @@ import { Stack } from "@mantine/core";
 
 import { AvailabilityCard } from "./availability-card";
 
-import type { AvailabilityDataWithOwner } from "../../types";
+import type { AvailabilityDataWithOwnerAndReactions } from "../../types";
 
 interface Props {
   selectedDate: Date;
-  availabilities: AvailabilityDataWithOwner[];
+  availabilities: AvailabilityDataWithOwnerAndReactions[];
   disableReactions?: boolean;
 }
 

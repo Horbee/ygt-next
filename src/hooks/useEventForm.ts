@@ -19,7 +19,7 @@ export const useEventForm = (
     fromTime: event?.fromDate && !event.wholeDay ? mapToDateInput(event.fromDate) : "",
     untilDate: event?.untilDate ? resetTime(event.untilDate) : null,
     untilTime: event?.untilDate && !event.wholeDay ? mapToDateInput(event.untilDate) : "",
-    invitedUsers: event?.invitedUsers ?? [],
+    invitedUsers: event?.invitedUsers.map((u) => u.user) ?? [],
     tags: event?.tags.map((t) => ({ label: t, value: t })) ?? [],
     coverImageUrl: event?.coverImage?.url ?? null,
   };

@@ -11,6 +11,6 @@ export interface EventDataFull extends Event {
 
 export interface EventDataForm extends Event {
   owner: User;
-  invitedUsers: User[];
+  invitedUsers: { user: User }[];
   coverImage: Attachment | null;
 }

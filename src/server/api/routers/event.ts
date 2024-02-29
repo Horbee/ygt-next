@@ -46,17 +46,17 @@ export const eventRouter = createTRPCRouter({
           slug,
           OR: [
             { ownerId: userId },
-            { invitedUserIds: { has: userId }, published: true },
+            { invitedUsers: { some: { userId } }, published: true },
             { public: true, published: true },
           ],
         },
         include: {
           owner: true,
-          invitedUsers: true,
+          invitedUsers: { include: { user: true } },
           coverImage: true,
           availabilities: withAvailabilities
             ? {
-                include: { owner: true },
+                include: { owner: true, reactions: true },
               }
             : false,
         },
@@ -81,16 +81,20 @@ export const eventRouter = createTRPCRouter({
       });
     }
 
+    const { invitedUserIds, ...createEvent } = input;
     const createdEvent = await ctx.prisma.event.create({
       data: {
-        ...input,
+        ...createEvent,
+        invitedUsers: {
+          create: invitedUserIds.map((invitedUserId) => ({ userId: invitedUserId })),
+        },
         ownerId: user.id,
       },
     });
 
     if (createdEvent.published) {
       sendEventModificationPushNotification(
-        createdEvent,
+        createdEvent.id,
         `${user.name} created a new event: ${createdEvent.name}`,
         ctx
       );
@@ -121,14 +125,24 @@ export const eventRouter = createTRPCRouter({
           message: "Only the owner can update this event",
         });
 
+      const { invitedUserIds, ...restEventDto } = eventDto;
+
       const updatedEvent = await ctx.prisma.event.update({
-        data: eventDto,
+        data: {
+          ...restEventDto,
+          invitedUsers: {
+            deleteMany: {},
+            create: invitedUserIds.map((invitedUserId) => ({
+              userId: invitedUserId,
+            })),
+          },
+        },
         where: { id: eventId },
       });
 
       if (updatedEvent.published) {
         sendEventModificationPushNotification(
-          updatedEvent,
+          updatedEvent.id,
           `${user.name} updated an event: ${updatedEvent.name}`,
           ctx
         );
@@ -142,32 +156,23 @@ export const eventRouter = createTRPCRouter({
     .mutation(async ({ ctx, input: eventId }) => {
       const user = ctx.session.user;
 
-      const event = await ctx.prisma.event.findFirst({
-        where: { id: eventId },
-      });
-
-      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
-
-      if (event.ownerId !== user.id)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Only the owner can delete this event",
-        });
-
       const deletedEvent = await ctx.prisma.event.delete({
-        where: { id: eventId },
-        include: { coverImage: true },
+        where: { id: eventId, ownerId: user.id },
       });
+
+      if (!deletedEvent)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Event not found or you are not the owner",
+        });
 
       if (deletedEvent.published) {
         sendEventModificationPushNotification(
-          deletedEvent,
+          deletedEvent.id,
           `${user.name} deleted an event: ${deletedEvent.name}`,
           ctx
         );
       }
-
-      return deletedEvent;
     }),
 
   getDistinctTags: protectedProcedure
@@ -178,9 +183,8 @@ export const eventRouter = createTRPCRouter({
         distinct: ["tags"],
       });
 
-      const flat = [...new Set(eventsWithTags.flatMap((e) => e.tags))];
-
-      return flat
+      return eventsWithTags
+        .flatMap((e) => e.tags)
         .filter((t) => t.match(new RegExp(input, "i")))
         .slice(0, 5)
         .map((t) => ({ label: t.toUpperCase(), value: t.toUpperCase() }));
