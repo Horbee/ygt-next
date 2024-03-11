@@ -9,6 +9,7 @@ export const sendEventModificationPushNotification = async (
   body: string,
   ctx: TRPCContext
 ) => {
+  const userId = ctx.session?.user.id;
   const url = "/events/" + event.slug;
 
   let subs: Subscription[] = [];
@@ -17,18 +18,16 @@ export const sendEventModificationPushNotification = async (
     subs = await ctx.prisma.subscription.findMany();
   } else {
     const users = await ctx.prisma.user.findMany({
-      where: { id: { in: event.invitedUserIds } },
+      where: { id: { in: event.invitedUserIds, not: userId } }, // Filter currrent user out
       include: { subscriptions: true },
       distinct: ["id"],
     });
+
     subs = users.flatMap((u) => u.subscriptions);
   }
 
-  // Filter currrent user out
-  const finalSubs = subs.filter((s) => s.ownerId !== ctx.session?.user.id);
-
   console.log("Sending event modification push notifications");
-  await pushSender(finalSubs, body, url, ctx);
+  await pushSender(subs, body, url, ctx);
 };
 
 export const sendAvailabilityModificationPushNotifications = async (
@@ -37,18 +36,16 @@ export const sendAvailabilityModificationPushNotifications = async (
   ctx: TRPCContext
 ) => {
   const userName = ctx.session?.user.name;
+  const userId = ctx.session?.user.id;
   const url = `/events/${event.slug}?date=${getFormattedDate(availabilityDate)}`;
 
   const users = await ctx.prisma.user.findMany({
-    where: { availabilities: { some: { eventId: event.id } } },
+    where: { availabilities: { some: { eventId: event.id } }, id: { not: userId } }, //   Remove current user
     include: { subscriptions: true },
     distinct: ["id"],
   });
 
-  const subscriptions = users
-    //   Remove current user
-    .filter((u) => u.id !== ctx.session?.user.id)
-    .flatMap((u) => u.subscriptions);
+  const subscriptions = users.flatMap((u) => u.subscriptions);
 
   console.log("Sending availability modification push notifications.");
   await pushSender(

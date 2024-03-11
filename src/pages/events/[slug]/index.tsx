@@ -41,14 +41,16 @@ const EventDetailsPage: NextPage = () => {
   if (!event) {
     return (
       <BaseLayout title="Event Details">
-        <Alert icon={<AlertTriangle size={16} />} color="orange">
-          <Group>
-            <Text>
-              This event is hidden or cannot be found. Maybe it never existed...
-            </Text>
-            <Text size="xl">🤯</Text>
-          </Group>
-        </Alert>
+        {!getEvent.isLoading && (
+          <Alert icon={<AlertTriangle size={16} />} color="orange">
+            <Group>
+              <Text>
+                This event is hidden or cannot be found. Maybe it never existed...
+              </Text>
+              <Text size="xl">🤯</Text>
+            </Group>
+          </Alert>
+        )}
       </BaseLayout>
     );
   }

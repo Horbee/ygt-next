@@ -104,11 +104,14 @@ export const availabilityRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       const deletedAv = await ctx.prisma.availability.delete({
-        where: { ownerId_id: { id: availabilityId, ownerId: userId } },
+        where: {
+          ownerId_id: { id: availabilityId, ownerId: userId },
+          event: { published: true },
+        },
         include: { event: true },
       });
 
-      if (!deletedAv || !deletedAv.event.published) {
+      if (!deletedAv) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message:
@@ -132,15 +135,14 @@ export const availabilityRouter = createTRPCRouter({
       const { availabilityId, reaction } = input;
 
       const availability = await ctx.prisma.availability.findFirst({
-        where: { id: availabilityId },
+        where: { id: availabilityId, event: { published: true } },
         include: { event: true },
       });
 
-      if (!availability?.event.published) {
+      if (!availability) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message:
-            "Availability not found or you are not the owner or event is not published",
+          message: "Availability not found or event is not published",
         });
       }
 
@@ -148,19 +150,17 @@ export const availabilityRouter = createTRPCRouter({
         (r) => r.ownerId === userId && r.shortcodes === reaction.shortcodes
       );
 
-      let updatedAv;
       if (userAddedReactionAlready) {
-        updatedAv = await ctx.prisma.availability.update({
+        await ctx.prisma.availability.update({
           where: { id: availabilityId },
           data: {
             reactions: {
               deleteMany: { where: { ownerId: userId, shortcodes: reaction.shortcodes } },
             },
           },
-          include: { event: true },
         });
       } else {
-        updatedAv = await ctx.prisma.availability.update({
+        await ctx.prisma.availability.update({
           where: { id: availabilityId },
           data: {
             reactions: {
@@ -172,30 +172,21 @@ export const availabilityRouter = createTRPCRouter({
               },
             },
           },
-          include: { event: true },
         });
       }
 
-      if (!updatedAv)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Availability not found or you are not the owner",
-        });
-
       // Send push notification only if reaction was added
-      if (!availability) {
-        const notificationUrl = `/events/${updatedAv.event.slug}?date=${getFormattedDate(
-          updatedAv.date
-        )}`;
+      if (!userAddedReactionAlready) {
+        const notificationUrl = `/events/${
+          availability.event.slug
+        }?date=${getFormattedDate(availability.date)}`;
 
         sendReactionPushNotifications(
           `${userName} reacted to your availability with: ${reaction.native}`,
-          updatedAv.ownerId,
+          availability.ownerId,
           notificationUrl,
           ctx
         );
       }
-
-      return updatedAv;
     }),
 });

@@ -109,22 +109,17 @@ export const eventRouter = createTRPCRouter({
     .mutation(async ({ ctx, input: { eventId, eventDto } }) => {
       const user = ctx.session.user;
 
-      const event = await ctx.prisma.event.findFirst({
-        where: { id: eventId },
-      });
-
-      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
-
-      if (event.ownerId !== user.id)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Only the owner can update this event",
-        });
-
       const updatedEvent = await ctx.prisma.event.update({
         data: eventDto,
-        where: { id: eventId },
+        where: { id: eventId, ownerId: user.id },
       });
+
+      if (!updatedEvent) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Event not found or you are not the owner.",
+        });
+      }
 
       if (updatedEvent.published) {
         sendEventModificationPushNotification(
@@ -142,22 +137,16 @@ export const eventRouter = createTRPCRouter({
     .mutation(async ({ ctx, input: eventId }) => {
       const user = ctx.session.user;
 
-      const event = await ctx.prisma.event.findFirst({
-        where: { id: eventId },
-      });
-
-      if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
-
-      if (event.ownerId !== user.id)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Only the owner can delete this event",
-        });
-
       const deletedEvent = await ctx.prisma.event.delete({
-        where: { id: eventId },
-        include: { coverImage: true },
+        where: { id: eventId, ownerId: user.id },
       });
+
+      if (!deletedEvent) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Event not found or you are not the owner.",
+        });
+      }
 
       if (deletedEvent.published) {
         sendEventModificationPushNotification(
@@ -166,8 +155,6 @@ export const eventRouter = createTRPCRouter({
           ctx
         );
       }
-
-      return deletedEvent;
     }),
 
   getDistinctTags: protectedProcedure

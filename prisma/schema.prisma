@@ -123,7 +123,7 @@ model Event {
     invitedUserIds String[]       @db.ObjectId
     invitedUsers   User[]         @relation(name: "invitedEvents", fields: [invitedUserIds], references: [id])
     tags           String[]
-    coverImage     Attachment?    @relation(fields: [coverImageId], references: [id])
+    coverImage     Attachment?    @relation(fields: [coverImageId], references: [id], onDelete: SetNull)
     coverImageId   String?        @map("attachment") @db.ObjectId
 
     createdAt DateTime @default(now()) @db.Date
