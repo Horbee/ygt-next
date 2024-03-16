@@ -31,6 +31,7 @@ export const InvitedUsersSection = ({ eventForm }: Props) => {
         loadOptions={(name) => debouncedFindUser(name.trim())}
         getOptionLabel={(opt) => opt.name ?? ""}
         getOptionValue={(opt) => opt.id}
+        inputId="invited-users-input"
       />
     </Input.Wrapper>
   );

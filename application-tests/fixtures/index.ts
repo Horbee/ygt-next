@@ -1,11 +1,12 @@
 import smtpTester from "smtp-tester";
-import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 
 import { test as base } from "./object-models";
 import { LoginPage } from "../object-models/login-page";
 import { UserSettingsPage } from "../object-models/user-settings-page";
+import { deleteTestUserByEmail } from "../helpers/user";
+import { getRandomString } from "../helpers/random-string";
 
 interface LoggedInUserFixture {
   loginWorkflow: string;
@@ -36,7 +37,7 @@ export const withLoggedInUserTest = base.extend<{}, LoggedInUserFixture>({
       const userSettingsPage = new UserSettingsPage(page);
 
       const mailServer = smtpTester.init(4025);
-      const emailId = crypto.randomBytes(10).toString("hex") + "@tester.com";
+      const emailId = getRandomString(10) + "@tester.com";
 
       await loginPage.loginNewUser(emailId);
       const url = await loginPage.extractLoginEmailUrl(mailServer, emailId);
@@ -54,7 +55,10 @@ export const withLoggedInUserTest = base.extend<{}, LoggedInUserFixture>({
 
       await page.context().storageState({ path: fileName });
       await page.close();
+
       await use(fileName);
+
+      await deleteTestUserByEmail(emailId);
     },
     { scope: "worker" },
   ],

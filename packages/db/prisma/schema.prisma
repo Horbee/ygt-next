@@ -85,7 +85,7 @@ model Availability {
   date      DateTime   @db.Date
   fromTime  DateTime?  @db.Date
   untilTime DateTime?  @db.Date
-  owner     User       @relation(fields: [ownerId], references: [id])
+  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId   String     @map("owner") @db.ObjectId
   event     Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId   String     @map("event") @db.ObjectId
@@ -117,7 +117,7 @@ model Event {
   wholeDay       Boolean        @default(false)
   fromDate       DateTime       @db.Date
   untilDate      DateTime       @db.Date
-  owner          User           @relation(name: "ownedEvents", fields: [ownerId], references: [id])
+  owner          User           @relation(name: "ownedEvents", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId        String         @map("owner") @db.ObjectId
   availabilities Availability[]
   invitedUserIds String[]       @db.ObjectId
@@ -139,7 +139,7 @@ model Attachment {
   type    String
   name    String
   url     String
-  owner   User   @relation(fields: [ownerId], references: [id])
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String @map("owner") @db.ObjectId
 
   createdAt DateTime @default(now()) @db.Date
@@ -154,7 +154,7 @@ model Subscription {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   v  Int    @default(0) @map("__v") @ignore
 
-  owner    User   @relation(fields: [ownerId], references: [id])
+  owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId  String @map("owner") @db.ObjectId
   endpoint String
   sub      SubObj

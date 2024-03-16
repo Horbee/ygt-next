@@ -26,6 +26,7 @@ export const TagsField = ({ eventForm }: Props) => {
         fieldName="tags"
         loadOptions={(searchTerm) => debouncedFindTags(searchTerm)}
         defaultOptions
+        inputId="tags-input"
       />
     </Input.Wrapper>
   );
