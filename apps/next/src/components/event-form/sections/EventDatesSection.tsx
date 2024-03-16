@@ -1,10 +1,10 @@
-import isSameDay from "date-fns/isSameDay"
+import isSameDay from "date-fns/isSameDay";
 
-import { Grid, Text } from "@mantine/core"
+import { Grid, Text } from "@mantine/core";
 
-import { UseEventForm } from "../../../hooks"
-import { EventFormValues } from "../../../types"
-import { DatePickerInputWrapper, TimeInputWrapper } from "../../fields"
+import { UseEventForm } from "../../../hooks";
+import { EventFormValues } from "../../../types";
+import { DatePickerInputWrapper, TimeInputWrapper } from "../../fields";
 
 interface Props {
   eventForm: UseEventForm;
@@ -34,6 +34,7 @@ export const EventDatesSection = ({ eventForm }: Props) => {
             }}
             error={errors.fromDate?.message}
             withAsterisk
+            data-testid="start-date-input"
           />
         </Grid.Col>
         {!wholeDay && (
@@ -71,6 +72,7 @@ export const EventDatesSection = ({ eventForm }: Props) => {
             }}
             error={errors.untilDate?.message}
             withAsterisk
+            data-testid="end-date-input"
           />
         </Grid.Col>
         {!wholeDay && (

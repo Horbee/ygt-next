@@ -1,11 +1,13 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 async function main() {
-  const testUser = await prisma.user.upsert({
+  await prisma.user.delete({
     where: { email: "testuser@gmail.com" },
-    update: {},
-    create: {
+  });
+
+  const testUser = await prisma.user.create({
+    data: {
       email: "testuser@gmail.com",
       name: "Test User",
       accounts: {
@@ -24,7 +26,7 @@ async function main() {
       sessions: {
         create: {
           sessionToken: "d13d1580-51c4-428b-b800-dfb6ef8edc3c",
-          expires: new Date("2023-04-24T21:41:33.982Z"),
+          expires: new Date("2024-04-24T21:41:33.982Z"),
         },
       },
     },
