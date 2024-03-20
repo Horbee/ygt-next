@@ -42,25 +42,33 @@ The application uses Google Auth Provider to sign in users and AWS S3 to save th
 
    The install script should also execute `pnpm prisma generate` automatically. In case the prisma client is not generated properly, you have to exectue this command manually.
 
-3. Create .env file: execute the following script which will generate the .env files for you
+3. Create .env file: you have two options to create this file, choose one:
 
-   ```bash
-   ./packages/scripts/src/environment-config-dev.ts
+- 3.1 execute the following script which will generate the .env file for you:
 
-   # optionally
-   ./packages/scripts/src/environment-config-dev.ts --GOOGLE_CLIENT_ID <your_google_client_id> --GOOGLE_CLIENT_SECRET <your_google_client_secret>
-   ```
+  ```bash
+  ./scripts/environment-config-dev.mjs
 
-   _Please note: Adding a Google ClientId and Secret for OAuth is not necessary. You can use the Mailhog service with the Email provider to send out and catch magic login links._
+  # optionally
+  ./scripts/environment-config-dev.mjs --GOOGLE_CLIENT_ID <your_google_client_id> --GOOGLE_CLIENT_SECRET <your_google_client_secret>
+  ```
 
-4. Start the required services with the help of the `docker-compose.yml` file. Then you need to create collections and indexes for MongoDB and setup the local S3 Bucket:
+- 3.2 Make a copy of the `.env.example` file and rename it to `.env.local`. Fill out the necessary details:
+
+  ```bash
+  mv .env.example .env.local
+  ```
+
+  _Please note: Adding a Google ClientId and Secret for OAuth is not necessary. You can use the Mailhog service with the Email provider to send out and catch magic login links._
+
+4. Start the required services with the help of the `docker-compose.yaml` file. Then you need to create collections and indexes for MongoDB and setup the local S3 Bucket:
 
    ```bash
    docker compose up -d
 
    pnpm prisma db push
 
-   ./packages/scripts/src/setup-s3-local.ts
+   ./scripts/setup-s3-local.mjs
    ```
 
 - 4.1 If you are using a Mac with Apple-Chip, you will need to use the `zcube/bitnami-compat-mongodb` image, as the original `bitnami/mongodb` is not compatible with arm64. Open the `docker-compose.yml` file and switch the comments on the lines 3 and 4.
