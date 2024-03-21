@@ -1,8 +1,7 @@
-import { useSession } from "next-auth/react"
-import { useEffect } from "react"
-
-import { env } from "../env/client.mjs"
-import { api } from "../utils/api"
+import { toast } from "react-toastify";
+import { env } from "../env/client.mjs";
+import { api } from "../utils/api";
+import { useEffect, useState } from "react";
 
 async function createNotificationSubscription() {
   const existingSub = await getExistingSubscription();
@@ -27,36 +26,41 @@ async function getExistingSubscription(): Promise<PushSubscription | null> {
 const isSupported = () =>
   "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
 
-export const useCreateSubscription = (
-  options: { autoSub?: boolean } = { autoSub: true }
-) => {
-  const { status } = useSession();
+export const useCreateSubscription = () => {
+  const [subscriptionFound, setSubscriptionFound] = useState(false);
   const subscribe = api.notification.subscribe.useMutation();
 
-  useEffect(() => {
-    if (options.autoSub) {
-      triggerSubscription();
-    }
-  }, [options.autoSub]);
-
-  const triggerSubscription = () => {
-    if (status !== "authenticated") {
-      console.log("triggerSubscription: Not authenticated");
+  const triggerSubscription = async ({
+    showFeedback,
+  }: { showFeedback?: boolean } = {}) => {
+    if (!window || !isSupported()) {
+      console.log("triggerSubscription: Web Push API not supported.");
       return;
     }
 
-    if (window && isSupported()) {
-      Notification.requestPermission().then(() => {
-        createNotificationSubscription()
-          .then((s) => {
-            subscribe.mutateAsync(s as any);
-          })
-          .catch((err) => console.error(err));
-      });
-    } else {
-      console.log("triggerSubscription: Web Push API not supported.");
+    if (Notification.permission === "denied") {
+      if (showFeedback)
+        toast.warning("Enable notification permissions at the browser level");
+      return;
+    }
+
+    try {
+      await Notification.requestPermission();
+      const pushSubscription = await createNotificationSubscription();
+      await subscribe.mutateAsync(pushSubscription as any);
+      setSubscriptionFound(true);
+
+      if (showFeedback) toast.success("Push subscription saved!");
+    } catch (error) {
+      console.error("Subscription failed.", error);
+      setSubscriptionFound(false);
+      if (showFeedback) toast.error("Push subscription failed!");
     }
   };
 
-  return { triggerSubscription };
+  useEffect(() => {
+    getExistingSubscription().then((sub) => setSubscriptionFound(Boolean(sub)));
+  }, []);
+
+  return { triggerSubscription, subscriptionFound };
 };

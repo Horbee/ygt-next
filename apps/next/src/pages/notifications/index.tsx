@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function NotificationsPage() {
-  const { triggerSubscription } = useCreateSubscription({ autoSub: false });
+  const { triggerSubscription, subscriptionFound } = useCreateSubscription();
 
   return (
     <BaseLayout title="Notification Settings">
@@ -20,12 +20,14 @@ export default function NotificationsPage() {
         <Button
           leftIcon={<Bell size={16} />}
           variant="outline"
-          onClick={triggerSubscription}
+          onClick={() => triggerSubscription({ showFeedback: true })}
         >
-          Trigger Subscription
+          Enable Push Notifications
         </Button>
 
-        <Text c="dimmed">Push Notifications are controlled at browser level.</Text>
+        <Text c="dimmed">
+          Push Notifications are {subscriptionFound ? "enabled" : "disabled"}.
+        </Text>
       </Stack>
     </BaseLayout>
   );
