@@ -13,13 +13,13 @@ export class CreateEventPage {
 
   private async selectDate(
     date: Date,
-    dialogName: "Start Date" | "End Date",
+    wrapperId: "start-date-wrapper" | "end-date-wrapper",
     inputField: Locator
   ) {
     await inputField.click();
     const stringDate = format(date, "d MMMM yyyy");
     await this.page
-      .getByRole("dialog", { name: dialogName })
+      .getByTestId(wrapperId)
       .getByRole("button", { name: stringDate, exact: true })
       .click();
   }
@@ -29,11 +29,11 @@ export class CreateEventPage {
   }
 
   async selectStartDate(date: Date) {
-    await this.selectDate(date, "Start Date", this.startDateInput);
+    await this.selectDate(date, "start-date-wrapper", this.startDateInput);
   }
 
   async selectEndDate(date: Date) {
-    await this.selectDate(date, "End Date", this.endDateInput);
+    await this.selectDate(date, "end-date-wrapper", this.endDateInput);
   }
 
   get slugValidationError() {

@@ -23,19 +23,21 @@ export const EventDatesSection = ({ eventForm }: Props) => {
     <>
       <Grid>
         <Grid.Col span={wholeDay ? 12 : 6}>
-          <DatePickerInputWrapper<EventFormValues>
-            clearable
-            fieldName="fromDate"
-            control={control}
-            label="Start Date"
-            title="Start Date"
-            rules={{
-              required: { message: "Start Date is required", value: true },
-            }}
-            error={errors.fromDate?.message}
-            withAsterisk
-            data-testid="start-date-input"
-          />
+          <div data-testid="start-date-wrapper">
+            <DatePickerInputWrapper<EventFormValues>
+              clearable
+              fieldName="fromDate"
+              control={control}
+              label="Start Date"
+              title="Start Date"
+              rules={{
+                required: { message: "Start Date is required", value: true },
+              }}
+              error={errors.fromDate?.message}
+              withAsterisk
+              data-testid="start-date-input"
+            />
+          </div>
         </Grid.Col>
         {!wholeDay && (
           <Grid.Col span={6}>
@@ -58,22 +60,24 @@ export const EventDatesSection = ({ eventForm }: Props) => {
 
       <Grid>
         <Grid.Col span={wholeDay ? 12 : 6}>
-          <DatePickerInputWrapper<EventFormValues>
-            clearable
-            fieldName="untilDate"
-            control={control}
-            label="End Date"
-            title="End Date"
-            rules={{
-              required: { message: "End Date is required", value: true },
-              validate: (value, formValues) =>
-                (formValues.fromDate && (value as Date) >= formValues.fromDate) ||
-                "End Date must be >= Start Date",
-            }}
-            error={errors.untilDate?.message}
-            withAsterisk
-            data-testid="end-date-input"
-          />
+          <div data-testid="end-date-wrapper">
+            <DatePickerInputWrapper<EventFormValues>
+              clearable
+              fieldName="untilDate"
+              control={control}
+              label="End Date"
+              title="End Date"
+              rules={{
+                required: { message: "End Date is required", value: true },
+                validate: (value, formValues) =>
+                  (formValues.fromDate && (value as Date) >= formValues.fromDate) ||
+                  "End Date must be >= Start Date",
+              }}
+              error={errors.untilDate?.message}
+              withAsterisk
+              data-testid="end-date-input"
+            />
+          </div>
         </Grid.Col>
         {!wholeDay && (
           <Grid.Col span={6}>

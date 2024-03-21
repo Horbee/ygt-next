@@ -4,7 +4,7 @@ import { load as cheerioLoad } from "cheerio";
 
 import crypto from "crypto";
 
-import { loginPageTest as test } from "../object-models/login-page";
+import { test } from "../fixtures/object-models";
 
 test.describe("auth", () => {
   let mailServer: MailServer;
@@ -37,7 +37,10 @@ test.describe("auth", () => {
 
       emailLink = $("a").attr("href");
     } catch (cause) {
-      console.error("No message delivered to test@example.com in 1 second.", cause);
+      console.error(
+        "No message delivered to test@example.com in 1 second.",
+        cause
+      );
     }
 
     await page.waitForURL(/verify-request/);
@@ -52,6 +55,8 @@ test.describe("auth", () => {
     await userSettingsPage.saveButton.click();
 
     await page.waitForURL(/events/);
-    await expect(page.getByRole("heading", { name: /my event list/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /my event list/i })
+    ).toBeVisible();
   });
 });

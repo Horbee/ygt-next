@@ -42,8 +42,6 @@ export const withLoggedInUserTest = base.extend<{}, LoggedInUserFixture>({
       await loginPage.loginNewUser(emailId);
       const url = await loginPage.extractLoginEmailUrl(mailServer, emailId);
 
-      mailServer.stop(() => {});
-
       await page.goto(url!);
 
       await page.waitForURL(/users\/me/);
@@ -59,6 +57,8 @@ export const withLoggedInUserTest = base.extend<{}, LoggedInUserFixture>({
       await use(fileName);
 
       await deleteTestUserByEmail(emailId);
+
+      mailServer.stop(() => {});
     },
     { scope: "worker" },
   ],

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@ygt/db";
 
 const prisma = new PrismaClient({
   log: ["query", "error", "warn"],

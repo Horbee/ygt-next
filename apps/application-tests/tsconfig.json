@@ -1,0 +1,10 @@
+{
+  "extends": "@ygt/typescript-config/base.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["playwright.config.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

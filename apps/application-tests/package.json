@@ -1,0 +1,17 @@
+{
+  "name": "@ygt/application-tests",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@ygt/typescript-config": "workspace:*",
+    "@ygt/db": "workspace:*",
+    "smtp-tester": "^2.1.0",
+    "cheerio": "1.0.0-rc.12",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1"
+  }
+}

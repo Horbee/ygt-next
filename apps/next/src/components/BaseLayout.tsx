@@ -4,7 +4,6 @@ import { ChevronLeft } from "lucide-react";
 
 import { ActionIcon, Container, Group, Text } from "@mantine/core";
 
-import { useCreateSubscription } from "../hooks/useCreateSubscription";
 import { AppHeader } from "./app-header";
 import { AppNavbar } from "./app-navbar";
 import { HeadContent } from "./HeadContent";
@@ -29,8 +28,6 @@ export const BaseLayout = ({
   const [navOpened, setNavOpened] = useState(false);
 
   const router = useRouter();
-
-  useCreateSubscription();
 
   return (
     <>
