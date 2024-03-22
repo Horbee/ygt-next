@@ -40,7 +40,8 @@ export const sendAvailabilityModificationPushNotifications = async (
   const url = `/events/${event.slug}?date=${getFormattedDate(availabilityDate)}`;
 
   const users = await ctx.prisma.user.findMany({
-    where: { availabilities: { some: { eventId: event.id } }, id: { not: userId } }, //   Remove current user
+    // where: { availabilities: { some: { eventId: event.id } }, id: { not: userId } },
+    where: { invitedEventIds: { has: event.id }, id: { not: userId } }, // Invited uses receive notifications, remove current user
     include: { subscriptions: true },
     distinct: ["id"],
   });
