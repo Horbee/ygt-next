@@ -1,10 +1,13 @@
 import { expect } from "@playwright/test";
 import startOfMonth from "date-fns/startOfMonth";
 import endOfMonth from "date-fns/endOfMonth";
+import { faker } from "@faker-js/faker";
 
 import { withLoggedInUserTest as test } from "../../fixtures";
-import { getRandomString } from "../../helpers/random-string";
-import { createTestUserByName, deleteTestUserByEmail } from "../../helpers/user";
+import {
+  createTestUserByName,
+  deleteTestUserByEmail,
+} from "../../helpers/user";
 
 test("Validation: Can't create event with invalid form", async ({
   loginWorkflow,
@@ -15,44 +18,68 @@ test("Validation: Can't create event with invalid form", async ({
   // Check validation errors
   await createEventPage.createButton.click();
 
-  await expect(createEventPage.page.getByText("Event Name is required")).toBeVisible();
-  await expect(createEventPage.page.getByText("Start Date is required")).toBeVisible();
-  await expect(createEventPage.page.getByText("End Date is required")).toBeVisible();
   await expect(
-    createEventPage.page.getByText('Start Time is required if "Whole Day" is not checked')
+    createEventPage.page.getByText("Event Name is required")
   ).toBeVisible();
   await expect(
-    createEventPage.page.getByText('End Time is required if "Whole Day" is not checked')
+    createEventPage.page.getByText("Start Date is required")
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText("End Date is required")
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText(
+      'Start Time is required if "Whole Day" is not checked'
+    )
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText(
+      'End Time is required if "Whole Day" is not checked'
+    )
   ).toBeVisible();
 
-  expect(createEventPage.page.url()).toBe(createEventPage.path);
+  expect(createEventPage.page.url()).toBe(createEventPage.fullPath);
 
   await createEventPage.wholeDaySwitch.click();
 
   await createEventPage.createButton.click();
 
-  await expect(createEventPage.page.getByText("Event Name is required")).toBeVisible();
-  await expect(createEventPage.page.getByText("Start Date is required")).toBeVisible();
-  await expect(createEventPage.page.getByText("End Date is required")).toBeVisible();
   await expect(
-    createEventPage.page.getByText('Start Time is required if "Whole Day" is not checked')
+    createEventPage.page.getByText("Event Name is required")
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText("Start Date is required")
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText("End Date is required")
+  ).toBeVisible();
+  await expect(
+    createEventPage.page.getByText(
+      'Start Time is required if "Whole Day" is not checked'
+    )
   ).not.toBeVisible();
   await expect(
-    createEventPage.page.getByText('End Time is required if "Whole Day" is not checked')
+    createEventPage.page.getByText(
+      'End Time is required if "Whole Day" is not checked'
+    )
   ).not.toBeVisible();
 
-  expect(createEventPage.page.url()).toBe(createEventPage.path);
+  expect(createEventPage.page.url()).toBe(createEventPage.fullPath);
 });
 
-test.only("Can create public event", async ({ page, loginWorkflow, createEventPage }) => {
+test("Can create public event", async ({
+  page,
+  loginWorkflow,
+  createEventPage,
+}) => {
   const eventData = {
-    title: getRandomString(10),
-    description: getRandomString(30),
+    title: faker.lorem.words(2),
+    description: faker.lorem.paragraph(2),
     startDate: startOfMonth(new Date()),
     endDate: endOfMonth(new Date()),
     startTime: "12:30",
     endTime: "18:00",
-    tag: `#${getRandomString(4)}`,
+    tag: `#${faker.lorem.word(4)}`,
   };
 
   await test.step("Can upload attachment", async () => {
@@ -103,18 +130,18 @@ test.only("Can create public event", async ({ page, loginWorkflow, createEventPa
       createEventPage.page.getByText("This slug is already taken")
     ).toBeVisible();
 
-    expect(createEventPage.page.url()).toBe(createEventPage.path);
+    expect(createEventPage.page.url()).toBe(createEventPage.fullPath);
   });
 
   await test.step("Can create private event with invited users", async () => {
     await createEventPage.goto();
 
     const newEventData = {
-      title: getRandomString(10),
-      description: getRandomString(30),
+      title: faker.lorem.words(2),
+      description: faker.lorem.paragraph(2),
       startDate: startOfMonth(new Date()),
       endDate: endOfMonth(new Date()),
-      invitedUser: await createTestUserByName(getRandomString(5)),
+      invitedUser: await createTestUserByName(faker.person.firstName()),
     };
 
     await createEventPage.eventNameInput.fill(newEventData.title);
@@ -128,7 +155,9 @@ test.only("Can create public event", async ({ page, loginWorkflow, createEventPa
     await createEventPage.wholeDaySwitch.click();
 
     await createEventPage.invitedUsersInput.click({ force: true });
-    await createEventPage.invitedUsersInput.fill(newEventData.invitedUser.name!);
+    await createEventPage.invitedUsersInput.fill(
+      newEventData.invitedUser.name!
+    );
     await createEventPage.invitedUsersInput.press("Tab");
 
     await createEventPage.createButton.click();

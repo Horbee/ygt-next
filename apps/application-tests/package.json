@@ -5,13 +5,14 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@ygt/typescript-config": "workspace:*",
     "@ygt/db": "workspace:*",
-    "smtp-tester": "^2.1.0",
+    "@ygt/typescript-config": "workspace:*",
     "cheerio": "1.0.0-rc.12",
-    "date-fns": "^2.30.0"
+    "date-fns": "^2.30.0",
+    "smtp-tester": "^2.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.42.1"
   }
 }

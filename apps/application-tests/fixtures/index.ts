@@ -2,11 +2,11 @@ import smtpTester from "smtp-tester";
 import path from "path";
 import fs from "fs";
 
+import { faker } from "@faker-js/faker";
 import { test as base } from "./object-models";
-import { LoginPage } from "../object-models/login-page";
-import { UserSettingsPage } from "../object-models/user-settings-page";
+import { LoginPage } from "../object-models/pages/login-page";
+import { UserSettingsPage } from "../object-models/pages/user-settings-page";
 import { deleteTestUserByEmail } from "../helpers/user";
-import { getRandomString } from "../helpers/random-string";
 
 interface LoggedInUserFixture {
   loginWorkflow: string;
@@ -32,33 +32,38 @@ export const withLoggedInUserTest = base.extend<{}, LoggedInUserFixture>({
       }
 
       // Important: make sure we authenticate in a clean environment by unsetting storage state.
+      // Login steps
       const page = await browser.newPage({ storageState: undefined });
       const loginPage = new LoginPage(page);
-      const userSettingsPage = new UserSettingsPage(page);
 
       const mailServer = smtpTester.init(4025);
-      const emailId = getRandomString(10) + "@tester.com";
+      const emailId = faker.internet.email().toLowerCase(); //SMTP Tester won't find the recipient if casing is not lower
 
       await loginPage.loginNewUser(emailId);
+
       const url = await loginPage.extractLoginEmailUrl(mailServer, emailId);
 
-      await page.goto(url!);
+      mailServer.stop(() => {});
+      await page.close();
 
-      await page.waitForURL(/users\/me/);
-      await userSettingsPage.usernameInput.fill("Test User");
+      // New Page
+      const newPage = await browser.newPage({ storageState: undefined });
+      await newPage.goto(url!);
+
+      await newPage.waitForURL(/users\/me/);
+      const userSettingsPage = new UserSettingsPage(newPage);
+      await userSettingsPage.usernameInput.fill(faker.person.fullName());
       await userSettingsPage.saveButton.click();
 
-      await page.waitForURL(/events/);
+      await newPage.waitForURL(/events/);
       // End of authentication steps.
 
-      await page.context().storageState({ path: fileName });
-      await page.close();
+      await newPage.context().storageState({ path: fileName });
+      await newPage.close();
 
       await use(fileName);
 
       await deleteTestUserByEmail(emailId);
-
-      mailServer.stop(() => {});
     },
     { scope: "worker" },
   ],

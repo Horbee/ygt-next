@@ -1,13 +1,12 @@
 import { load as cheerioLoad } from "cheerio";
+import { BasePage } from "../base-page";
 
 import type { Page } from "@playwright/test";
 import type { MailServer } from "smtp-tester";
 
-export class LoginPage {
-  constructor(public readonly page: Page) {}
-
-  async goto() {
-    await this.page.goto("http://localhost:3000/login");
+export class LoginPage extends BasePage {
+  constructor(readonly page: Page) {
+    super(page, "/login");
   }
 
   async loginNewUser(emailId: string) {
@@ -27,7 +26,7 @@ export class LoginPage {
       const emailLink = $("a").attr("href");
       return emailLink;
     } catch (cause) {
-      console.error("No message delivered to test@example.com in 1 second.", cause);
+      console.error(`No message delivered to ${emailId} in 1 second.`, cause);
     }
   }
 

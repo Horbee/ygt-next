@@ -1,14 +1,15 @@
-import type { Locator, Page } from "@playwright/test";
 import format from "date-fns/format";
-import { ImageSelector } from "./image-selector";
+import { ImageSelector } from "../components/image-selector";
+import { BasePage } from "../base-page";
 
-export class CreateEventPage {
+import type { Locator, Page } from "@playwright/test";
+
+export class CreateEventPage extends BasePage {
   imageSelector: ImageSelector;
-  path: string;
 
   constructor(public readonly page: Page) {
+    super(page, "/events/create");
     this.imageSelector = new ImageSelector(page);
-    this.path = "http://localhost:3000/events/create";
   }
 
   private async selectDate(
@@ -22,10 +23,6 @@ export class CreateEventPage {
       .getByTestId(wrapperId)
       .getByRole("button", { name: stringDate, exact: true })
       .click();
-  }
-
-  async goto() {
-    await this.page.goto(this.path);
   }
 
   async selectStartDate(date: Date) {
