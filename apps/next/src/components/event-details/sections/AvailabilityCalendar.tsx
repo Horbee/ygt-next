@@ -31,19 +31,24 @@ export const AvailabilityCalendar = ({
     const data =
       availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
 
-    if (data.some((d) => d.available === "notgood")) {
+    console.log({ data });
+
+    const notGoodCount = data.filter((d) => d.available === "notgood").length;
+    const maybeCount = data.filter((d) => d.available === "maybe").length;
+    const goodCount = data.filter((d) => d.available === "good").length;
+    const invitedUserCount = event.invitedUserIds.length;
+
+    if (notGoodCount > 0) {
       return "red";
     }
 
-    const goodCount = data.filter((d) => d.available === "good").length;
-
-    if (data.some((d) => d.available === "maybe") || goodCount === 1) {
+    if (maybeCount > 0) {
       return "orange";
     }
 
-    if (goodCount > 1) {
+    if (!event.public && invitedUserCount > 0 && goodCount === invitedUserCount + 1) {
       return "green";
-    }
+    } else if (data.length > 0) return "orange";
   };
 
   const isOngoing = isPast(event.fromDate) && isFuture(event.untilDate);
