@@ -31,11 +31,9 @@ export const AvailabilityCalendar = ({
     const data =
       availabilities.filter((a) => isSameDay(new Date(a.date), currentDate)) ?? [];
 
-    console.log({ data });
-
-    const notGoodCount = data.filter((d) => d.available === "notgood").length;
-    const maybeCount = data.filter((d) => d.available === "maybe").length;
-    const goodCount = data.filter((d) => d.available === "good").length;
+    const notGoodCount = data.filter((d) => d.available === "NOT_GOOD").length;
+    const maybeCount = data.filter((d) => d.available === "MAYBE").length;
+    const goodCount = data.filter((d) => d.available === "GOOD").length;
     const invitedUserCount = event.invitedUserIds.length;
 
     if (notGoodCount > 0) {

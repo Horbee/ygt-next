@@ -1,13 +1,11 @@
-import type { Availability, User } from "@ygt/db";
+import type { Availability, User, AvailabilityType } from "@ygt/db";
 
-export type AvailableTypes = "good" | "maybe" | "notgood";
-
-export type AvailabilityOption = { value: AvailableTypes; label: string };
+export type AvailabilityOption = { value: AvailabilityType; label: string };
 
 export const AvailabilityOptions: AvailabilityOption[] = [
-  { value: "good", label: "Available" },
-  { value: "maybe", label: "Maybe" },
-  { value: "notgood", label: "Not good" },
+  { value: "GOOD", label: "Available" },
+  { value: "MAYBE", label: "Maybe" },
+  { value: "NOT_GOOD", label: "Not good" },
 ];
 
 export interface AvailabilityDataWithOwner extends Availability {

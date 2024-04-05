@@ -80,15 +80,15 @@ model Availability {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   v  Int    @default(0) @map("__v") @ignore
 
-  available String
+  available AvailabilityType
   comment   String?
-  date      DateTime   @db.Date
-  fromTime  DateTime?  @db.Date
-  untilTime DateTime?  @db.Date
-  owner     User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId   String     @map("owner") @db.ObjectId
-  event     Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId   String     @map("event") @db.ObjectId
+  date      DateTime         @db.Date
+  fromTime  DateTime?        @db.Date
+  untilTime DateTime?        @db.Date
+  owner     User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String           @map("owner") @db.ObjectId
+  event     Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   String           @map("event") @db.ObjectId
   reactions Reaction[]
 
   createdAt DateTime @default(now()) @db.Date
@@ -96,6 +96,12 @@ model Availability {
 
   @@unique([ownerId, id])
   @@map("availabilities")
+}
+
+enum AvailabilityType {
+  GOOD
+  MAYBE
+  NOT_GOOD
 }
 
 type Reaction {

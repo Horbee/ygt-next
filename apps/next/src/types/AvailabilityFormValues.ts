@@ -1,7 +1,7 @@
-import type { AvailableTypes } from "./Availability";
+import type { AvailabilityType } from "@ygt/db";
 
 export type AvailabilityFormValues = {
-  available: AvailableTypes | null;
+  available: AvailabilityType | null;
   fromTime: string;
   untilTime: string;
   comment: string;

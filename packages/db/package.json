@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@ygt/typescript-config": "workspace:*",
-    "@prisma/client": "^5.11.0"
+    "@prisma/client": "^5.12.1"
   },
   "devDependencies": {
-    "prisma": "^5.11.0"
+    "prisma": "^5.12.1"
   }
 }
