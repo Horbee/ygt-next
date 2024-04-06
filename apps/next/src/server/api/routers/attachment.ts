@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { env } from "../../../env/server.mjs";
 import { CreateAttachment } from "../../dto/create-attachment.dto";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { useLocalstackS3 } from "../../s3";
 
 export const attachmentRouter = createTRPCRouter({
   getAttachments: protectedProcedure.query(async ({ ctx }) => {
@@ -33,9 +34,11 @@ export const attachmentRouter = createTRPCRouter({
         });
       }
 
+      const filneName = ctx.session.user.id + "/" + attachment.url.split("/").pop();
+
       const command = new DeleteObjectCommand({
         Bucket: env.AWS__BUCKET_NAME,
-        Key: attachment.name,
+        Key: filneName,
       });
 
       await ctx.s3.send(command);
@@ -46,17 +49,21 @@ export const attachmentRouter = createTRPCRouter({
   createAttachment: protectedProcedure
     .input(CreateAttachment)
     .mutation(async ({ input, ctx }) => {
+      const extension = input.fileName.split(".").pop();
+      const randomFilename = (Math.random() + 1).toString(36).substring(2);
+      const randomFilenameWithExtension = randomFilename + "." + extension;
+      const filePath = `${ctx.session.user.id}/${randomFilenameWithExtension}`;
+
       const command = new PutObjectCommand({
         Bucket: env.AWS__BUCKET_NAME,
-        Key: input.fileName,
+        Key: filePath,
         ContentType: input.fileType,
       });
       const preSignedUrl = await getSignedUrl(ctx.s3, command, { expiresIn: 5 * 60 });
 
-      const s3FileUrl =
-        env.NODE_ENV === "development"
-          ? `http://localhost:4566/${env.AWS__BUCKET_NAME}/${input.fileName}`
-          : `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${input.fileName}`;
+      const s3FileUrl = useLocalstackS3
+        ? `http://localhost:4566/${env.AWS__BUCKET_NAME}/${filePath}`
+        : `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${filePath}`;
 
       const attachment = await ctx.prisma.attachment.create({
         data: {

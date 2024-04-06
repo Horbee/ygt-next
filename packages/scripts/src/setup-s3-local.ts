@@ -12,7 +12,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: path.join(__dirname, "../../../apps/next/.env") });
 
-export const s3 = new S3Client({
+const s3 = new S3Client({
   endpoint: "http://localhost:4566",
   forcePathStyle: true,
 });

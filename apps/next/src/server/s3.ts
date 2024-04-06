@@ -2,9 +2,11 @@ import { S3Client, type S3ClientConfig } from "@aws-sdk/client-s3";
 
 import { env } from "../env/server.mjs";
 
-const useLocalstackS3 =
-  (!!env.AWS__ACCESS_KEY_ID && !!env.AWS__ACCESS_KEY_SECRET) ||
-  env.NODE_ENV === "development";
+export const useLocalstackS3 = !(
+  Boolean(env.AWS__ACCESS_KEY_ID) && Boolean(env.AWS__ACCESS_KEY_SECRET)
+);
+
+console.log(`Using ${useLocalstackS3 ? "Localstack" : "S3 on AWS"}`);
 
 const s3Config: S3ClientConfig = useLocalstackS3
   ? {
