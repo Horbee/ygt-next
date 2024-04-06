@@ -9,6 +9,7 @@ import { DatePicker } from "@mantine/dates";
 
 import type { Event } from "@ygt/db";
 import type { AvailabilityDataWithOwner } from "../../../types";
+import { getColorByPercentage } from "../../../utils/get-color-by-percentage";
 
 type Props = {
   event: Event;
@@ -36,17 +37,21 @@ export const AvailabilityCalendar = ({
     const goodCount = data.filter((d) => d.available === "GOOD").length;
     const invitedUserCount = event.invitedUserIds.length;
 
+    if (notGoodCount + maybeCount + goodCount === 0) return;
+
     if (notGoodCount > 0) {
       return "red";
     }
 
-    if (maybeCount > 0) {
-      return "orange";
-    }
+    const userCount = invitedUserCount + 1;
+    const maybePercentage = maybeCount / userCount;
+    const goodPercentage = goodCount / userCount;
+    const finalPercentage = 0.5 - maybePercentage / 2 + goodPercentage / 2;
+    const color = getColorByPercentage(finalPercentage);
 
-    if (!event.public && invitedUserCount > 0 && goodCount === invitedUserCount + 1) {
-      return "green";
-    } else if (data.length > 0) return "orange";
+    // console.log({ maybePercentage, goodPercentage, finalPercentage, color });
+
+    return color;
   };
 
   const isOngoing = isPast(event.fromDate) && isFuture(event.untilDate);
