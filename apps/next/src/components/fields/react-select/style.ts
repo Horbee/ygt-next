@@ -1,11 +1,12 @@
 import { StylesConfig } from "react-select";
 
-import { useMantineTheme } from "@mantine/core";
+import { useMantineColorScheme, useMantineTheme } from "@mantine/core";
 
 export const useCombinedStyles = (): StylesConfig => {
-  const mantineTheme = useMantineTheme();
+  const { colors } = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
 
-  const isDark = mantineTheme.colorScheme === "dark";
+  const isDark = colorScheme === "dark";
 
   return {
     control: (baseStyles) => ({
@@ -35,7 +36,7 @@ export const useCombinedStyles = (): StylesConfig => {
       color: isDark ? "#C1C2C5" : "black",
       backgroundColor: isDark ? "#25262b" : "#fff",
       [":hover"]: {
-        backgroundColor: isDark ? mantineTheme.colors.dark[4] : mantineTheme.colors.gray[1],
+        backgroundColor: isDark ? colors.dark[4] : colors.gray[1],
       },
       [":active"]: {
         backgroundColor: isDark ? "#25262b" : "#fff",

@@ -47,11 +47,11 @@ export const AvailabilityCard = ({
   return (
     <>
       <Card key={av.id} shadow="sm" p="sm" radius="md" pos="relative" withBorder>
-        <Group position="apart">
+        <Group justify="space-between">
           <Box>
-            <Text weight={500}>{av.owner.name}</Text>
-            <Text size="sm" color="dimmed">
-              <Group spacing="xs">
+            <Text fw={500}>{av.owner.name}</Text>
+            <Text size="sm" c="dimmed">
+              <Group gap="xs">
                 <Clock size={14} />
                 {formatDistanceToNow(av.updatedAt)} ago
               </Group>

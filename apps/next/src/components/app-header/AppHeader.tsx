@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { Burger, Group, Header, Image, Title, useMantineTheme } from "@mantine/core";
+import { Burger, Group, AppShell, Image, Title, useMantineTheme } from "@mantine/core";
 
 import { ThemeToggler } from "./ThemeToggler";
 
@@ -14,8 +14,8 @@ export const AppHeader = ({ opened, toggleOpened }: Props) => {
   const router = useRouter();
 
   return (
-    <Header height="auto" p="xs">
-      <Group position="apart">
+    <AppShell.Header p="xs">
+      <Group justify="space-between">
         <Burger
           opened={opened}
           onClick={toggleOpened}
@@ -30,6 +30,6 @@ export const AppHeader = ({ opened, toggleOpened }: Props) => {
 
         <ThemeToggler />
       </Group>
-    </Header>
+    </AppShell.Header>
   );
 };

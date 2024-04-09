@@ -18,7 +18,7 @@ export default function NotificationsPage() {
     <BaseLayout title="Notification Settings">
       <Stack>
         <Button
-          leftIcon={<Bell size={16} />}
+          leftSection={<Bell size={16} />}
           variant="outline"
           onClick={() => triggerSubscription({ showFeedback: true })}
         >

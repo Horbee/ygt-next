@@ -23,24 +23,29 @@ export default function AboutPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <Group spacing="xs">
-          <ActionIcon size="xl" onClick={() => router.back()}>
+        <Group gap="xs">
+          <ActionIcon
+            color="white"
+            variant="transparent"
+            size="xl"
+            onClick={() => router.back()}
+          >
             <ChevronLeft size={24} />
           </ActionIcon>
-          <Text component="h3" fz="xl" truncate>
+          <Text component="h3" fw="700" fz="xl" truncate>
             About
           </Text>
         </Group>
 
         <Card shadow="sm" p="lg" radius="md" mt="lg" withBorder>
-          <Group position="apart" mt="md" mb="xs">
-            <Text weight={500}>You've got time</Text>
+          <Group justify="space-between" mt="md" mb="xs">
+            <Text fw={500}>You've got time</Text>
             <Anchor href="https://github.com/Horbee/ygt-next">
               <GithubIcon width={25} height={25} />
             </Anchor>
           </Group>
 
-          <Text size="sm" color="dimmed">
+          <Text size="sm" c="dimmed">
             You've got time is a web application built with the T3 Stack, using
             technologies like Next.js, TypeScript, tRPC, MongoDB and Matine-UI that helps
             you organize events and handle user availabilities.
@@ -51,7 +56,7 @@ export default function AboutPage() {
             </Box>
           </Text>
 
-          <Text weight={500} my="lg">
+          <Text fw={500} my="lg">
             Technologies used
           </Text>
 
@@ -99,7 +104,7 @@ export default function AboutPage() {
             <li>Web-Push: Sending push notifications with the Web Push protocol</li>
           </ul>
 
-          <Text weight={500} my="lg">
+          <Text fw={500} my="lg">
             Attributions
           </Text>
 

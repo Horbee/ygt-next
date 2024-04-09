@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 
-import { ActionIcon, Container, Group, Text } from "@mantine/core";
+import { ActionIcon, AppShell, Container, Group, Text } from "@mantine/core";
 
 import { AppHeader } from "./app-header";
 import { AppNavbar } from "./app-navbar";
@@ -32,28 +32,30 @@ export const BaseLayout = ({
   return (
     <>
       <HeadContent title={title} />
-      <AppHeader opened={navOpened} toggleOpened={() => setNavOpened((o) => !o)} />
-      <AppNavbar opened={navOpened} onClose={() => setNavOpened(false)} />
-      <Container size="sm" px="xs" mb="lg" {...restProps}>
-        <Group position="apart">
-          <Group spacing="xs">
-            {showBackButton && (
-              <ActionIcon
-                size="xl"
-                onClick={() => (backUrl ? router.push(backUrl) : router.back())}
-              >
-                <ChevronLeft size="1.8rem" />
-              </ActionIcon>
-            )}
-            <Text component="h3" fz="xl" truncate>
-              {title}
-            </Text>
-          </Group>
+      <AppShell>
+        <AppHeader opened={navOpened} toggleOpened={() => setNavOpened((o) => !o)} />
+        <AppNavbar opened={navOpened} onClose={() => setNavOpened(false)} />
+        <Container size="sm" px="xs" mb="lg" {...restProps}>
+          <Group justify="space-between">
+            <Group gap="xs">
+              {showBackButton && (
+                <ActionIcon
+                  size="xl"
+                  onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+                >
+                  <ChevronLeft size="1.8rem" />
+                </ActionIcon>
+              )}
+              <Text component="h3" fz="xl" truncate>
+                {title}
+              </Text>
+            </Group>
 
-          {actionElement}
-        </Group>
-        {children}
-      </Container>
+            {actionElement}
+          </Group>
+          {children}
+        </Container>
+      </AppShell>
     </>
   );
 };

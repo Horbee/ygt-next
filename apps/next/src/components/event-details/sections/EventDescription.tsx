@@ -17,7 +17,7 @@ export const EventDescription = ({ event }: Props) => {
 
   return (
     <>
-      <Group position="apart">
+      <Group justify="space-between">
         {/* Date */}
         <Text size="sm" c="orange">
           {formatEventDuration(event)}
@@ -36,7 +36,7 @@ export const EventDescription = ({ event }: Props) => {
             <EventCardMenu
               eventId={event!.id}
               slug={event!.slug}
-              sx={{ alignSelf: "start" }}
+              style={{ alignSelf: "start" }}
               pt="sm"
             />
           )}
@@ -44,7 +44,7 @@ export const EventDescription = ({ event }: Props) => {
       </Grid>
 
       {/* Tags */}
-      <Group mb="sm" spacing="xs">
+      <Group mb="sm" gap="xs">
         {event.tags.map((tag) => (
           <Badge key={tag} variant="outline" color="orange">
             {tag}
@@ -56,7 +56,7 @@ export const EventDescription = ({ event }: Props) => {
       <Paper shadow="xs" radius="md" p="sm" withBorder>
         <Grid>
           {event.coverImage && (
-            <Grid.Col span={4} xs={3}>
+            <Grid.Col span={{ base: 4, xs: 3 }}>
               <Image
                 src={event.coverImage.url}
                 width={100}

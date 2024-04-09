@@ -1,27 +1,29 @@
+import "@mantine/core/styles.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { AppType } from "next/app";
 import { ToastContainer } from "react-toastify";
+import { MantineProvider } from "@mantine/core";
 
 import { AppLoader } from "../components/loaders";
-import { AppMantineProvider } from "../context";
 import { api } from "../utils/api";
+
+import type { Session } from "next-auth";
+import type { AppType } from "next/app";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <AppMantineProvider>
+    <MantineProvider>
       <SessionProvider session={session}>
         <AppLoader>
           <Component {...pageProps} />
         </AppLoader>
       </SessionProvider>
       <ToastContainer position="bottom-center" theme="colored" autoClose={8000} />
-    </AppMantineProvider>
+    </MantineProvider>
   );
 };
 

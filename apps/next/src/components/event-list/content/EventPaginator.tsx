@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Pagination, useMantineTheme } from "@mantine/core";
+import { Pagination, useMantineTheme, getGradient } from "@mantine/core";
 
 type Props = {
   page: number;
@@ -18,11 +18,11 @@ export const EventPaginator = ({ page, setPage, totalCount, pageSize }: Props) =
       value={page}
       onChange={setPage}
       total={totalPages}
-      position="center"
+      // position="center"
       styles={{
         control: {
-          "&[data-active]": {
-            backgroundImage: theme.fn.gradient({ from: "red", to: "yellow" }),
+          "&[dataActive]": {
+            backgroundImage: getGradient({ deg: 180, from: "red", to: "yellow" }, theme),
           },
         },
       }}

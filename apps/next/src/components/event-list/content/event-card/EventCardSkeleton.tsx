@@ -16,13 +16,13 @@ export const EventCardSkeleton = ({ count }: Props) => {
         <Card key={k} shadow="sm" p="sm" radius="md" withBorder>
           <Card.Section>
             <Grid>
-              <Grid.Col xs={3} p={0} m={0}>
+              <Grid.Col span={{ xs: 3 }} p={0} m={0}>
                 <Skeleton height={xsScreen ? 180 : 135} />
               </Grid.Col>
 
-              <Grid.Col span={12} xs={9}>
+              <Grid.Col span={{ base: 12, xs: 9 }}>
                 <Stack p="xs">
-                  <Group position="apart">
+                  <Group justify="space-between">
                     <Skeleton height={20} width={150} />
                     {!xsScreen && <Skeleton height={20} width={150} />}
                   </Group>

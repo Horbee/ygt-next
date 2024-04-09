@@ -8,7 +8,7 @@ interface Props extends GroupProps {
 
 export const NavHeader = ({ onClose, ...props }: Props) => {
   return (
-    <Group position="apart" {...props}>
+    <Group justify="space-between" {...props}>
       <Group>
         <Image src="/favicon-32x32.png" width={20} />
         <Title order={4}>YGT</Title>

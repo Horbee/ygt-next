@@ -39,7 +39,7 @@ export default function LoginPage({ providers }: { providers: string[] }) {
             color="red"
             type="button"
             fullWidth
-            leftIcon={<GoogleIcon width={18} height={18} />}
+            leftSection={<GoogleIcon width={18} height={18} />}
             onClick={() => signIn("google")}
             disabled={!providers.includes("google")}
           >

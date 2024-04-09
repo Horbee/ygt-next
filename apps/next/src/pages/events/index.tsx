@@ -60,7 +60,7 @@ const EventListPage: NextPage = () => {
       }
     >
       <Stack>
-        <Group spacing="xs">
+        <Group gap="xs">
           {eventFilters.map(({ title, value, color }) => (
             <Chip
               key={value}

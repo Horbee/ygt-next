@@ -78,7 +78,7 @@ export const EventForm = ({
             />
           </Flex>
 
-          <SimpleGrid cols={2} breakpoints={[{ maxWidth: 600, cols: 1 }]}>
+          <SimpleGrid cols={{ base: 2, xs: 1 }}>
             <Textarea
               placeholder="Describe the event..."
               label="Description"

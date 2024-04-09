@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { ArrowUpFromLine, Image, Trash, UploadCloud, X } from "lucide-react";
 
 import {
   Box,
   Button,
-  createStyles,
   Flex,
   Group,
   Text,
+  useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
@@ -14,7 +15,7 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { WithBackgroundImage } from "./WithBackgroundImage";
 
 import type { DropzoneProps } from "@mantine/dropzone";
-import { ArrowUpFromLine, Image, Trash, UploadCloud, X } from "lucide-react";
+
 type ImageState = { file?: File; imgSrc?: string };
 
 interface Props extends Partial<DropzoneProps> {
@@ -23,7 +24,7 @@ interface Props extends Partial<DropzoneProps> {
 
 export function ImageDropzone({ uploadImage, ...props }: Props) {
   const theme = useMantineTheme();
-  const { classes } = useStyles();
+  const { colorScheme } = useMantineColorScheme();
 
   const [image, setImage] = useState<ImageState>({});
 
@@ -58,23 +59,18 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
       >
         <WithBackgroundImage imgSrc={image.imgSrc}>
           <Group
-            position="center"
-            spacing="xl"
+            align="center"
+            gap="xl"
             style={{ minHeight: 220, pointerEvents: "none" }}
           >
             <Dropzone.Accept>
               <ArrowUpFromLine
                 size={50}
-                color={
-                  theme.colors[theme.primaryColor]![theme.colorScheme === "dark" ? 4 : 6]
-                }
+                color={theme.colors[theme.primaryColor]![colorScheme === "dark" ? 4 : 6]}
               />
             </Dropzone.Accept>
             <Dropzone.Reject>
-              <X
-                size={50}
-                color={theme.colors.red[theme.colorScheme === "dark" ? 4 : 6]}
-              />
+              <X size={50} color={theme.colors.red[colorScheme === "dark" ? 4 : 6]} />
             </Dropzone.Reject>
 
             {!image.imgSrc && (
@@ -83,11 +79,11 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
                   <Image size={50} />
                 </Dropzone.Idle>
 
-                <Box className={classes.textContainer}>
+                <Box ta={{ base: "left", xs: "center" }}>
                   <Text size="xl" inline>
                     Drag image here or click to select file
                   </Text>
-                  <Text size="sm" color="dimmed" inline mt={7}>
+                  <Text size="sm" c="dimmed" inline mt={7}>
                     File size should not exceed 5mb
                   </Text>
                 </Box>
@@ -101,7 +97,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
         <Button
           color="blue"
           size="sm"
-          leftIcon={<UploadCloud size={16} />}
+          leftSection={<UploadCloud size={16} />}
           onClick={handleUpload}
           disabled={!image.file}
         >
@@ -112,7 +108,7 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
           color="red"
           size="sm"
           onClick={handleDelete}
-          leftIcon={<Trash size={16} />}
+          leftSection={<Trash size={16} />}
           disabled={!image.file}
         >
           Remove Image
@@ -121,14 +117,3 @@ export function ImageDropzone({ uploadImage, ...props }: Props) {
     </>
   );
 }
-
-const useStyles = createStyles((theme) => {
-  return {
-    textContainer: {
-      textAlign: "left",
-      [`@media (max-width: ${theme.breakpoints.xs})`]: {
-        textAlign: "center",
-      },
-    },
-  };
-});

@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-import { Modal, Text, useMantineTheme } from "@mantine/core";
+import { Modal, Text, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 
 import { useAvailabilityModal } from "../../../context";
 import { api } from "../../../utils/api";
@@ -26,7 +26,8 @@ export const AvailabilityModal = ({
     updateAvailability,
   } = useAvailabilityModal();
 
-  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  const { colors } = useMantineTheme();
 
   const utils = api.useContext();
 
@@ -68,7 +69,7 @@ export const AvailabilityModal = ({
     <Modal
       title="Are you available?"
       overlayProps={{
-        color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+        color: colorScheme === "dark" ? colors.dark[9] : colors.gray[2],
         opacity: 0.55,
         blur: 3,
       }}

@@ -1,6 +1,13 @@
 import { MouseEvent } from "react";
 import { Image, Trash } from "lucide-react";
-import { ActionIcon, Box, createStyles, Group, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Group,
+  Text,
+  useMantineColorScheme,
+  useMantineTheme,
+} from "@mantine/core";
 
 import { WithBackgroundImage } from "../../attachment-selector/WithBackgroundImage";
 
@@ -11,13 +18,24 @@ interface Props {
 }
 
 export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
-  const { classes } = useStyles();
+  const { colors } = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  const isDark = colorScheme === "dark";
 
   return (
     <Box
       c="div"
       onClick={onClick}
-      className={classes.container}
+      style={{
+        border: `2px dashed ${colors.gray[isDark ? 8 : 4]}`,
+        borderRadius: "4px",
+        backgroundColor: isDark ? colors.dark[6] : "white",
+        cursor: "pointer",
+        position: "relative",
+        "&:hover": {
+          backgroundColor: isDark ? colors.dark[5] : colors.gray[1],
+        },
+      }}
       data-testid="image-selector"
     >
       {imgSrc && (
@@ -34,11 +52,7 @@ export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
       )}
 
       <WithBackgroundImage imgSrc={imgSrc}>
-        <Group
-          position="center"
-          spacing="xl"
-          style={{ minHeight: 220, pointerEvents: "none" }}
-        >
+        <Group align="center" gap="xl" style={{ minHeight: 220, pointerEvents: "none" }}>
           {!imgSrc && (
             <>
               <Image size={50} />
@@ -55,20 +69,3 @@ export const ImageShowcase = ({ imgSrc, onDeselect, onClick }: Props) => {
     </Box>
   );
 };
-
-const useStyles = createStyles((theme) => {
-  const isDark = theme.colorScheme === "dark";
-
-  return {
-    container: {
-      border: `2px dashed ${theme.colors.gray[isDark ? 8 : 4]}`,
-      borderRadius: "4px",
-      backgroundColor: isDark ? theme.colors.dark[6] : "white",
-      cursor: "pointer",
-      position: "relative",
-      "&:hover": {
-        backgroundColor: isDark ? theme.colors.dark[5] : theme.colors.gray[1],
-      },
-    },
-  };
-});

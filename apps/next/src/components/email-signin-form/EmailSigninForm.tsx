@@ -38,7 +38,7 @@ export const EmailSigninForm = () => {
           color="blue"
           type="submit"
           fullWidth
-          leftIcon={<Mail size={18} />}
+          leftSection={<Mail size={18} />}
           disabled={formState.isSubmitting}
         >
           Send a magic link

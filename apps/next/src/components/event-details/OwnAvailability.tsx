@@ -57,7 +57,7 @@ export const OwnAvailability = ({
 
   return (
     <div>
-      <Group position="apart">
+      <Group justify="space-between">
         <h4>Own Availability:</h4>
 
         <Group>

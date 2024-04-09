@@ -13,7 +13,7 @@ interface Props {
 export const AppNavbar = ({ opened, onClose }: Props) => {
   return (
     <Drawer opened={opened} onClose={onClose} withCloseButton={false} padding="none">
-      <Stack p="sm" h="100vh" spacing="xs">
+      <Stack p="sm" h="100vh" gap="xs">
         <NavHeader onClose={onClose} />
 
         <Box style={{ flexGrow: 1 }}>

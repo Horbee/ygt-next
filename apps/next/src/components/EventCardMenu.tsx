@@ -53,20 +53,24 @@ export const EventCardMenu = ({ eventId, slug, ...restProps }: Props) => {
           <Menu.Label>Owner Actions</Menu.Label>
           <Menu.Item
             component={Link}
-            icon={<Pencil size={14} />}
+            leftSection={<Pencil size={14} />}
             href={`/events/${slug}/edit`}
           >
             Edit
           </Menu.Item>
           <Menu.Item
-            icon={<Files size={14} />}
+            leftSection={<Files size={14} />}
             onClick={() =>
               router.push({ pathname: "/events/create", query: { from: slug } })
             }
           >
             Copy
           </Menu.Item>
-          <Menu.Item color="red" icon={<Trash2 size={14} />} onClick={handleDelete}>
+          <Menu.Item
+            color="red"
+            leftSection={<Trash2 size={14} />}
+            onClick={handleDelete}
+          >
             Delete
           </Menu.Item>
         </Menu.Dropdown>

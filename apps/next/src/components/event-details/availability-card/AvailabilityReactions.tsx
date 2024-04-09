@@ -1,4 +1,12 @@
-import { Group, Tooltip, Badge, Flex, Button, Box, type Sx } from "@mantine/core";
+import {
+  Group,
+  Tooltip,
+  Badge,
+  Flex,
+  Button,
+  Box,
+  type MantineStyleProp,
+} from "@mantine/core";
 import { useSession } from "next-auth/react";
 import { SmilePlus } from "lucide-react";
 
@@ -31,7 +39,7 @@ export const AvailabilityReactions = ({
   const ownerNames = (emoji: string) =>
     groupedReactions[emoji]?.users.map((u) => u.ownerName).join(", ");
 
-  const hoverStyles: Sx = isDisabled
+  const hoverStyles: MantineStyleProp = isDisabled
     ? {}
     : {
         "&:hover": {
@@ -41,7 +49,7 @@ export const AvailabilityReactions = ({
       };
 
   return (
-    <Group position="left" spacing="5px">
+    <Group align="left" gap="5px">
       {Object.keys(groupedReactions).map((emoji) => {
         const { shortcodes, users, count } = groupedReactions[emoji]!;
         const userReacted = users.find((u) => u.ownerId === sessionData?.user.id);
@@ -57,7 +65,7 @@ export const AvailabilityReactions = ({
             <Badge
               key={emoji}
               onContextMenu={(e) => e.preventDefault()}
-              sx={{
+              style={{
                 border: "1px solid transparent",
                 userSelect: "none",
                 ...hoverStyles,
@@ -83,7 +91,12 @@ export const AvailabilityReactions = ({
           </Tooltip>
         );
       })}
-      <Button variant="subtle" onClick={openEmojiSelector} disabled={isDisabled} compact>
+      <Button
+        variant="subtle"
+        onClick={openEmojiSelector}
+        disabled={isDisabled}
+        size="compact-xs"
+      >
         <SmilePlus size={20} />
       </Button>
     </Group>

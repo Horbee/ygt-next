@@ -27,7 +27,7 @@ export const EventCard = ({ event }: Props) => {
     <Card shadow="sm" p="sm" radius="md" withBorder>
       <Card.Section>
         <Grid>
-          <Grid.Col xs={3} p={0} m={0}>
+          <Grid.Col span={{ xs: 3 }} p={0} m={0}>
             <Image
               src={event.coverImage?.url ?? "/default_event.png"}
               height={xsScreen ? 180 : event.tags.length ? 170 : 135}
@@ -36,16 +36,16 @@ export const EventCard = ({ event }: Props) => {
             />
           </Grid.Col>
 
-          <Grid.Col span={12} xs={9}>
+          <Grid.Col span={{ base: 12, xs: 9 }}>
             {/* Second Col */}
             <Stack style={{ gap: 0 }} p="xs">
               {/* First Row Flex Container */}
-              <Group position="apart" noWrap style={{ overflow: "hidden" }}>
-                <Text size="sm" color="orange" style={{ overflow: "hidden" }}>
+              <Group justify="space-between" wrap="nowrap" style={{ overflow: "hidden" }}>
+                <Text size="sm" c="orange" style={{ overflow: "hidden" }}>
                   {formatEventDuration(event)}
                 </Text>
 
-                <Group noWrap>
+                <Group wrap="nowrap">
                   <EventStatusBadge event={event} />
 
                   {isOwned && <EventCardMenu eventId={event.id} slug={event.slug} />}
@@ -59,8 +59,8 @@ export const EventCard = ({ event }: Props) => {
                 component={Link}
                 href={"/events/" + event.slug}
                 size="lg"
-                weight={500}
-                sx={{ "&:hover": { textDecoration: "underline" } }}
+                fw={500}
+                style={{ "&:hover": { textDecoration: "underline" } }}
                 truncate
               >
                 {event.name}

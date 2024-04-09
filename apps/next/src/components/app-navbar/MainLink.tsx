@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 import {
-  createStyles,
   DefaultMantineColor,
   Group,
   Text,
   ThemeIcon,
   UnstyledButton,
+  useMantineColorScheme,
+  useMantineTheme,
 } from "@mantine/core";
 
 interface Props {
@@ -19,14 +20,25 @@ interface Props {
 }
 
 export const MainLink = ({ label, icon, color, href, onClose }: Props) => {
-  const { classes } = useStyles();
+  const { spacing, radius, colors, black } = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
 
   return (
     <UnstyledButton
       component={Link}
       href={href}
       onClick={onClose}
-      className={classes.linkBtn}
+      style={{
+        display: "block",
+        width: "100%",
+        padding: spacing.xs,
+        borderRadius: radius.sm,
+        color: colorScheme === "dark" ? colors.dark[0] : black,
+
+        "&:hover": {
+          backgroundColor: colorScheme === "dark" ? colors.dark[6] : colors.gray[0],
+        },
+      }}
     >
       <Group>
         <ThemeIcon color={color} variant="light">
@@ -38,18 +50,3 @@ export const MainLink = ({ label, icon, color, href, onClose }: Props) => {
     </UnstyledButton>
   );
 };
-
-const useStyles = createStyles((theme) => ({
-  linkBtn: {
-    display: "block",
-    width: "100%",
-    padding: theme.spacing.xs,
-    borderRadius: theme.radius.sm,
-    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[0],
-    },
-  },
-}));

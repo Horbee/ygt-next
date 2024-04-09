@@ -16,7 +16,7 @@ export const LogoutButton = () => {
 
   return (
     <Button
-      leftIcon={<LogOut size={16} />}
+      leftSection={<LogOut size={16} />}
       variant="outline"
       color="red"
       onClick={handleLogout}

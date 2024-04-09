@@ -1,4 +1,6 @@
-import { Box, Checkbox, Image, ImageProps, Text } from "@mantine/core";
+import NextImage from "next/image";
+
+import { Box, Checkbox, Image, ImageProps, Text, Tooltip } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 
 interface Props extends ImageProps {
@@ -20,19 +22,18 @@ export const SelectableImage = ({ caption, isSelected, onSelect, ...props }: Pro
         style={{ zIndex: 1, display: isSelected || hovered ? "block" : "none" }}
         onChange={() => onSelect()}
       />
-      <Image
-        radius="md"
-        width={100}
-        height={100}
-        style={{ cursor: "pointer" }}
-        caption={
-          <Text lineClamp={2} title={caption}>
-            {caption}
-          </Text>
-        }
-        onClick={onSelect}
-        {...props}
-      />
+      <Tooltip label={caption}>
+        <Image
+          alt={caption}
+          component={NextImage}
+          radius="md"
+          w={100}
+          h={100}
+          style={{ cursor: "pointer" }}
+          onClick={onSelect}
+          {...props}
+        />
+      </Tooltip>
     </Box>
   );
 };

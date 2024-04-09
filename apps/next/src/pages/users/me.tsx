@@ -57,7 +57,7 @@ export default function UserPage() {
                 error={formState.errors.username?.message}
                 withAsterisk
               />
-              <Text color="dimmed" size="md">
+              <Text c="dimmed" size="md">
                 Email: {session?.user.email}
               </Text>
 

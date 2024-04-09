@@ -75,24 +75,18 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
     >
       {/* Modal content */}
       <Paper shadow="xs" p="md" withBorder style={{ flexGrow: 1 }}>
-        <Tabs value={activeTab} onTabChange={(tab: AttachmentTabs) => setActiveTab(tab)}>
+        <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab as AttachmentTabs)}>
           <Tabs.List>
-            <Tabs.Tab value="select" icon={<Image size={16} />}>
+            <Tabs.Tab value="select" leftSection={<Image size={16} />}>
               Select
             </Tabs.Tab>
-            <Tabs.Tab value="upload" icon={<UploadCloud size={16} />}>
+            <Tabs.Tab value="upload" leftSection={<UploadCloud size={16} />}>
               Upload
             </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="select" pt="xs">
-            <SimpleGrid
-              cols={4}
-              breakpoints={[
-                { maxWidth: "sm", cols: 3 },
-                { maxWidth: "xs", cols: 2 },
-              ]}
-            >
+            <SimpleGrid cols={{ base: 2, sm: 3, md: 4 }}>
               {attachments.data?.map((a) => (
                 <SelectableImage
                   key={a.id}
@@ -115,7 +109,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
                 variant="outline"
                 color="red"
                 size="sm"
-                leftIcon={<Trash size={16} />}
+                leftSection={<Trash size={16} />}
                 disabled={!selectedAttachment}
                 onClick={deleteImage}
               >
