@@ -1,11 +1,12 @@
 import { useSession } from "next-auth/react";
 
-import { Badge, Grid, Group, Image, Paper, Spoiler, Text } from "@mantine/core";
+import { Grid, Group, Image, Paper, Spoiler, Text } from "@mantine/core";
 import { Attachment, Event } from "@ygt/db";
 
 import { formatEventDuration } from "../../../utils/duration";
 import { EventCardMenu } from "../../EventCardMenu";
 import { EventStatusBadge } from "../../EventStatusBadge";
+import { ScrollableTagList } from "../../event-list/content/event-card/ScrollableTagList";
 
 type Props = {
   event: Event & { coverImage: Attachment | null };
@@ -44,13 +45,7 @@ export const EventDescription = ({ event }: Props) => {
       </Grid>
 
       {/* Tags */}
-      <Group mb="sm" spacing="xs">
-        {event.tags.map((tag) => (
-          <Badge key={tag} variant="outline" color="orange">
-            {tag}
-          </Badge>
-        ))}
-      </Group>
+      <ScrollableTagList tags={event.tags} />
 
       {/* Description */}
       <Paper shadow="xs" radius="md" p="sm" withBorder>

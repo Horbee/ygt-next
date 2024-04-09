@@ -31,20 +31,24 @@ export const AvailabilityList = ({
 
   return (
     <div>
-      <h4>Availability of others:</h4>
+      {filteredAvailabilities.length > 0 && (
+        <>
+          <h4>Availability of others:</h4>
 
-      <Stack>
-        {filteredAvailabilities.map((av, i) => (
-          <motion.div
-            key={av.id}
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: i * 0.2 }}
-          >
-            <AvailabilityCard av={av} disableReactions={disableReactions} />
-          </motion.div>
-        ))}
-      </Stack>
+          <Stack>
+            {filteredAvailabilities.map((av, i) => (
+              <motion.div
+                key={av.id}
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.2 }}
+              >
+                <AvailabilityCard av={av} disableReactions={disableReactions} />
+              </motion.div>
+            ))}
+          </Stack>
+        </>
+      )}
     </div>
   );
 };

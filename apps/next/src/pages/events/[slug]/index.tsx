@@ -10,6 +10,7 @@ import {
   AvailabilityList,
   AvailabilityModal,
   EventDescription,
+  NotAnswered,
   OwnAvailability,
 } from "../../../components/event-details";
 import { AvailabilityModalProvider } from "../../../context";
@@ -106,6 +107,12 @@ const EventDetailsPage: NextPage = () => {
                 selectedDate={selectedDate}
                 availabilities={availabilities}
                 disableReactions={!event.published}
+              />
+              <NotAnswered
+                selectedDate={selectedDate}
+                availabilities={availabilities}
+                eventOwner={event.owner}
+                invitedUsers={event.invitedUsers}
               />
             </motion.div>
           )}

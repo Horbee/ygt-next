@@ -47,16 +47,8 @@ export const AvailabilityCard = ({
   return (
     <>
       <Card key={av.id} shadow="sm" p="sm" radius="md" pos="relative" withBorder>
-        <Group position="apart">
-          <Box>
-            <Text weight={500}>{av.owner.name}</Text>
-            <Text size="sm" color="dimmed">
-              <Group spacing="xs">
-                <Clock size={14} />
-                {formatDistanceToNow(av.updatedAt)} ago
-              </Group>
-            </Text>
-          </Box>
+        <Group position="apart" align="flex-start">
+          <Text weight={500}>{av.owner.name}</Text>
           <Stack style={{ gap: 0 }} align="center">
             <AvailabilityBadge type={av.available} />
             <Text size="sm" color="dimmed">
@@ -68,7 +60,7 @@ export const AvailabilityCard = ({
           </Stack>
         </Group>
 
-        <Text size="sm" color="dimmed" mt="sm" mb="lg">
+        <Text size="sm" color="dimmed" mt="xs" mb={{ base: "sm", md: "md" }}>
           {av.comment}
         </Text>
 

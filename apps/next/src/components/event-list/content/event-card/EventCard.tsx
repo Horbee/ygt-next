@@ -29,10 +29,21 @@ export const EventCard = ({ event }: Props) => {
         <Grid>
           <Grid.Col xs={3} p={0} m={0}>
             <Image
+              fit="cover"
               src={event.coverImage?.url ?? "/default_event.png"}
               height={xsScreen ? 180 : event.tags.length ? 170 : 135}
               alt="Event Cover"
-              style={{ filter: isPastEvent ? "grayscale(1)" : undefined }}
+              style={{
+                filter: isPastEvent ? "grayscale(1)" : undefined,
+              }}
+              styles={{
+                image: xsScreen
+                  ? {
+                      maskImage: "linear-gradient(white 60%, transparent)",
+                      objectPosition: "top center",
+                    }
+                  : {},
+              }}
             />
           </Grid.Col>
 
