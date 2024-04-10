@@ -1,13 +1,12 @@
 import format from "date-fns/format";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 import { useMemo } from "react";
-import { Box, Card, Group, Stack, Text } from "@mantine/core";
-import { Clock } from "lucide-react";
+import { Card, Group, Stack, Text } from "@mantine/core";
 
 import { AvailabilityBadge } from "./AvailabilityBadge";
 import { AvailabilityReactions, type GroupedReactions } from "./AvailabilityReactions";
 import { useEmojiSelectorModal } from "../../../context/EmojiSelectorModalProvider";
+import { UserAvatar } from "../../UserAvatar";
 
 import type { AvailabilityDataWithOwner } from "../../../types";
 
@@ -48,7 +47,10 @@ export const AvailabilityCard = ({
     <>
       <Card key={av.id} shadow="sm" p="sm" radius="md" pos="relative" withBorder>
         <Group position="apart" align="flex-start">
-          <Text weight={500}>{av.owner.name}</Text>
+          <Group spacing="xs">
+            <UserAvatar name={av.owner.name ?? ""} image={av.owner.image} size="sm" />
+            <Text weight={500}>{av.owner.name}</Text>
+          </Group>
           <Stack style={{ gap: 0 }} align="center">
             <AvailabilityBadge type={av.available} />
             <Text size="sm" color="dimmed">

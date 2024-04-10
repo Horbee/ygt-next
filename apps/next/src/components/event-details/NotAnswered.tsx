@@ -2,7 +2,9 @@ import isSameDay from "date-fns/isSameDay";
 import { useSession } from "next-auth/react";
 import { useMemo } from "react";
 
-import { Avatar, Badge, Flex, ScrollArea, useMantineTheme } from "@mantine/core";
+import { Avatar, Text, Group, Modal, Stack } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { UserAvatar } from "../UserAvatar";
 
 import type { AvailabilityDataWithOwner } from "../../types";
 import type { User } from "@ygt/db";
@@ -20,7 +22,9 @@ export const NotAnswered = ({
   eventOwner,
   invitedUsers,
 }: Props) => {
-  const { colorScheme } = useMantineTheme();
+  const [notAnsweredUserModalOpen, { open: openModal, close: closeModal }] =
+    useDisclosure(false);
+
   const session = useSession();
   const userId = session.data?.user.id;
 
@@ -34,49 +38,51 @@ export const NotAnswered = ({
     );
   }, [filteredAvailabilities, invitedUsers]);
 
+  const notAnsweredPlusCount = notAnswered.length - 3;
+
   return (
     <div>
+      <Modal
+        opened={notAnsweredUserModalOpen}
+        onClose={closeModal}
+        title={`User List: Not answered (${notAnswered.length})`}
+      >
+        <Stack>
+          {notAnswered.map((user) => (
+            <Group>
+              <UserAvatar name={user.name ?? ""} image={user.image} />
+
+              <div style={{ flex: 1 }}>
+                <Text size="sm" weight={500}>
+                  {user.name}
+                </Text>
+
+                <Text color="dimmed" size="xs">
+                  {user.email}
+                </Text>
+              </div>
+            </Group>
+          ))}
+        </Stack>
+      </Modal>
+
       {notAnswered.length > 0 && (
-        <>
+        <Group>
           <h4>Not answered ({notAnswered.length}):</h4>
 
-          <ScrollArea
-            style={{
-              height: "35px",
-              cursor: "grab",
-              overflow: "auto",
-            }}
-            offsetScrollbars
-            scrollbarSize={5}
+          <Avatar.Group
+            spacing="sm"
+            style={{ cursor: "pointer" }}
+            onClick={() => openModal()}
           >
-            <Flex gap="xs">
-              {notAnswered.map((user) => (
-                <Badge
-                  key={user.id}
-                  size="lg"
-                  color={colorScheme === "dark" ? "blue" : "dark"}
-                  radius="xl"
-                  leftSection={
-                    <Avatar
-                      alt="Avatar for user"
-                      size={24}
-                      mr={5}
-                      radius="lg"
-                      src={user.image}
-                    >
-                      {user.name
-                        ?.split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </Avatar>
-                  }
-                >
-                  {user.name ?? user.email}
-                </Badge>
-              ))}
-            </Flex>
-          </ScrollArea>
-        </>
+            {notAnswered.slice(0, 3).map((user) => (
+              <UserAvatar name={user.name ?? ""} image={user.image} />
+            ))}
+            {notAnsweredPlusCount > 0 && (
+              <Avatar radius="xl">+{notAnsweredPlusCount}</Avatar>
+            )}
+          </Avatar.Group>
+        </Group>
       )}
     </div>
   );

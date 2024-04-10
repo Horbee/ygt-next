@@ -1,8 +1,9 @@
 import { useSession } from "next-auth/react";
 
-import { Avatar, Box, Group, Text } from "@mantine/core";
+import { Box, Group, Text } from "@mantine/core";
 
 import { LogoutButton } from "./LogoutButton";
+import { UserAvatar } from "../UserAvatar";
 
 import type { GroupProps } from "@mantine/core";
 export const UserLink = (props: GroupProps) => {
@@ -10,7 +11,8 @@ export const UserLink = (props: GroupProps) => {
 
   return (
     <Group {...props}>
-      <Avatar src={data?.user.image} radius="xl" />
+      <UserAvatar name={data?.user.name ?? ""} image={data?.user.image} />
+
       <Box sx={{ flex: 1 }}>
         <Text size="sm" weight={500}>
           {data?.user.name}

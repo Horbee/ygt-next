@@ -12,11 +12,13 @@ export const userRouter = createTRPCRouter({
     });
   }),
   updateUserData: protectedProcedure
-    .input(z.object({ username: z.string().min(1) }))
+    .input(
+      z.object({ username: z.string().min(1), image: z.string().optional().nullable() })
+    )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.user.update({
         where: { id: ctx.session.user.id },
-        data: { name: input.username },
+        data: { name: input.username, image: input.image },
       });
     }),
 });

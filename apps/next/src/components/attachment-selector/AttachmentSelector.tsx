@@ -14,11 +14,11 @@ type AttachmentTabs = "select" | "upload";
 
 interface Props {
   opened: boolean;
-  setOpened: (opened: boolean) => void;
+  closeSelector: () => void;
   onSelect: (attachment: Attachment) => void;
 }
 
-export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
+export const AttachmentSelector = ({ opened, closeSelector, onSelect }: Props) => {
   const [activeTab, setActiveTab] = useState<AttachmentTabs>("select");
   const [selectedAttachment, setSelectedAttachment] = useState<Attachment | null>(null);
   const attachments = api.attachment.getAttachments.useQuery(undefined, {
@@ -69,7 +69,7 @@ export const AttachmentSelector = ({ opened, setOpened, onSelect }: Props) => {
     <Modal
       size="lg"
       opened={opened}
-      onClose={() => setOpened(false)}
+      onClose={closeSelector}
       title="Manage Attachments"
       styles={{ header: { zIndex: 100 } }}
     >

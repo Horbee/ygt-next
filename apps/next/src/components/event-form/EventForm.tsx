@@ -51,7 +51,7 @@ export const EventForm = ({
     <Box py="md">
       <AttachmentSelector
         opened={opened}
-        setOpened={setOpened}
+        closeSelector={() => setOpened(false)}
         onSelect={(attachment) => {
           eventForm.setValue("coverImageUrl", attachment.url);
           setAttachment(attachment);

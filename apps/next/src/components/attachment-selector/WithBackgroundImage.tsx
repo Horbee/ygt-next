@@ -12,7 +12,12 @@ export const WithBackgroundImage = ({
   return (
     <>
       {imgSrc ? (
-        <BackgroundImage src={imgSrc} radius="sm" data-testid="background-img">
+        <BackgroundImage
+          src={imgSrc}
+          radius="sm"
+          data-testid="background-img"
+          style={{ backgroundSize: "contain", backgroundRepeat: "no-repeat" }}
+        >
           {children}
         </BackgroundImage>
       ) : (
