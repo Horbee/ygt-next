@@ -1,5 +1,7 @@
 import format from "date-fns/format";
 import isSameDay from "date-fns/isSameDay";
+import isSameYear from "date-fns/isSameYear";
+import isSameMonth from "date-fns/isSameMonth";
 
 import type { Event } from "@ygt/db";
 
@@ -26,7 +28,13 @@ export function formatEventDuration(event: Event): string {
   }
 
   if (!sameDay && wholeDay) {
-    return format(from, "dd.MM.yyyy - ") + format(until, "dd.MM.yyyy");
+    if (isSameYear(from, until)) {
+      if (isSameMonth(from, until)) {
+        return format(from, "dd - ") + format(until, "dd.MM.yyyy");
+      }
+
+      return format(from, "dd.MM - ") + format(until, "dd.MM.yyyy");
+    }
   }
 
   return (

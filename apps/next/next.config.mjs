@@ -36,6 +36,9 @@ const config = {
     ignoreDuringBuilds: true,
   },
   transpilePackages: ["@ygt/db"],
+  images: {
+    domains: ["localhost", "ygt-media-bucket.s3.eu-central-1.amazonaws.com"],
+  },
 };
 
 export default withPwa({
