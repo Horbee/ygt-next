@@ -6,6 +6,7 @@ import { EventDto } from "../../dto/event.dto";
 import { getEventsWhereClause } from "../helpers/get-events-helper";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { sendEventModificationPushNotification } from "../helpers/send-push-notification";
+import { getPresignedImageUrl } from "../../../utils/get-image-url";
 
 export const eventRouter = createTRPCRouter({
   getEvents: protectedProcedure
@@ -31,7 +32,18 @@ export const eventRouter = createTRPCRouter({
 
       const [total, events] = await Promise.all([totalPromise, eventsPromise]);
 
-      return { content: events, total };
+      const eventsWithPresignedImageUrls = await Promise.all(
+        events.map(async (event) => {
+          if (event.coverImage)
+            event.coverImage.url = await getPresignedImageUrl(
+              event.coverImage.url,
+              ctx.s3
+            );
+          return event;
+        })
+      );
+
+      return { content: eventsWithPresignedImageUrls, total };
     }),
 
   getEventBySlug: protectedProcedure
@@ -63,6 +75,10 @@ export const eventRouter = createTRPCRouter({
       });
 
       if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found." });
+
+      if (event.coverImage) {
+        event.coverImage.url = await getPresignedImageUrl(event.coverImage.url, ctx.s3);
+      }
 
       return event;
     }),

@@ -50,7 +50,6 @@ export default function UserPage() {
         opened={attachmentSelectorOpen}
         closeSelector={close}
         onSelect={(attachment) => {
-          console.log(attachment);
           setValue("image", attachment.url);
           close();
         }}
