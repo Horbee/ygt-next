@@ -37,11 +37,7 @@ const config = {
   },
   transpilePackages: ["@ygt/db"],
   images: {
-    domains: [
-      "localhost",
-      "ygt-media-bucket.s3.eu-central-1.amazonaws.com",
-      "ygt-dev-media-bucket.s3.eu-central-1.amazonaws.com",
-    ],
+    domains: ["localhost", "ygt-media-bucket.s3.eu-central-1.amazonaws.com"],
   },
 };
 

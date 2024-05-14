@@ -7,24 +7,15 @@ import { TRPCError } from "@trpc/server";
 import { env } from "../../../env/server.mjs";
 import { CreateAttachment } from "../../dto/create-attachment.dto";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { getPresignedImageUrl } from "../../../utils/get-image-url";
+import { useLocalstackS3 } from "../../s3";
 
 export const attachmentRouter = createTRPCRouter({
   getAttachments: protectedProcedure.query(async ({ ctx }) => {
-    const attachments = await ctx.prisma.attachment.findMany({
+    return ctx.prisma.attachment.findMany({
       where: {
         ownerId: ctx.session.user.id,
       },
     });
-
-    const attachmentsWithPresignedURLs = await Promise.all(
-      attachments.map(async (a) => {
-        const url = await getPresignedImageUrl(a.url, ctx.s3);
-        return { ...a, url };
-      })
-    );
-
-    return attachmentsWithPresignedURLs;
   }),
 
   deleteAttachment: protectedProcedure
@@ -70,11 +61,15 @@ export const attachmentRouter = createTRPCRouter({
       });
       const preSignedUrl = await getSignedUrl(ctx.s3, command, { expiresIn: 5 * 60 });
 
+      const s3FileUrl = useLocalstackS3
+        ? `http://localhost:4566/${env.AWS__BUCKET_NAME}/${filePath}`
+        : `https://${env.AWS__BUCKET_NAME}.s3.${env.AWS__BUCKET_REGION}.amazonaws.com/${filePath}`;
+
       const attachment = await ctx.prisma.attachment.create({
         data: {
           type: input.fileType,
           name: input.fileName,
-          url: filePath,
+          url: s3FileUrl,
           ownerId: ctx.session.user.id,
         },
       });
