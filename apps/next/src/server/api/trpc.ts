@@ -22,6 +22,7 @@ import { getServerAuthSession } from "../auth";
 import { prisma } from "../db";
 import { s3 } from "../s3";
 import { webPush } from "../webpush";
+import { cloudinary } from "../cloudinary";
 
 /**
  * 1. CONTEXT
@@ -52,6 +53,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     prisma,
     s3,
     webPush,
+    cloudinary,
   };
 };
 

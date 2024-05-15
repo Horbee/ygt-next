@@ -142,11 +142,12 @@ model Attachment {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   v  Int    @default(0) @map("__v") @ignore
 
-  type    String
-  name    String
-  url     String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String @map("owner") @db.ObjectId
+  type     String
+  name     String
+  url      String
+  publicId String @unique
+  owner    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId  String @map("owner") @db.ObjectId
 
   createdAt DateTime @default(now()) @db.Date
   updatedAt DateTime @updatedAt() @db.Date

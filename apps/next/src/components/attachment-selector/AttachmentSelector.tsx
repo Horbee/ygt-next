@@ -9,6 +9,8 @@ import { api } from "../../utils/api";
 import { ImageDropzone } from "./ImageDropzone";
 import { SelectableImage } from "./SelectableImage";
 import { Image, Trash, UploadCloud } from "lucide-react";
+import { env } from "../../env/client.mjs";
+import { toBase64 } from "../../utils/base64";
 
 type AttachmentTabs = "select" | "upload";
 
@@ -29,14 +31,27 @@ export const AttachmentSelector = ({ opened, closeSelector, onSelect }: Props) =
   const utils = api.useContext();
 
   const uploadImage = async (file: File) => {
-    const { preSignedUrl } = await upload.mutateAsync({
+    const base64 = await toBase64(file);
+
+    const { signature, timestamp, publicId, postUrl } = await upload.mutateAsync({
       fileName: file.name,
       fileType: file.type,
     });
 
-    const uploadPromise = axios.put(preSignedUrl, file, {
-      headers: { "Content-Type": file.type },
-    });
+    const uploadPromise = axios.post(
+      postUrl,
+      {
+        file: base64,
+        api_key: env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+        eager: "w_400,h_300,c_pad|w_260,h_200,c_crop",
+        public_id: publicId,
+        timestamp,
+        signature,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     await toast.promise(uploadPromise, {
       pending: "Uploading Image...",

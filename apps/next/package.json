@@ -29,6 +29,7 @@
     "@ygt/db": "workspace:*",
     "@ygt/typescript-config": "workspace:*",
     "axios": "^1.4.0",
+    "cloudinary": "^2.2.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.8",
     "emoji-mart": "^5.5.2",

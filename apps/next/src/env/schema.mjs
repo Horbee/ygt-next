@@ -27,6 +27,9 @@ export const serverSchema = z.object({
   AWS__BUCKET_NAME: z.string(),
   AWS__BUCKET_REGION: z.string(),
 
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+
   PRIVATE_VAPID_KEY: z.string(),
   EMAIL_SERVER: z.string(),
   EMAIL_FROM: z.string(),
@@ -48,6 +51,8 @@ export const serverEnv = {
   AWS__ACCESS_KEY_SECRET: process.env.AWS__ACCESS_KEY_SECRET,
   AWS__BUCKET_NAME: process.env.AWS__BUCKET_NAME,
   AWS__BUCKET_REGION: process.env.AWS__BUCKET_REGION,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   PRIVATE_VAPID_KEY: process.env.PRIVATE_VAPID_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
   EMAIL_SERVER: process.env.EMAIL_SERVER,
@@ -60,6 +65,7 @@ export const serverEnv = {
  */
 export const clientSchema = z.object({
   NEXT_PUBLIC_VAPID_KEY: z.string(),
+  NEXT_PUBLIC_CLOUDINARY_API_KEY: z.string(),
 });
 
 /**
@@ -70,4 +76,5 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   NEXT_PUBLIC_VAPID_KEY: process.env.NEXT_PUBLIC_VAPID_KEY,
+  NEXT_PUBLIC_CLOUDINARY_API_KEY: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
 };
