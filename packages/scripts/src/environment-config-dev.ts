@@ -10,17 +10,22 @@ import webpush from "web-push";
 
 const vapidKeys = webpush.generateVAPIDKeys();
 
-function createEnvFileForNextApp(googleClientId = "", googleClientSecret = "") {
+function createEnvFileForNextApp(
+  googleClientId = "",
+  googleClientSecret = "",
+  cloudinaryCloudName = "",
+  cloudinaryApiKey = "",
+  cloudinaryApiSecret = ""
+) {
   const EnvVariables = {
     DATABASE_URL:
       "mongodb://root:example@localhost:27017/ygt-db?authSource=admin&directConnection=true",
     NEXTAUTH_URL: "http://localhost:3000",
-    GOOGLE_CLIENT_ID: "<GOOGLE_CLIENT_ID>",
-    GOOGLE_CLIENT_SECRET: "<GOOGLE_CLIENT_SECRET>",
-    AWS__ACCESS_KEY_ID: "",
-    AWS__ACCESS_KEY_SECRET: "",
-    AWS__BUCKET_NAME: "ygt-dev-media-bucket",
-    AWS__BUCKET_REGION: "eu-central-1",
+    GOOGLE_CLIENT_ID: googleClientId,
+    GOOGLE_CLIENT_SECRET: googleClientSecret,
+    CLOUDINARY_CLOUD_NAME: cloudinaryCloudName,
+    NEXT_PUBLIC_CLOUDINARY_API_KEY: cloudinaryApiKey,
+    CLOUDINARY_API_SECRET: cloudinaryApiSecret,
     NEXT_PUBLIC_VAPID_KEY: vapidKeys.publicKey,
     PRIVATE_VAPID_KEY: vapidKeys.privateKey,
     EMAIL_SERVER: "smtp://localhost:1025",
@@ -29,9 +34,7 @@ function createEnvFileForNextApp(googleClientId = "", googleClientSecret = "") {
 
   const envContent = Object.entries(EnvVariables)
     .map(([key, value]) => `${key}="${value}"`)
-    .join("\n")
-    .replace("<GOOGLE_CLIENT_ID>", googleClientId)
-    .replace("<GOOGLE_CLIENT_SECRET>", googleClientSecret);
+    .join("\n");
 
   try {
     const destinationPath = path.join(__dirname, "../../../apps/next", ".env");
@@ -72,6 +75,21 @@ const argv = yargs(hideBin(process.argv))
   })
   .option("GOOGLE_CLIENT_SECRET", {
     describe: "Client Secret for Google OAuth",
+    demandOption: false,
+    type: "string",
+  })
+  .option("CLOUDINARY_CLOUD_NAME", {
+    describe: "Cloudinary Cloud name",
+    demandOption: false,
+    type: "string",
+  })
+  .option("CLOUDINARY_API_KEY", {
+    describe: "Cloudinary public API key",
+    demandOption: false,
+    type: "string",
+  })
+  .option("CLOUDINARY_API_SECRET", {
+    describe: "Cloudinary API Secret",
     demandOption: false,
     type: "string",
   })

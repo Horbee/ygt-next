@@ -20,7 +20,6 @@ import { initTRPC, TRPCError } from "@trpc/server";
 
 import { getServerAuthSession } from "../auth";
 import { prisma } from "../db";
-import { s3 } from "../s3";
 import { webPush } from "../webpush";
 import { cloudinary } from "../cloudinary";
 
@@ -51,7 +50,6 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
-    s3,
     webPush,
     cloudinary,
   };

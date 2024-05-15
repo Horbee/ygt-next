@@ -23,7 +23,7 @@ Before you begin, make sure you have the following software installed on your co
 - pnpm: An alternative package manager for Node.js that is faster and more efficient than npm.
 - Docker: An open-source platform that automates the deployment, scaling, and management of containerized applications.
 
-The application uses Google Auth Provider to sign in users and AWS S3 to save the media files. You will need to setup a project with OAuth 2.0 Client IDs using the [Google Cloud Console](https://console.cloud.google.com/) and create an S3 Bucket.
+The application uses Google Auth Provider to sign in users and Cloudinary to save the media files. You will need to setup a project with OAuth 2.0 Client IDs using the [Google Cloud Console](https://console.cloud.google.com/) and create a Cloudinary Media Library.
 
 ## Installation
 
@@ -53,14 +53,12 @@ The application uses Google Auth Provider to sign in users and AWS S3 to save th
 
    _Please note: Adding a Google ClientId and Secret for OAuth is not necessary. You can use the Mailhog service with the Email provider to send out and catch magic login links._
 
-4. Start the required services with the help of the `docker-compose.yml` file. Then you need to create collections and indexes for MongoDB and setup the local S3 Bucket:
+4. Start the required services with the help of the `docker-compose.yml` file. Then you need to create collections and indexes for MongoDB:
 
    ```bash
    docker compose up -d
 
    pnpm prisma db push
-
-   ./packages/scripts/src/setup-s3-local.ts
    ```
 
 - 4.1 If you are using a Mac with Apple-Chip, you will need to use the `zcube/bitnami-compat-mongodb` image, as the original `bitnami/mongodb` is not compatible with arm64. Open the `docker-compose.yml` file and switch the comments on the lines 3 and 4.

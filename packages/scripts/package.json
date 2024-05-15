@@ -2,9 +2,9 @@
   "name": "@ygt/scripts",
   "version": "0.0.0",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.359.0",
     "@ygt/db": "workspace:*",
     "@ygt/typescript-config": "workspace:*",
+    "cloudinary": "^2.2.0",
     "dotenv": "^16.3.1",
     "web-push": "^3.6.3",
     "yargs": "^17.7.2"
